@@ -1,0 +1,18 @@
+<!doctype html>
+<html lang="fr">
+<head>
+    <meta charset="utf-8">
+    <title>FAFA Souscription</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <header>
+        <img src="{{ url_for('static', filename='logo_FAFA.png') }}" alt="FAFA Logo">
+        <h1>Souscriptions FAFA</h1>
+        <p class="compteur">Total souscripteurs : {{ total }}</p>
+    </header>
+    <main>
+        {% block content %}{% endblock %}
+    </main>
+</body>
+</html>
