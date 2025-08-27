@@ -4,5 +4,3 @@ flask_wtf
 psycopg2
 pandas
 openpyxl
-psycopg2-binary
-gunicorn
