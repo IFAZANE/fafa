@@ -18,6 +18,11 @@ app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get(
 )
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
+# Configuration Flask
+app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY')
+app.config['RECAPTCHA_PUBLIC_KEY'] = os.environ.get('RECAPTCHA_PUBLIC_KEY')
+app.config['RECAPTCHA_PRIVATE_KEY'] = os.environ.get('RECAPTCHA_PRIVATE_KEY')
+
 # 3️⃣ Attacher db à l'application (une seule instance)
 db.init_app(app)
 
@@ -58,3 +63,4 @@ app.add_url_rule('/export', 'export_csv', export_csv)
 # 9️⃣ Exécution locale
 if __name__ == '__main__':
     app.run(debug=True)
+
