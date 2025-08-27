@@ -9,3 +9,12 @@ class SubscriptionForm(FlaskForm):
     ville = StringField('Ville', validators=[DataRequired()])
     produit = SelectField('Produit', choices=[('Bronze', 'Bronze'), ('Silver', 'Silver'), ('Gold', 'Gold')])
     submit = SubmitField('Souscrire')
+
+from wtforms import StringField, SubmitField
+from wtforms.validators import DataRequired
+
+class SouscriptionForm(FlaskForm):
+    nom = StringField("Nom", validators=[DataRequired()])
+    prenom = StringField("Prénom", validators=[DataRequired()])
+    recaptcha = RecaptchaField()  # <-- captcha
+    submit = SubmitField("Souscrire")
