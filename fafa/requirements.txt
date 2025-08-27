@@ -4,3 +4,4 @@ flask_wtf
 psycopg2
 pandas
 openpyxl
+gunicorn app:app
