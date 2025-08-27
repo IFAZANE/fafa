@@ -4,31 +4,33 @@ from models import db, Subscription
 from forms import SubscriptionForm
 
 import os
-from flask_sqlalchemy import SQLAlchemy
 
+# 1️⃣ Crée l'application Flask
 app = Flask(__name__)
+app.config.from_object(Config)
+
+# 2️⃣ Configurer SQLAlchemy
 app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get(
     'DATABASE_URL',
     'postgresql://fafadb_user:yWH0gommUR5p2YCX7Yh4ZqMSG3ww9gEU@dpg-d2njb4ggjchc7386ikhg-a.oregon-postgres.render.com:5432/fafadb'
 )
-db = SQLAlchemy(app)
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
-
-app = Flask(__name__)
-app.config.from_object(Config)
-
+# 3️⃣ Attache db à l'application (une seule instance)
 db.init_app(app)
 
+# 4️⃣ Crée les tables si elles n'existent pas
 with app.app_context():
     db.create_all()
 
-
+# 5️⃣ Import et enregistrement des blueprints
 from admin import admin_bp
 app.register_blueprint(admin_bp)
 
-app.secret_key = 'changeme'  # Pour les sessions sécurisées
+# 6️⃣ Clé secrète pour les sessions
+app.secret_key = 'changeme'
 
-
+# 7️⃣ Route principale
 @app.route('/', methods=['GET', 'POST'])
 def index():
     form = SubscriptionForm()
@@ -48,10 +50,10 @@ def index():
 
     return render_template('index.html', form=form, total=total)
 
+# 8️⃣ Export CSV
 from export import export_csv
 app.add_url_rule('/export', 'export_csv', export_csv)
 
+# 9️⃣ Exécution locale
 if __name__ == '__main__':
     app.run(debug=True)
-
-
