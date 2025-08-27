@@ -38,6 +38,7 @@ def index():
 
     if form.validate_on_submit():
         sub = Subscription(
+            uuid=str(uuid.uuid4()),  # <-- génère un UUID unique à chaque fois
             nom=form.nom.data,
             prenom=form.prenom.data,
             telephone=form.telephone.data,
@@ -56,3 +57,4 @@ app.add_url_rule('/export', 'export_csv', export_csv)
 # 9️⃣ Exécution locale
 if __name__ == '__main__':
     app.run(debug=True)
+
