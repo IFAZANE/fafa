@@ -5,6 +5,7 @@ from forms import SubscriptionForm
 from admin import admin_bp
 from export import export_csv
 import os
+import uuid  # ajoute en haut
 
 # 1️⃣ Créer l'application Flask (une seule fois)
 app = Flask(__name__)
@@ -57,4 +58,5 @@ app.add_url_rule('/export', 'export_csv', export_csv)
 # 9️⃣ Exécution locale
 if __name__ == '__main__':
     app.run(debug=True)
+
 
