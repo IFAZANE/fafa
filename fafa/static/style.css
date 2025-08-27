@@ -332,3 +332,10 @@ main {
         transform: translateY(-8px);
     }
 }
+
+.g-recaptcha {
+  display: flex;
+  justify-content: center;
+  margin: 10px 0;
+}
+
