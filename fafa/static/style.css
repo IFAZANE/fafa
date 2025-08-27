@@ -339,3 +339,9 @@ main {
   margin: 10px 0;
 }
 
+.captcha-container {
+  text-align: center;
+  margin-top: 1em;
+}
+
+
