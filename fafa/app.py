@@ -5,7 +5,7 @@ from forms import SubscriptionForm
 from admin import admin_bp
 from export import export_csv
 import os
-import uuid  # ajoute en haut
+import uuid  # Pour générer des UUID uniques
 
 # 1️⃣ Créer l'application Flask (une seule fois)
 app = Flask(__name__)
@@ -39,7 +39,7 @@ def index():
 
     if form.validate_on_submit():
         sub = Subscription(
-            uuid=str(uuid.uuid4()),  # <-- génère un UUID unique à chaque fois
+            uuid=str(uuid.uuid4()),  # UUID unique à chaque souscription
             nom=form.nom.data,
             prenom=form.prenom.data,
             telephone=form.telephone.data,
@@ -58,5 +58,3 @@ app.add_url_rule('/export', 'export_csv', export_csv)
 # 9️⃣ Exécution locale
 if __name__ == '__main__':
     app.run(debug=True)
-
-
