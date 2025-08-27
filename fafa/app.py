@@ -36,6 +36,18 @@ app.register_blueprint(admin_bp)
 # 6️⃣ Clé secrète pour les sessions
 app.secret_key = 'changeme'
 
+
+from flask import render_template, redirect, flash, url_for
+
+@app.route('/souscription', methods=['GET', 'POST'])
+def souscription():
+    form = SouscriptionForm()
+    if form.validate_on_submit():
+        flash("Souscription réussie !", "success")
+        return redirect(url_for('souscription'))
+    return render_template('souscription.html', form=form)
+
+
 # 7️⃣ Route principale
 @app.route('/', methods=['GET', 'POST'])
 def index():
@@ -63,4 +75,5 @@ app.add_url_rule('/export', 'export_csv', export_csv)
 # 9️⃣ Exécution locale
 if __name__ == '__main__':
     app.run(debug=True)
+
 
