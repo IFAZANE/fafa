@@ -1,30 +1,30 @@
-from flask import Flask, render_template, redirect, url_for, flash
+from flask import Flask, render_template
 from config import Config
 from models import db, Subscription
 from forms import SubscriptionForm
-
+from admin import admin_bp
+from export import export_csv
 import os
 
-# 1️⃣ Crée l'application Flask
+# 1️⃣ Créer l'application Flask (une seule fois)
 app = Flask(__name__)
 app.config.from_object(Config)
 
-# 2️⃣ Configurer SQLAlchemy
+# 2️⃣ Configurer SQLAlchemy correctement
 app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get(
     'DATABASE_URL',
     'postgresql://fafadb_user:yWH0gommUR5p2YCX7Yh4ZqMSG3ww9gEU@dpg-d2njb4ggjchc7386ikhg-a.oregon-postgres.render.com:5432/fafadb'
 )
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
-# 3️⃣ Attache db à l'application (une seule instance)
+# 3️⃣ Attacher db à l'application (une seule instance)
 db.init_app(app)
 
-# 4️⃣ Crée les tables si elles n'existent pas
+# 4️⃣ Créer les tables si elles n'existent pas
 with app.app_context():
     db.create_all()
 
-# 5️⃣ Import et enregistrement des blueprints
-from admin import admin_bp
+# 5️⃣ Enregistrer les blueprints
 app.register_blueprint(admin_bp)
 
 # 6️⃣ Clé secrète pour les sessions
@@ -51,7 +51,6 @@ def index():
     return render_template('index.html', form=form, total=total)
 
 # 8️⃣ Export CSV
-from export import export_csv
 app.add_url_rule('/export', 'export_csv', export_csv)
 
 # 9️⃣ Exécution locale
