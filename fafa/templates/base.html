@@ -9,12 +9,13 @@
     <header>
         <img src="{{ url_for('static', filename='logo_FAFA.png') }}" alt="FAFA Logo">
         <h1>Souscriptions FAFA</h1>
-        <p class="compteur">Total souscription : {{ total-2 }}</p>
+        <p class="compteur">Total souscription : {{ total }}</p>
     </header>
     <main>
         {% block content %}{% endblock %}
     </main>
 </body>
 </html>
+
 
 
