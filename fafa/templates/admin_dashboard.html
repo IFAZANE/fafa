@@ -1,77 +1,74 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<div class="admin-dashboard">
-    <div class="export-buttons">
+<div class="admin-dashboard" style="padding:20px; max-width:1200px; margin:auto;">
+
+    <div class="export-buttons" style="margin-bottom: 30px;">
         <p class="compteur">Total souscriptions : {{ total or 0 }}</p>
         <a href="{{ url_for('admin.export_csv') }}" class="btn-export">Exporter en CSV</a>
         <a href="{{ url_for('admin.export_excel') }}" class="btn-export">Exporter en Excel</a>
     </div>
 
-    <div class="charts" style="margin-top: 30px;">
-        <h3>Répartition par produit</h3>
-        <canvas id="productChart" width="400" height="200"></canvas>
+    <div class="charts" style="display:flex; flex-wrap:wrap; gap:30px; justify-content:space-around;">
+        <div style="flex:1; min-width:300px;">
+            <h3>Répartition par produit</h3>
+            <canvas id="productChart"></canvas>
+        </div>
 
-        <h3 style="margin-top: 40px;">Répartition par ville</h3>
-        <canvas id="cityChart" width="400" height="200"></canvas>
+        <div style="flex:1; min-width:300px;">
+            <h3>Répartition par ville</h3>
+            <canvas id="cityChart"></canvas>
+        </div>
     </div>
 
-    <a href="{{ url_for('index') }}" class="btn-logout" style="display:block;margin-top:30px;">Se déconnecter</a>
+    <a href="{{ url_for('index') }}" class="btn-logout" style="display:block; margin-top:40px;">Se déconnecter</a>
 </div>
 
-<!-- Inclure Chart.js depuis CDN -->
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-
 <script>
-    // Sécuriser les variables côté JS
     const productLabels = {{ product_labels|default([])|tojson }};
     const productCounts = {{ product_counts|default([])|tojson }};
     const cityLabels = {{ city_labels|default([])|tojson }};
     const cityCounts = {{ city_counts|default([])|tojson }};
 
-    // Graphique par produit
+    // Choix du type : 'bar' ou 'pie'
+    const chartType = 'bar'; // ou 'pie'
+
     const productCtx = document.getElementById('productChart').getContext('2d');
     const productChart = new Chart(productCtx, {
-        type: 'bar',
+        type: chartType,
         data: {
             labels: productLabels,
             datasets: [{
                 label: 'Nombre de souscriptions',
                 data: productCounts,
-                backgroundColor: 'rgba(54, 162, 235, 0.5)',
-                borderColor: 'rgba(54, 162, 235, 1)',
+                backgroundColor: productLabels.map((_, i) => `hsl(${i*60 % 360}, 70%, 60%)`),
+                borderColor: productLabels.map((_, i) => `hsl(${i*60 % 360}, 70%, 40%)`),
                 borderWidth: 1
             }]
         },
         options: {
             responsive: true,
-            plugins: {
-                legend: { position: 'top' },
-                tooltip: { enabled: true }
-            }
+            plugins: { legend: { position: 'top' }, tooltip: { enabled: true } }
         }
     });
 
-    // Graphique par ville
     const cityCtx = document.getElementById('cityChart').getContext('2d');
     const cityChart = new Chart(cityCtx, {
-        type: 'bar',
+        type: chartType,
         data: {
             labels: cityLabels,
             datasets: [{
                 label: 'Nombre de souscriptions',
                 data: cityCounts,
-                backgroundColor: 'rgba(255, 99, 132, 0.5)',
-                borderColor: 'rgba(255, 99, 132, 1)',
+                backgroundColor: cityLabels.map((_, i) => `hsl(${i*60 % 360}, 70%, 60%)`),
+                borderColor: cityLabels.map((_, i) => `hsl(${i*60 % 360}, 70%, 40%)`),
                 borderWidth: 1
             }]
         },
         options: {
             responsive: true,
-            plugins: {
-                legend: { position: 'top' },
-                tooltip: { enabled: true }
-            }
+            plugins: { legend: { position: 'top' }, tooltip: { enabled: true } }
         }
     });
 </script>
