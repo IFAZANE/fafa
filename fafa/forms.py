@@ -1,60 +1,18 @@
-{% extends 'base.html' %}
-{% block content %}
-<div class="container">
-    {% with messages = get_flashed_messages(with_categories=true) %}
-      {% if messages %}
-        <div>
-          {% for category, message in messages %}
-            <div style="color: red; font-weight: bold;">{{ message }}</div>
-          {% endfor %}
-        </div>
-      {% endif %}
-    {% endwith %}
+from flask_wtf import FlaskForm, RecaptchaField
+from wtforms import StringField, SubmitField, SelectField
+from wtforms.validators import DataRequired, Regexp
 
-    <div class="form-container">
-        <div class="form-header" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
-            <h2>Formulaire de souscription</h2>
-            <a href="{{ url_for('manuel') }}" target="_blank" style="font-size: 0.95em; color: #007bff; text-decoration: none;">Aide</a>
-        </div>
-
-        <form method="POST">
-            {{ form.hidden_tag() }}
-
-            <div class="form-group">
-                {{ form.nom.label }} {{ form.nom(class_="form-input", placeholder="Entrez votre nom") }}
-                {% for error in form.nom.errors %}<span style="color:red;">{{ error }}</span>{% endfor %}
-            </div>
-
-            <div class="form-group">
-                {{ form.prenom.label }} {{ form.prenom(class_="form-input", placeholder="Entrez votre prénom") }}
-                {% for error in form.prenom.errors %}<span style="color:red;">{{ error }}</span>{% endfor %}
-            </div>
-
-            <div class="form-group">
-                {{ form.telephone.label }} {{ form.telephone(class_="form-input", placeholder="Numéro de téléphone") }}
-                {% for error in form.telephone.errors %}<span style="color:red;">{{ error }}</span>{% endfor %}
-            </div>
-
-            <div class="form-group">
-                {{ form.ville.label }} {{ form.ville(class_="form-input", placeholder="Votre ville") }}
-                {% for error in form.ville.errors %}<span style="color:red;">{{ error }}</span>{% endfor %}
-            </div>
-
-            <div class="form-group">
-                {{ form.produit.label }} {{ form.produit(class_="form-select") }}
-                {% for error in form.produit.errors %}<span style="color:red;">{{ error }}</span>{% endfor %}
-            </div>
-
-            <div class="captcha-container">
-                {{ form.recaptcha }}
-                {% for error in form.recaptcha.errors %}<span style="color:red;">{{ error }}</span>{% endfor %}
-            </div>
-
-            <button type="submit" class="btn-submit">Souscrire</button>
-        </form>
-    </div>
-</div>
-
-<script src="https://www.google.com/recaptcha/api.js" async defer></script>
-{% endblock %}
-
+class SouscriptionForm(FlaskForm):
+    nom = StringField("Nom", validators=[DataRequired()])
+    prenom = StringField("Prénom", validators=[DataRequired()])
+    telephone = StringField("Téléphone", validators=[
+        DataRequired(),
+        Regexp(r'^\d{8,15}$', message="Numéro de téléphone invalide")
+    ])
+    ville = StringField("Ville", validators=[DataRequired()])
+    produit = SelectField("Produit", choices=[
+        ("Option1", "15 000F/ans"),
+        ("Option2", "20 000F/ans")
+    ], validators=[DataRequired()])
+    recaptcha = RecaptchaField()
+    submit = SubmitField("Souscrire")
