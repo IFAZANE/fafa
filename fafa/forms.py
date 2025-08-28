@@ -22,12 +22,13 @@ class SubscriptionForm(FlaskForm):
     
     produit = SelectField("Produit", choices=[
         ("", "Sélectionnez un produit"),
-        ("Bronze", "Bronze"),
-        ("Silver", "Silver"),
-        ("Gold", "Gold")
+        ("Option1", "15 000F/ans"),
+        ("Option2", "20 000F/ans")
+        
     ], validators=[
         DataRequired(message="Veuillez sélectionner un produit.")
     ])
     
     recaptcha = RecaptchaField()
     submit = SubmitField("Souscrire")
+
