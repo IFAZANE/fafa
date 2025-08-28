@@ -29,12 +29,13 @@ def generate_unique_code():
 
 class Subscription(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    code = db.Column(db.String(6), unique=True, default=generate_unique_code)
     nom = db.Column(db.String(50), nullable=False)
     prenom = db.Column(db.String(50), nullable=False)
     telephone = db.Column(db.String(20), nullable=False)
     ville = db.Column(db.String(50), nullable=False)
     produit = db.Column(db.String(20), nullable=False)
+    code = db.Column(db.String(6), unique=True, default=generate_unique_code)
+
 
 
 
