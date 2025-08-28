@@ -50,32 +50,29 @@ def index():
             db.session.add(sub)
             db.session.commit()
             flash("Souscription réussie !", "success")
-            return render_template('confirmation.html', uuid=sub.uuid)
-            #return render_template('confirmation.html', code=sub.code)
+
+            # ✅ Redirection vers la page confirmation
+            return redirect(url_for('confirmation', uuid=sub.uuid))
+
         except Exception as e:
             db.session.rollback()
             flash("Erreur lors de la souscription. Veuillez réessayer.", "danger")
 
     return render_template('index.html', form=form, total=total)
 
-#@app.route('/confirmation/<int:subscription_id>')
-#def confirmation(subscription_id):
-#    subscription = Subscription.query.get_or_404(subscription_id)
-#    return render_template('confirmation.html', uuid=subscription.uuid)
+# 7️⃣ Route confirmation par UUID
+@app.route('/confirmation/<uuid>')
+def confirmation(uuid):
+    subscription = Subscription.query.filter_by(uuid=uuid).first_or_404()
+    return render_template('confirmation.html', uuid=subscription.uuid)
 
-# 7️⃣ Route d'export CSV
+# 8️⃣ Route d'export CSV
 app.add_url_rule('/export', 'export_csv', export_csv)
 
 @app.route('/manuel')
 def manuel():
     return render_template('manuel.html')
 
-
-# 8️⃣ Exécution de l'application en local
+# 9️⃣ Exécution de l'application en local
 if __name__ == '__main__':
     app.run(debug=True)
-
-
-
-
-
