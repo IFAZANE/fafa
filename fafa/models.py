@@ -5,14 +5,24 @@ from sqlalchemy import Enum
 
 db = SQLAlchemy()
 
+
+from sqlalchemy.dialects.postgresql import ENUM
+
+produit_enum = ENUM(
+    'Option1', 'Option2', 'Bronze', 'Silver',  # ajouter Bronze et Silver
+    name='produit_enum',
+    create_type=False  # ne recrée pas le type si déjà existant
+)
+
 class Subscription(db.Model):
-    id = db.Column(db.Integer, primary_key=True)  # auto-incrément
-    uuid = db.Column(db.String(36), unique=True, nullable=False)
-    nom = db.Column(db.String(50), nullable=False)
-    prenom = db.Column(db.String(50), nullable=False)
-    telephone = db.Column(db.String(20), nullable=False)
-    ville = db.Column(db.String(50), nullable=False)
-    produit = db.Column(db.Enum('Option1', 'Option2', name='produit_enum'), nullable=False)
+    __tablename__ = 'subscription'
+    id = db.Column(db.Integer, primary_key=True)
+    uuid = db.Column(db.String, unique=True)
+    nom = db.Column(db.String(50))
+    prenom = db.Column(db.String(50))
+    telephone = db.Column(db.String(15), unique=True)
+    ville = db.Column(db.String(50))
+    produit = db.Column(produit_enum)
 
 
 
