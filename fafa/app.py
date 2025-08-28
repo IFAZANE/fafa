@@ -62,14 +62,16 @@ def index():
     return render_template('index.html', form=form, total=total)
 
 
-@app.route('/confirmation/<uuid>')
-def confirmation(uuid):
-    subscription = Subscription.query.filter_by(uuid=uuid).first_or_404()
-    return render_template('confirmation.html', uuid=subscription.uuid)
+
 
 
 # Export CSV
 app.add_url_rule('/export', 'export_csv', export_csv)
+
+@app.route('/confirmation/<uuid>')
+def confirmation(uuid):
+    sub = Subscription.query.filter_by(uuid=uuid).first_or_404()
+    return render_template('confirmation.html', subscription=sub)
 
 
 @app.route('/manuel')
@@ -79,3 +81,4 @@ def manuel():
 
 if __name__ == '__main__':
     app.run(debug=True)
+
