@@ -9,7 +9,7 @@ db = SQLAlchemy()
 from sqlalchemy.dialects.postgresql import ENUM
 
 produit_enum = ENUM(
-    'Option1', 'Option2', 'Bronze', 'Silver',  # ajouter Bronze et Silver
+    'Option1', 'Option2', 'Bronze', 'Silver','Gold',   # ajouter Bronze et Silver
     name='produit_enum',
     create_type=False  # ne recrée pas le type si déjà existant
 )
@@ -23,6 +23,7 @@ class Subscription(db.Model):
     telephone = db.Column(db.String(15), unique=True)
     ville = db.Column(db.String(50))
     produit = db.Column(produit_enum)
+
 
 
 
