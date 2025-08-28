@@ -1,17 +1,19 @@
 {% extends 'base.html' %}
 {% block content %}
-<div class="confirmation-container">
+<div class="confirmation-container" style="text-align:center; margin-top:50px;">
 
-<h2>Merci {{ subscription.nom }} {{ subscription.prenom }} !</h2>
-<p>Votre souscription a été enregistrée avec succès.</p>
-<p><strong>Code unique :</strong> {{ subscription.uuid }}</p> 
-   
-    </div>
-    <a href="{{ url_for('index') }}" class="btn-retour">Quitter</a>
+    <h2>Merci {{ subscription.nom }} {{ subscription.prenom }} !</h2>
+    <p>Votre souscription a été enregistrée avec succès.</p>
+    <p><strong>Code unique :</strong> {{ subscription.uuid }}</p> 
+
+    <a href="{{ url_for('index') }}" class="btn-retour" style="
+        display: inline-block;
+        margin-top: 20px;
+        padding: 10px 20px;
+        background-color: #007BFF;
+        color: white;
+        text-decoration: none;
+        border-radius: 5px;
+    ">Quitter</a>
 </div>
 {% endblock %}
-
-
-
-
-
