@@ -22,7 +22,9 @@ class Subscription(db.Model):
     prenom = db.Column(db.String(50))
     telephone = db.Column(db.String(15), unique=True)
     ville = db.Column(db.String(50))
-    produit = db.Column(produit_enum)
+    produit = db.Column(db.String(50), nullable=False)
+
+
 
 
 
