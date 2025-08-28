@@ -1,43 +1,48 @@
 from flask import Flask, render_template, redirect, flash, url_for
 from config import Config
 from models import db, Subscription
-from forms import SubscriptionForm
+from forms import SouscriptionForm
 from admin import admin_bp
 from export import export_csv
 import os
 import uuid
 
-# 1️⃣ Créer l'application Flask
 app = Flask(__name__)
 app.config.from_object(Config)
 
-# 2️⃣ Configuration de la base de données
+# DB
 app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get(
     'DATABASE_URL',
-    'postgresql://fafadb_user:yWH0gommUR5p2YCX7Yh4ZqMSG3ww9gEU@dpg-d2njb4ggjchc7386ikhg-a.oregon-postgres.render.com:5432/fafadb'
+    'postgresql://fafadb_user:motdepasse@serveur:5432/fafadb'
 )
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
-# 3️⃣ Configuration sécurité / CAPTCHA
+# Security / CAPTCHA
 app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', 'changeme')
 app.config['RECAPTCHA_PUBLIC_KEY'] = os.environ.get('RECAPTCHA_PUBLIC_KEY', '')
 app.config['RECAPTCHA_PRIVATE_KEY'] = os.environ.get('RECAPTCHA_PRIVATE_KEY', '')
 
-# 4️⃣ Initialiser la base de données
+# Init DB
 db.init_app(app)
 with app.app_context():
     db.create_all()
 
-# 5️⃣ Enregistrer les blueprints (ex : admin)
+# Blueprints
 app.register_blueprint(admin_bp)
 
-# 6️⃣ Route principale : page d'inscription
+# Route principale
 @app.route('/', methods=['GET', 'POST'])
 def index():
-    form = SubscriptionForm()
+    form = SouscriptionForm()
     total = Subscription.query.count()
 
     if form.validate_on_submit():
+        # Vérification doublon
+        existing = Subscription.query.filter_by(telephone=form.telephone.data).first()
+        if existing:
+            flash("Ce numéro de téléphone est déjà enregistré.", "danger")
+            return render_template('index.html', form=form, total=total)
+
         try:
             sub = Subscription(
                 uuid=str(uuid.uuid4()),
@@ -49,22 +54,28 @@ def index():
             )
             db.session.add(sub)
             db.session.commit()
-            flash("Souscription réussie !", "success")
-            return render_template('confirmation.html', uuid=sub.uuid)
-        except Exception as e:
+            return redirect(url_for('confirmation', uuid=sub.uuid))
+        except Exception:
             db.session.rollback()
             flash("Erreur lors de la souscription. Veuillez réessayer.", "danger")
 
     return render_template('index.html', form=form, total=total)
 
-# 7️⃣ Route d'export CSV
+
+@app.route('/confirmation/<uuid>')
+def confirmation(uuid):
+    subscription = Subscription.query.filter_by(uuid=uuid).first_or_404()
+    return render_template('confirmation.html', uuid=subscription.uuid)
+
+
+# Export CSV
 app.add_url_rule('/export', 'export_csv', export_csv)
+
 
 @app.route('/manuel')
 def manuel():
     return render_template('manuel.html')
 
 
-# 8️⃣ Exécution de l'application en local
 if __name__ == '__main__':
     app.run(debug=True)
