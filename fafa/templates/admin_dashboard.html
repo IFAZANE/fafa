@@ -1,17 +1,63 @@
 {% extends 'base.html' %}
+
 {% block content %}
 <div class="admin-dashboard">
-   
-
-
     <div class="export-buttons">
-       <p class="compteur">Total souscription : {{ total }}</p>
+        <p class="compteur">Total souscription : {{ total or 0 }}</p>
         <a href="{{ url_for('admin.export_csv') }}" class="btn-export">Exporter en CSV</a>
         <a href="{{ url_for('admin.export_excel') }}" class="btn-export">Exporter en Excel</a>
     </div>
 
+    <div class="charts">
+        <h3>Répartition par produit</h3>
+        <canvas id="productChart" width="400" height="200"></canvas>
+
+        <h3>Répartition par ville</h3>
+        <canvas id="cityChart" width="400" height="200"></canvas>
+    </div>
+
     <a href="{{ url_for('index') }}" class="btn-logout">Se déconnecter</a>
 </div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    // Fonction pour sécuriser les données (si vides)
+    function safeData(data) {
+        return (data && data.length) ? data : [];
+    }
+
+    // Graphique par produit
+    const productCtx = document.getElementById('productChart').getContext('2d');
+    const productChart = new Chart(productCtx, {
+        type: 'bar',
+        data: {
+            labels: safeData({{ product_labels|tojson }}),
+            datasets: [{
+                label: 'Nombre de souscriptions',
+                data: safeData({{ product_counts|tojson }}),
+                backgroundColor: 'rgba(54, 162, 235, 0.5)',
+                borderColor: 'rgba(54, 162, 235, 1)',
+                borderWidth: 1
+            }]
+        },
+        options: { responsive: true }
+    });
+
+    // Graphique par ville
+    const cityCtx = document.getElementById('cityChart').getContext('2d');
+    const cityChart = new Chart(cityCtx, {
+        type: 'bar',
+        data: {
+            labels: safeData({{ city_labels|tojson }}),
+            datasets: [{
+                label: 'Nombre de souscriptions',
+                data: safeData({{ city_counts|tojson }}),
+                backgroundColor: 'rgba(255, 99, 132, 0.5)',
+                borderColor: 'rgba(255, 99, 132, 1)',
+                borderWidth: 1
+            }]
+        },
+        options: { responsive: true }
+    });
+</script>
 {% endblock %}
-
-
