@@ -60,6 +60,11 @@ def index():
 # 7️⃣ Route d'export CSV
 app.add_url_rule('/export', 'export_csv', export_csv)
 
+@app.route('/manuel')
+def manuel():
+    return render_template('manuel.html')
+
+
 # 8️⃣ Exécution de l'application en local
 if __name__ == '__main__':
     app.run(debug=True)
