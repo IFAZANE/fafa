@@ -71,37 +71,16 @@ def confirmation(uuid):
     return render_template('confirmation.html', subscription=sub)
 
 # 8️⃣ Export CSV
+from export import export_csv, export_excel
+
 @app.route('/export/csv')
-def export_subscriptions_csv():
-    subs = Subscription.query.all()
-    si = StringIO()
-    writer = csv.writer(si)
-    writer.writerow(['UUID', 'Nom', 'Prénom', 'Téléphone', 'Ville', 'Produit'])
-    for s in subs:
-        writer.writerow([s.uuid, s.nom, s.prenom, s.telephone, s.ville, s.produit])
-    output = Response(si.getvalue(), mimetype='text/csv')
-    output.headers["Content-Disposition"] = "attachment; filename=subscriptions.csv"
-    return output
+def route_export_csv():
+    return export_csv()
 
-# 9️⃣ Export Excel
 @app.route('/export/excel')
-def export_subscriptions_excel():
-    subs = Subscription.query.all()
-    wb = Workbook()
-    ws = wb.active
-    ws.append(['UUID', 'Nom', 'Prénom', 'Téléphone', 'Ville', 'Produit'])
-    for s in subs:
-        ws.append([s.uuid, s.nom, s.prenom, s.telephone, s.ville, s.produit])
+def route_export_excel():
+    return export_excel()
 
-    bio = BytesIO()
-    wb.save(bio)
-    bio.seek(0)
-
-    return Response(
-        bio.getvalue(),
-        mimetype="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-        headers={"Content-Disposition": "attachment; filename=subscriptions.xlsx"}
-    )
 
 # 1️⃣0️⃣ Page manuel
 @app.route('/manuel')
@@ -120,3 +99,4 @@ def debug_form():
 # 1️⃣2️⃣ Exécution de l'application
 if __name__ == '__main__':
     app.run(debug=True)
+
