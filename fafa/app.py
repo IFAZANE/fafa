@@ -40,7 +40,7 @@ def index():
     if form.validate_on_submit():
         try:
             sub = Subscription(
-                #uuid=str(uuid.uuid4()),
+                uuid=str(uuid.uuid4()),
                 nom=form.nom.data,
                 prenom=form.prenom.data,
                 telephone=form.telephone.data,
@@ -50,18 +50,15 @@ def index():
             db.session.add(sub)
             db.session.commit()
             flash("Souscription réussie !", "success")
-            #return render_template('confirmation.html', uuid=sub.uuid)
-            return render_template('confirmation.html', code=sub.code)
+            return render_template('confirmation.html', uuid=sub.uuid)
+            #return render_template('confirmation.html', code=sub.code)
         except Exception as e:
             db.session.rollback()
             flash("Erreur lors de la souscription. Veuillez réessayer.", "danger")
 
     return render_template('index.html', form=form, total=total)
 
-@app.route('/confirmation/<int:subscription_id>')
-def confirmation(subscription_id):
-    subscription = Subscription.query.get_or_404(subscription_id)
-    return render_template('confirmation.html', code=subscription.code)
+
 
 # 7️⃣ Route d'export CSV
 app.add_url_rule('/export', 'export_csv', export_csv)
@@ -74,5 +71,6 @@ def manuel():
 # 8️⃣ Exécution de l'application en local
 if __name__ == '__main__':
     app.run(debug=True)
+
 
 
