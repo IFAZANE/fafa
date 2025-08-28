@@ -18,13 +18,14 @@ class SouscriptionForm(FlaskForm):
     choices=[
         ('Option1', 'Option1 (15 000 F/ans)'),
         ('Option2', 'Option2 (20 000 F/ans)'),
-        ('Bronze', 'Bronze'),
-        ('Silver', 'Silver')
+        #('Bronze', 'Bronze'),
+        #('Silver', 'Silver')
     ],
     validators=[DataRequired()]
 )
 
     recaptcha = RecaptchaField()
+
 
 
 
