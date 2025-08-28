@@ -1,4 +1,4 @@
-from flask import Flask, render_template, redirect, flash, url_for
+from flask import Flask, render_template, flash
 from config import Config
 from models import db, Subscription
 from forms import SubscriptionForm
@@ -51,8 +51,8 @@ def index():
             db.session.commit()
             flash("Souscription réussie !", "success")
 
-            # ✅ Redirection vers la page confirmation
-            return redirect(url_for('confirmation', uuid=sub.uuid))
+            # ✅ Afficher directement la page confirmation.html
+            return render_template('confirmation.html', uuid=sub.uuid)
 
         except Exception as e:
             db.session.rollback()
@@ -60,19 +60,13 @@ def index():
 
     return render_template('index.html', form=form, total=total)
 
-# 7️⃣ Route confirmation par UUID
-@app.route('/confirmation/<uuid>')
-def confirmation(uuid):
-    subscription = Subscription.query.filter_by(uuid=uuid).first_or_404()
-    return render_template('confirmation.html', uuid=subscription.uuid)
-
-# 8️⃣ Route d'export CSV
+# 7️⃣ Route d'export CSV
 app.add_url_rule('/export', 'export_csv', export_csv)
 
 @app.route('/manuel')
 def manuel():
     return render_template('manuel.html')
 
-# 9️⃣ Exécution de l'application en local
+# 8️⃣ Exécution de l'application en local
 if __name__ == '__main__':
     app.run(debug=True)
