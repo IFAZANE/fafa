@@ -12,6 +12,7 @@ class Subscription(db.Model):
     prenom = db.Column(db.String(50), nullable=False)
     telephone = db.Column(db.String(20), nullable=False)
     ville = db.Column(db.String(50), nullable=False)
-    produit = db.Column(db.Enum('Option1', 'Option2', 'Option3', name='produit_enum'), nullable=False)
+    produit = db.Column(db.Enum('Option1', 'Option2', name='produit_enum'), nullable=False)
+
 
 
