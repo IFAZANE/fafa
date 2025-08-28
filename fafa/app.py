@@ -58,10 +58,10 @@ def index():
 
     return render_template('index.html', form=form, total=total)
 
-@app.route('/confirmation/<int:subscription_id>')
-def confirmation(subscription_id):
-    subscription = Subscription.query.get_or_404(subscription_id)
-    return render_template('confirmation.html', uuid=subscription.uuid)
+#@app.route('/confirmation/<int:subscription_id>')
+#def confirmation(subscription_id):
+#    subscription = Subscription.query.get_or_404(subscription_id)
+#    return render_template('confirmation.html', uuid=subscription.uuid)
 
 # 7️⃣ Route d'export CSV
 app.add_url_rule('/export', 'export_csv', export_csv)
@@ -74,6 +74,7 @@ def manuel():
 # 8️⃣ Exécution de l'application en local
 if __name__ == '__main__':
     app.run(debug=True)
+
 
 
 
