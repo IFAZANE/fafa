@@ -1,50 +1,49 @@
 {% extends 'base.html' %}
 {% block content %}
- <div class="container">
-<div class="form-container">
-    <h2>Formulaire de souscription</h2>
-    <form method="POST">
-        {{ form.hidden_tag() }}
+<div class="container">
 
-        <div class="form-group">
-            {{ form.nom.label }}
-            {{ form.nom(class_="form-input", placeholder="Entrez votre nom") }}
+    <div class="form-container">
+        <h2>Formulaire de souscription</h2>
+
+        <!-- Lien vers le manuel d’utilisation -->
+        <div class="manual-link" style="text-align: right; margin-bottom: 10px;">
+            <a href="{{ url_for('manuel') }}" target="_blank">📘 Consulter le manuel d’utilisation</a>
         </div>
 
-        <div class="form-group">
-            {{ form.prenom.label }}
-            {{ form.prenom(class_="form-input", placeholder="Entrez votre prénom") }}
-        </div>
+        <form method="POST">
+            {{ form.hidden_tag() }}
 
-        <div class="form-group">
-            {{ form.telephone.label }}
-            {{ form.telephone(class_="form-input", placeholder="Numéro de téléphone sans espace ex: 0022890000000") }}
-        </div>
+            <div class="form-group">
+                {{ form.nom.label }}
+                {{ form.nom(class_="form-input", placeholder="Entrez votre nom") }}
+            </div>
 
-        <div class="form-group">
-            {{ form.ville.label }}
-            {{ form.ville(class_="form-input", placeholder="Votre ville") }}
-        </div>
+            <div class="form-group">
+                {{ form.prenom.label }}
+                {{ form.prenom(class_="form-input", placeholder="Entrez votre prénom") }}
+            </div>
 
-        <div class="form-group">
-            {{ form.produit.label }}
-            {{ form.produit(class_="form-select") }}
-        </div>
+            <div class="form-group">
+                {{ form.telephone.label }}
+                {{ form.telephone(class_="form-input", placeholder="Numéro de téléphone sans espace ex: 0022890000000") }}
+            </div>
 
-     <div class="captcha-container">
-  {{ form.recaptcha }}
-</div>
+            <div class="form-group">
+                {{ form.ville.label }}
+                {{ form.ville(class_="form-input", placeholder="Votre ville") }}
+            </div>
 
+            <div class="form-group">
+                {{ form.produit.label }}
+                {{ form.produit(class_="form-select") }}
+            </div>
 
+            <div class="captcha-container">
+                {{ form.recaptcha }}
+            </div>
 
-        <button type="submit" class="btn-submit">Souscrire</button>
-    </form>
-</div>
+            <button type="submit" class="btn-submit">Souscrire</button>
+        </form>
+    </div>
 </div>     
 {% endblock %}
-
-
-
-
-
-
