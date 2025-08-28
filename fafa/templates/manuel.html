@@ -1,54 +1,72 @@
 {% extends "base.html" %}
 
 {% block content %}
-<section>
-    <h2>Manuel d’utilisation – FAFA</h2>
-    <p><strong>Souscription en ligne à l’assurance solidaire</strong></p>
+<div class="manual-container">
 
-    <h3>1 - Introduction</h3>
-    <p>Bienvenue sur la plateforme FAFA, l’assurance solidaire dédiée aux femmes entrepreneures du secteur informel.</p>
-    <p>Ce guide vous explique étape par étape comment vous inscrire facilement et obtenir votre numéro de souscription unique.</p>
+    <h2 class="manual-title">Manuel d’utilisation – FAFA</h2>
+    <p class="manual-subtitle"><strong>Souscription en ligne à l’assurance solidaire</strong></p>
 
-    <h3>2 - Étapes de la souscription en ligne</h3>
+    <!-- Section 1 -->
+    <div class="manual-section">
+        <h3>1 - Introduction</h3>
+        <p>Bienvenue sur la plateforme FAFA, l’assurance solidaire dédiée aux femmes entrepreneures du secteur informel.</p>
+        <p>Ce guide vous explique étape par étape comment vous inscrire facilement et obtenir votre numéro de souscription unique.</p>
+    </div>
 
-    <h4>2.1 - Accéder à la plateforme</h4>
-    <p>Pour accéder à la plateforme de souscription à l’assurance FAFA, il vous faut :</p>
-    <ul>
-        <li>Un navigateur (Chrome, Firefox, Safari ou autre)</li>
-        <li>Une bonne connexion internet</li>
-    </ul>
-    <p>Ouvrez votre navigateur et accédez à la page web :
-        <a href="https://fafa-4m54.onrender.com/" target="_blank">https://fafa-4m54.onrender.com/</a>
-    </p>
-    <p>Sur la page d’accueil de FAFA, vous trouverez :</p>
-    <ul>
-        <li>Le formulaire de souscription avec les informations à renseigner</li>
-        <li>Le « Nombre total de souscription » qui est automatiquement mis à jour</li>
-    </ul>
+    <!-- Section 2 -->
+    <div class="manual-section">
+        <h3>2 - Étapes de la souscription en ligne</h3>
 
-    <h4>2.2 - Remplissage du formulaire de souscription</h4>
-    <p>Dans le formulaire, renseignez les champs suivants :</p>
-    <ul>
-        <li><strong>Nom :</strong> Entrez votre nom (Ex : AZOUMA)</li>
-        <li><strong>Prénom :</strong> Entrez votre prénom (Ex : Jonas)</li>
-        <li><strong>Téléphone :</strong> Numéro valide avec indicatif (Ex : 0022890909090)</li>
-        <li><strong>Ville :</strong> Ville de résidence (Ex : Aného)</li>
-        <li><strong>Produit :</strong> Choisissez la formule (Bronze, Silver ou Gold)</li>
-    </ul>
-    <p>Puis vérifiez le « Captcha » :</p>
-    <ul>
-        <li>Cochez « I’m not a robot »</li>
-        <li>Exécutez la tâche demandée</li>
-        <li>Une fois validé, cliquez sur « Souscrire »</li>
-    </ul>
+        <div class="manual-subsection">
+            <h4>2.1 - Accéder à la plateforme</h4>
+            <p>Pour accéder à la plateforme de souscription à l’assurance FAFA, il vous faut :</p>
+            <ul>
+                <li>Un navigateur (Chrome, Firefox, Safari ou autre)</li>
+                <li>Une bonne connexion internet</li>
+            </ul>
+            <p>Accédez à la page web :
+                <a href="https://fafa-4m54.onrender.com/" target="_blank">https://fafa-4m54.onrender.com/</a>
+            </p>
+            <p>Sur la page d’accueil de FAFA, vous trouverez :</p>
+            <ul>
+                <li>Le formulaire de souscription avec les informations à renseigner</li>
+                <li>Le « Nombre total de souscription » qui est automatiquement mis à jour</li>
+            </ul>
+        </div>
 
-    <h4>2.3 - Confirmation de la souscription</h4>
-    <p>Après avoir cliqué sur « Souscrire » :</p>
-    <ul>
-        <li>Une page affiche : « Merci pour votre souscription ! »</li>
-        <li>Un numéro de souscription unique vous est attribué</li>
-    </ul>
-    <p><strong>NB :</strong> Notez et gardez précieusement ce numéro.</p>
+        <div class="manual-subsection">
+            <h4>2.2 - Remplissage du formulaire de souscription</h4>
+            <p>Dans le formulaire, renseignez les champs suivants :</p>
+            <ul>
+                <li><strong>Nom :</strong> Entrez votre nom (Ex : AZOUMA)</li>
+                <li><strong>Prénom :</strong> Entrez votre prénom (Ex : Jonas)</li>
+                <li><strong>Téléphone :</strong> Numéro valide avec indicatif (Ex : 0022890909090)</li>
+                <li><strong>Ville :</strong> Ville de résidence (Ex : Aného)</li>
+                <li><strong>Produit :</strong> Choisissez la formule (Bronze, Silver ou Gold)</li>
+            </ul>
+            <p>Ensuite, vérifiez le « Captcha » :</p>
+            <ul>
+                <li>Cochez « I’m not a robot »</li>
+                <li>Exécutez la tâche demandée</li>
+                <li>Une fois validé, cliquez sur « Souscrire »</li>
+            </ul>
+        </div>
 
-</section>
+        <div class="manual-subsection">
+            <h4>2.3 - Confirmation de la souscription</h4>
+            <p>Après avoir cliqué sur « Souscrire » :</p>
+            <ul>
+                <li>Une page affiche : « Merci pour votre souscription ! »</li>
+                <li>Un numéro de souscription unique vous est attribué</li>
+            </ul>
+            <p><strong>NB :</strong> Notez et gardez précieusement ce numéro.</p>
+        </div>
+    </div>
+
+    <!-- Bouton Quitter -->
+    <div class="manual-footer">
+        <a href="{{ url_for('index') }}" class="btn-quit">Quitter</a>
+    </div>
+
+</div>
 {% endblock %}
