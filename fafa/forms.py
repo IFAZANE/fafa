@@ -3,20 +3,31 @@ from wtforms import StringField, SubmitField, SelectField
 from wtforms.validators import DataRequired, Regexp
 
 class SubscriptionForm(FlaskForm):
-    nom = StringField("Nom", validators=[DataRequired()])
-    prenom = StringField("Prénom", validators=[DataRequired()])
-    telephone = StringField("Téléphone", validators=[
-        DataRequired(),
-        Regexp(r'^\d{8,15}$', message="Numéro de téléphone invalide")
+    nom = StringField("Nom", validators=[
+        DataRequired(message="Le nom est requis.")
     ])
-    ville = StringField("Ville", validators=[DataRequired()])
+    
+    prenom = StringField("Prénom", validators=[
+        DataRequired(message="Le prénom est requis.")
+    ])
+    
+    telephone = StringField("Téléphone", validators=[
+        DataRequired(message="Le numéro de téléphone est requis."),
+        Regexp(r'^\d{8,15}$', message="Numéro de téléphone invalide (8 à 15 chiffres attendus).")
+    ])
+    
+    ville = StringField("Ville", validators=[
+        DataRequired(message="La ville est requise.")
+    ])
     
     produit = SelectField("Produit", choices=[
+        ("", "Sélectionnez un produit"),
         ("Bronze", "Bronze"),
         ("Silver", "Silver"),
         ("Gold", "Gold")
-    ], validators=[DataRequired()])
-
+    ], validators=[
+        DataRequired(message="Veuillez sélectionner un produit.")
+    ])
+    
     recaptcha = RecaptchaField()
     submit = SubmitField("Souscrire")
-
