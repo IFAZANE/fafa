@@ -56,11 +56,11 @@ def index():
                 )
                 db.session.add(sub)
                 db.session.commit()
-                flash("Souscription réussie !", "success")
+                #flash("Souscription réussie !", "success")
                 return redirect(url_for('confirmation', uuid=sub.uuid))
             except Exception as e:
                 db.session.rollback()
-                flash(f"Erreur lors de la souscription: {str(e)}", "danger")
+                #flash(f"Erreur lors de la souscription: {str(e)}", "danger")
 
     return render_template('index.html', form=form, total=total)
 
@@ -99,5 +99,6 @@ def debug_form():
 # 1️⃣2️⃣ Exécution de l'application
 if __name__ == '__main__':
     app.run(debug=True)
+
 
 
