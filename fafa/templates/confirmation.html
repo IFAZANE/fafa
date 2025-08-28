@@ -1,16 +1,16 @@
 {% extends 'base.html' %}
 {% block content %}
 <div class="confirmation-container">
-    <h2>Merci pour votre souscription !</h2>
-    <p class="description">Votre inscription a été enregistrée avec succès.</p>
-     <p class="compteur">Total souscription : {{ total }}</p>
-    <div class="uuid-box">
-        <p>Votre numéro unique est :</p>
-        <span class="uuid">{{ uuid }}</span>
+
+<h2>Merci {{ subscription.nom }} {{ subscription.prenom }} !</h2>
+<p>Votre souscription a été enregistrée avec succès.</p>
+<p><strong>Code unique :</strong> {{ subscription.uuid }}</p> 
+   
     </div>
     <a href="{{ url_for('index') }}" class="btn-retour">Quitter</a>
 </div>
 {% endblock %}
+
 
 
 
