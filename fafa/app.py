@@ -3,12 +3,19 @@ from config import Config
 from models import db, Subscription
 from forms import SouscriptionForm
 from admin import admin_bp
-from export import export_csv  # on adaptera pour Excel si besoin
 import os
 import uuid
 import csv
 from openpyxl import Workbook
 from io import BytesIO
+
+# Mapping des anciens produits vers Option1/Option2
+produit_map = {
+    'Option1': '15 000 F/ans',
+    'Option2': '20 000 F/ans',
+    'Bronze': '15 000 F/ans',
+    'Silver': '20 000 F/ans'
+}
 
 # 1️⃣ Créer l'application Flask
 app = Flask(__name__)
@@ -41,7 +48,6 @@ def index():
     total = Subscription.query.count()
 
     if form.validate_on_submit():
-        # Vérifier doublons
         existing = Subscription.query.filter_by(telephone=form.telephone.data).first()
         if existing:
             flash("Ce numéro est déjà enregistré.", "danger")
@@ -79,7 +85,14 @@ def export_subscriptions_csv():
     writer = csv.writer(si)
     writer.writerow(['UUID', 'Nom', 'Prénom', 'Téléphone', 'Ville', 'Produit'])
     for s in subs:
-        writer.writerow([s.uuid, s.nom, s.prenom, s.telephone, s.ville, s.produit])
+        writer.writerow([
+            s.uuid,
+            s.nom,
+            s.prenom,
+            s.telephone,
+            s.ville,
+            produit_map.get(s.produit, s.produit)
+        ])
     output = Response(si.getvalue(), mimetype='text/csv')
     output.headers["Content-Disposition"] = "attachment; filename=subscriptions.csv"
     return output
@@ -92,7 +105,14 @@ def export_subscriptions_excel():
     ws = wb.active
     ws.append(['UUID', 'Nom', 'Prénom', 'Téléphone', 'Ville', 'Produit'])
     for s in subs:
-        ws.append([s.uuid, s.nom, s.prenom, s.telephone, s.ville, s.produit])
+        ws.append([
+            s.uuid,
+            s.nom,
+            s.prenom,
+            s.telephone,
+            s.ville,
+            produit_map.get(s.produit, s.produit)
+        ])
 
     bio = BytesIO()
     wb.save(bio)
