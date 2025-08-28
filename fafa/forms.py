@@ -10,7 +10,7 @@ class SubscriptionForm(FlaskForm):
     prenom = StringField('Prénom', validators=[DataRequired()])
     telephone = StringField('Téléphone', validators=[DataRequired()])
     ville = StringField('Ville', validators=[DataRequired()])
-    produit = SelectField('Produit', choices=[('Bronze', 'Bronze'), ('Silver', 'Silver'), ('Gold', 'Gold')])
+    produit = SelectField('Produit', choices=[('Silver', '15 000F/ans'), ('Gold', '20 000F/ans')])
     submit = SubmitField('Souscrire')
 
 from wtforms import StringField, SubmitField
@@ -27,12 +27,12 @@ class SouscriptionForm(FlaskForm):
     ville = StringField("Ville", validators=[DataRequired()])
     
     produit = SelectField("Produit", choices=[
-        ("Bronze", "Bronze"),
-        ("Silver", "Silver"),
-        ("Gold", "Gold")
+        ("Silver", "15 000F/ans"),
+        ("Gold", "20 000F/ans")
     ], validators=[DataRequired()])
 
     recaptcha = RecaptchaField()
     submit = SubmitField("Souscrire")
+
 
 
