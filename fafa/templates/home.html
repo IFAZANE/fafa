@@ -183,6 +183,27 @@
             border-radius: 5px;
         }
 
+        .nav-links a.nav-button {
+    display: inline-block;
+    padding: 10px 20px;
+    margin: 0 8px;
+    background-color: #0056b3; /* bleu FAFA */
+    color: white;
+    border-radius: 5px;
+    font-weight: 600;
+    text-decoration: none;
+    transition: background-color 0.3s ease, box-shadow 0.3s ease;
+    box-shadow: 0 2px 6px rgba(0, 86, 179, 0.4);
+}
+
+.nav-links a.nav-button:hover,
+.nav-links a.nav-button:focus {
+    background-color: #003f88; /* bleu plus foncé au hover */
+    box-shadow: 0 4px 10px rgba(0, 63, 136, 0.6);
+    outline: none;
+}
+
+
     </style>
 </head>
 <body>
@@ -204,12 +225,13 @@
                 <img src="{{ url_for('static', filename='logo_FAFA.png') }}" alt="FAFA Logo">
                
             </div>
-            <nav class="nav-links">
-                <a href="{{ url_for('index') }}">Souscription</a>
-                <a href="{{ url_for('manuel') }}">Aide</a>
-                <a href="https://nsiadirect.tg/" target="_blank">NSIA Assurance</a>
-                <a href="https://www.boad.org" target="_blank">BOAD</a>
-            </nav>
+                <nav class="nav-links">
+        <a href="{{ url_for('index') }}" class="nav-button">Souscription</a>
+        <a href="{{ url_for('manuel') }}" class="nav-button">Aide</a>
+        <a href="https://nsiadirect.tg/" target="_blank" class="nav-button">NSIA Assurance</a>
+        <a href="https://www.boad.org" target="_blank" class="nav-button">BOAD</a>
+    </nav>
+
         </div>
     </header>
 
