@@ -1,452 +1,283 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="fr">
 <head>
-    <meta charset="utf-8">
-    <title>FAFA Assurance</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>FAFA Assurance</title>
 
-    <!-- CSS -->
-    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
-    <!-- Font / Icons -->
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;600&display=swap" rel="stylesheet">
-    <script src="https://kit.fontawesome.com/yourkitid.js" crossorigin="anonymous"></script>
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;600&display=swap" rel="stylesheet">
 
-    <style>
-        body {
-            margin: 0;
-            font-family: 'Poppins', sans-serif;
-            background: linear-gradient(to right, #f7f9fc, #e2ecf9);
-            color: #333;
-        }
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Poppins', sans-serif;
+      background: linear-gradient(to right, #f7f9fc, #e2ecf9);
+      color: #333;
+    }
 
-        .main-header {
-            background-color: #ffffff;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-        }
+    header {
+      background-color: #ffffff;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+      padding: 1rem 2rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
 
-        .navbar {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 1rem 2rem;
-        }
+    .logo {
+      display: flex;
+      align-items: center;
+    }
 
-        .logo {
-            display: flex;
-            align-items: center;
-        }
+    .logo img {
+      height: 40px;
+      margin-right: 10px;
+    }
 
-        .logo img {
-            height: 40px;
-            margin-right: 10px;
-        }
+    .logo span {
+      font-weight: 600;
+      font-size: 1.2rem;
+      color: #0056b3;
+    }
 
-        .logo span {
-            font-weight: 600;
-            font-size: 1.2rem;
-            color: #0056b3;
-        }
+    .nav-links a {
+      margin: 0 15px;
+      text-decoration: none;
+      color: #333;
+    }
 
-        .nav-links a {
-            margin: 0 15px;
-            text-decoration: none;
-            color: #333;
-        }
+    .nav-links a:hover {
+      color: #0056b3;
+    }
 
-        .nav-links a:hover {
-            color: #0056b3;
-        }
+    .carousel-container {
+      position: relative;
+      max-width: 900px;
+      margin: 50px auto;
+      background: white;
+      border-radius: 12px;
+      box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+      overflow: hidden;
+      padding: 20px;
+    }
 
-        .hero {
-            background: url('/static/hero-background.jpg') no-repeat center center/cover;
-            color: white;
-            text-align: center;
-            padding: 100px 20px;
-        }
+    .carousel {
+      position: relative;
+      width: 100%;
+      height: 350px;
+    }
 
-        .hero-content h1 {
-            font-size: 2.5rem;
-        }
+    .slide {
+      display: none;
+      opacity: 0;
+      transition: opacity 0.8s ease;
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      box-sizing: border-box;
+      padding: 20px;
+      display: flex;
+      align-items: center;
+      gap: 30px;
+      background-color: white;
+    }
 
-        .hero-content p {
-            font-size: 1.2rem;
-        }
+    .slide.active {
+      display: flex;
+      opacity: 1;
+      position: relative;
+    }
 
-        .btn-primary {
-            margin-top: 20px;
-            padding: 10px 20px;
-            background-color: #0056b3;
-            color: white;
-            border: none;
-            border-radius: 5px;
-            text-decoration: none;
-        }
+    .slide-text {
+      flex: 1;
+      color: #003f88;
+    }
 
-        .btn-primary:hover {
-            background-color: #003f88;
-        }
+    .slide-text h2 {
+      margin-top: 0;
+      font-size: 1.8rem;
+      font-weight: 700;
+      margin-bottom: 15px;
+    }
 
-        .services {
-            padding: 50px 20px;
-            text-align: center;
-        }
+    .slide-text p, .slide-text ul, .slide-text ol {
+      font-size: 1.1rem;
+      line-height: 1.5;
+      margin-bottom: 15px;
+    }
 
-        .card-container {
-            display: flex;
-            justify-content: space-around;
-            flex-wrap: wrap;
-            margin-top: 30px;
-        }
+    .slide-text ul, .slide-text ol {
+      padding-left: 20px;
+    }
 
-        .card {
-            background: white;
-            padding: 20px;
-            width: 300px;
-            margin: 10px;
-            border-radius: 8px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-        }
+    .slide-image {
+      flex: 1;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
 
-        .card i {
-            font-size: 2rem;
-            margin-bottom: 10px;
-            color: #0056b3;
-        }
+    .slide-image img {
+      max-height: 300px;
+      border-radius: 12px;
+      object-fit: cover;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+      max-width: 100%;
+    }
 
-        .card h3 {
-            margin-top: 0;
-        }
+    .carousel-btn {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      background: rgba(0, 86, 179, 0.7);
+      border: none;
+      color: white;
+      font-size: 2rem;
+      padding: 8px 14px;
+      cursor: pointer;
+      border-radius: 50%;
+      user-select: none;
+      z-index: 10;
+    }
 
-        .about, .testimonials, .cta {
-            padding: 50px 20px;
-            text-align: center;
-        }
+    .carousel-btn:hover {
+      background: #003f88;
+    }
 
-        .about p {
-            max-width: 700px;
-            margin: 20px auto;
-            font-size: 1.1rem;
-        }
+    .carousel-btn.prev {
+      left: 10px;
+    }
 
-        .testimonials .card-container {
-            justify-content: center;
-        }
+    .carousel-btn.next {
+      right: 10px;
+    }
 
-        .testimonials .card p {
-            font-style: italic;
-        }
+    footer {
+      background-color: #f1f1f1;
+      padding: 20px;
+      text-align: center;
+    }
 
-        .testimonials .card strong {
-            display: block;
-            margin-top: 10px;
-            font-style: normal;
-            color: #0056b3;
-        }
+    @media (max-width: 768px) {
+      .slide {
+        flex-direction: column;
+        height: auto;
+      }
 
-        footer {
-            background-color: #f1f1f1;
-            padding: 20px;
-            text-align: center;
-        }
-
-        .footer-content .socials a {
-            margin: 0 10px;
-            color: #555;
-            font-size: 1.2rem;
-        }
-
-        .footer-content .socials a:hover {
-            color: #0056b3;
-        }
-
-        /* Flash messages (facultatif) */
-        .flash-messages {
-            text-align: center;
-            margin-top: 10px;
-        }
-
-        .flash.success {
-            background-color: #d4edda;
-            color: #155724;
-            padding: 10px;
-            margin: 10px auto;
-            max-width: 600px;
-            border-radius: 5px;
-        }
-
-        .flash.error {
-            background-color: #f8d7da;
-            color: #721c24;
-            padding: 10px;
-            margin: 10px auto;
-            max-width: 600px;
-            border-radius: 5px;
-        }
-
-    </style>
+      .slide-image img {
+        max-height: 200px;
+      }
+    }
+  </style>
 </head>
 <body>
 
-    {% with messages = get_flashed_messages(with_categories=true) %}
-        {% if messages %}
-            <div class="flash-messages">
-                {% for category, message in messages %}
-                    <div class="flash {{ category }}">{{ message }}</div>
-                {% endfor %}
-            </div>
-        {% endif %}
-    {% endwith %}
+  <header>
+    <div class="logo">
+      <img src="https://via.placeholder.com/40" alt="FAFA Logo" />
+      <span>FAFA Assurance</span>
+    </div>
+    <nav class="nav-links">
+      <a href="#">Souscription</a>
+      <a href="#">Aide</a>
+      <a href="https://nsiadirect.tg/" target="_blank">NSIA Assurance</a>
+      <a href="https://www.boad.org" target="_blank">BOAD</a>
+    </nav>
+  </header>
 
-    <!-- Header -->
-    <header class="main-header">
-        <div class="navbar">
-            <div class="logo">
-                <img src="{{ url_for('static', filename='logo_FAFA.png') }}" alt="FAFA Logo">
-                <span>FAFA Assurance</span>
-            </div>
-            <nav class="nav-links">
-                <a href="{{ url_for('index') }}">Souscription</a>
-                <a href="{{ url_for('manuel') }}">Aide</a>
-                <a href="https://nsiadirect.tg/" target="_blank">NSIA Assurance</a>
-                <a href="https://www.boad.org" target="_blank">BOAD</a>
-            </nav>
+  <main class="carousel-container">
+    <div class="carousel">
+
+      <!-- Slide 1 -->
+      <section class="slide active">
+        <div class="slide-text">
+          <h2>QU’EST CE QUE FAFA ?</h2>
+          <p>FAFA est une assurance solidaire créée par la Banque Ouest Africaine de Développement (BOAD) et NSIA Assurances Togo.</p>
+          <p>Elle aide les personnes vulnérables en rendant l’assurance accessible à ceux qui ont de faibles revenus.</p>
         </div>
-    </header>
-
-    <!-- Carousel principal -->
-    <main class="carousel-container">
-        <div class="carousel">
-
-            <!-- Slide 1 -->
-            <section class="slide active">
-                <div class="slide-text">
-                    <h2>QU’EST CE QUE FAFA ?</h2>
-                    <p>
-                        FAFA est une assurance solidaire créée par la Banque Ouest Africaine de Développement (BOAD) et NSIA Assurances Togo.
-                        Elle aide les personnes vulnérables en rendant l’assurance accessible à ceux qui ont de faibles revenus.
-                    </p>
-                    <p>
-                        FAFA, qui signifie paix et sérénité, mise sur l'innovation. Elle contribue à améliorer les conditions de vie, réduire la pauvreté et renforcer la cohésion sociale et économique dans la sous-région.
-                    </p>
-                </div>
-                <div class="slide-image">
-                   <img src="https://tse4.mm.bing.net/th/id/OIP.1etJsEFYvQ4lHOTih4iT7AAAAA?w=450&h=300&rs=1&pid=ImgDetMain&o=7&rm=3" alt="Femme souriante" />
-
-                </div>
-            </section>
-
-            <!-- Slide 2 -->
-            <section class="slide">
-                <div class="slide-text">
-                    <h2>QUI EST CONCERNÉ ?</h2>
-                    <p>Toute personne issue du secteur informel.</p>
-
-                    <h2>QUELLES SONT LES GARANTIES ?</h2>
-                    <ul>
-                        <li><strong>Individuelle Accidents :</strong> Couverture des frais médicaux en cas d’accident, capital en cas d’invalidité, capital aux ayants droits en cas de décès suite à un accident.</li>
-                        <li><strong>Décès Toutes Causes :</strong> Capital versé à la famille pour assistance aux frais funéraires.</li>
-                        <li><strong>Hospitalisation :</strong> Forfait journalier pour soulager les frais médicaux.</li>
-                        <li><strong>Indemnité Journalière :</strong> Indemnité en cas d’immobilisation prolongée suite à un accident.</li>
-                    </ul>
-                </div>
-                <div class="slide-image">
-                    <img src="https://tse2.mm.bing.net/th/id/OIP.EcJosQIuLD3aW_-ahJnnagHaFM?pid=ImgDet&w=184&h=128&c=7&dpr=1.3&o=7&rm=3" alt="Femme souriante" />
-                    
-                </div>
-            </section>
-
-            <!-- Slide 3 -->
-            <section class="slide">
-                <div class="slide-text">
-                    <h2>QUELLES SONT LES OFFRES ?</h2>
-                    <p>Deux options sont offertes, permettant aux clientes de choisir celle qui correspond le mieux à leurs besoins et préférences.</p>
-                    <ol>
-                        <li>Rendez-vous dans une agence NSIA pour remplir une fiche de souscription.</li>
-                        <li>Après paiement, un code QR vous sera transmis avec votre numéro d’identification FAFA.</li>
-                        <li>En cas de sinistre, contactez le .... pour une prise en charge rapide.</li>
-                    </ol>
-                </div>
-                <div class="slide-image">
-                     <img src="https://img.freepik.com/premium-photo/smiling-african-woman-market-holding-her-phone_801882-58.jpg" alt="Femme souriante" />
-                </div>
-            </section>
-
+        <div class="slide-image">
+          <img src="https://tse4.mm.bing.net/th/id/OIP.1etJsEFYvQ4lHOTih4iT7AAAAA?w=450&h=300&rs=1&pid=ImgDetMain&o=7&rm=3" alt="Femme souriante" />
         </div>
+      </section>
 
-        <!-- Flèches de navigation -->
-        <button class="carousel-btn prev" aria-label="Slide précédente">&#10094;</button>
-        <button class="carousel-btn next" aria-label="Slide suivante">&#10095;</button>
-    </main>
-
-    <!-- Footer -->
-    <footer>
-        <div class="footer-content">
-            <p>&copy; {{ current_year }} FAFA Assurance. Tous droits réservés.</p>
-            <div class="socials">
-                <a href="#"><i class="fab fa-facebook"></i></a>
-                <a href="#"><i class="fab fa-twitter"></i></a>
-                <a href="#"><i class="fab fa-linkedin"></i></a>
-            </div>
+      <!-- Slide 2 -->
+      <section class="slide">
+        <div class="slide-text">
+          <h2>QUI EST CONCERNÉ ?</h2>
+          <p>Toute personne issue du secteur informel.</p>
+          <h2>QUELLES SONT LES GARANTIES ?</h2>
+          <ul>
+            <li><strong>Individuelle Accidents :</strong> Frais médicaux + capital invalidité/décès.</li>
+            <li><strong>Décès Toutes Causes :</strong> Capital pour assistance funéraire.</li>
+            <li><strong>Hospitalisation :</strong> Forfait journalier.</li>
+            <li><strong>Indemnité Journalière :</strong> En cas d’immobilisation prolongée.</li>
+          </ul>
         </div>
-    </footer>
+        <div class="slide-image">
+          <img src="https://tse2.mm.bing.net/th/id/OIP.EcJosQIuLD3aW_-ahJnnagHaFM?pid=ImgDet&w=184&h=128&c=7&dpr=1.3&o=7&rm=3" alt="Femme professionnelle" />
+        </div>
+      </section>
 
-    <!-- JS Carousel -->
-    <script>
-        const slides = document.querySelectorAll('.slide');
-        const prevBtn = document.querySelector('.carousel-btn.prev');
-        const nextBtn = document.querySelector('.carousel-btn.next');
-        let current = 0;
+      <!-- Slide 3 -->
+      <section class="slide">
+        <div class="slide-text">
+          <h2>QUELLES SONT LES OFFRES ?</h2>
+          <ol>
+            <li>Rendez-vous dans une agence NSIA pour souscrire.</li>
+            <li>Recevez un QR code avec votre identifiant FAFA.</li>
+            <li>Appelez le centre en cas de sinistre.</li>
+          </ol>
+        </div>
+        <div class="slide-image">
+          <img src="https://img.freepik.com/premium-photo/smiling-african-woman-market-holding-her-phone_801882-58.jpg" alt="Femme heureuse" />
+        </div>
+      </section>
 
-        function showSlide(index) {
-            slides.forEach((slide, i) => {
-                slide.classList.toggle('active', i === index);
-            });
+    </div>
+
+    <!-- Navigation buttons -->
+    <button class="carousel-btn prev" aria-label="Slide précédente">&#10094;</button>
+    <button class="carousel-btn next" aria-label="Slide suivante">&#10095;</button>
+  </main>
+
+  <footer>
+    <p>&copy; 2025 FAFA Assurance. Tous droits réservés.</p>
+  </footer>
+
+  <script>
+    const slides = document.querySelectorAll('.slide');
+    const prevBtn = document.querySelector('.carousel-btn.prev');
+    const nextBtn = document.querySelector('.carousel-btn.next');
+    let current = 0;
+
+    function showSlide(index) {
+      slides.forEach((slide, i) => {
+        slide.classList.remove('active');
+        if (i === index) {
+          slide.classList.add('active');
         }
+      });
+    }
 
-        prevBtn.addEventListener('click', () => {
-            current = (current === 0) ? slides.length -1 : current -1;
-            showSlide(current);
-        });
+    prevBtn.addEventListener('click', () => {
+      current = (current === 0) ? slides.length - 1 : current - 1;
+      showSlide(current);
+    });
 
-        nextBtn.addEventListener('click', () => {
-            current = (current === slides.length -1) ? 0 : current +1;
-            showSlide(current);
-        });
+    nextBtn.addEventListener('click', () => {
+      current = (current === slides.length - 1) ? 0 : current + 1;
+      showSlide(current);
+    });
 
-        // Optionnel: auto slide toutes les 8 secondes
-        setInterval(() => {
-            nextBtn.click();
-        }, 8000);
-    </script>
+    // Auto-slide every 8 seconds
+    setInterval(() => {
+      nextBtn.click();
+    }, 8000);
 
-    <style>
-        /* --- Carrousel container --- */
-        .carousel-container {
-            position: relative;
-            max-width: 900px;
-            margin: 50px auto 80px;
-            background: white;
-            border-radius: 12px;
-            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
-            overflow: hidden;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 20px;
-        }
-
-        .carousel {
-            display: flex;
-            width: 100%;
-            position: relative;
-            overflow: hidden;
-            height: 350px;
-        }
-
-        .slide {
-            display: none;
-            flex-shrink: 0;
-            width: 100%;
-            opacity: 0;
-            transition: opacity 0.8s ease;
-            padding: 20px;
-            box-sizing: border-box;
-            display: flex;
-            align-items: center;
-            gap: 30px;
-        }
-
-        .slide.active {
-            display: flex;
-            opacity: 1;
-        }
-
-        .slide-text {
-            flex: 1;
-            color: #003f88;
-        }
-
-        .slide-text h2 {
-            margin-top: 0;
-            font-size: 1.8rem;
-            font-weight: 700;
-            margin-bottom: 15px;
-        }
-
-        .slide-text p, .slide-text ul, .slide-text ol {
-            font-size: 1.1rem;
-            line-height: 1.5;
-            margin-bottom: 15px;
-        }
-
-        .slide-text ul, .slide-text ol {
-            padding-left: 20px;
-        }
-
-        .slide-image {
-            flex: 1;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
-
-        .slide-image img {
-            max-height: 300px;
-            border-radius: 12px;
-            object-fit: cover;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
-            max-width: 100%;
-        }
-
-        /* Navigation buttons */
-        .carousel-btn {
-            position: absolute;
-            top: 50%;
-            transform: translateY(-50%);
-            background: rgba(0, 86, 179, 0.7);
-            border: none;
-            color: white;
-            font-size: 2.5rem;
-            padding: 5px 12px;
-            cursor: pointer;
-            border-radius: 50%;
-            user-select: none;
-            transition: background 0.3s ease;
-            z-index: 10;
-        }
-
-        .carousel-btn:hover {
-            background: #003f88;
-        }
-
-        .carousel-btn.prev {
-            left: 10px;
-        }
-
-        .carousel-btn.next {
-            right: 10px;
-        }
-
-        /* Responsive */
-        @media (max-width: 768px) {
-            .carousel-container {
-                max-width: 95%;
-                height: auto;
-            }
-            .slide {
-                flex-direction: column;
-                height: auto;
-            }
-            .slide-image {
-                margin-top: 20px;
-            }
-            .slide-image img {
-                max-height: 200px;
-            }
-        }
-    </style>
+    // Show first slide initially
+    showSlide(current);
+  </script>
 
 </body>
-
-
 </html>
