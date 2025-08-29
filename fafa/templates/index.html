@@ -58,7 +58,7 @@
     </div>
 </div>
 
-<!-- ✅ Popup de consentement professionnel -->
+<!-- ✅ Popup de consentement -->
 <style>
   #consent-popup {
     position: fixed;
@@ -66,7 +66,7 @@
     left: 0;
     width: 100%;
     height: 100%;
-    background: rgba(0, 0, 0, 0.7); /* fond sombre transparent */
+    background: rgba(0, 0, 0, 0.7); /* fond foncé semi-transparent */
     color: #333;
     z-index: 9999;
     display: flex;
@@ -75,14 +75,12 @@
   }
 
   #consent-popup-content {
-    background-color: #fff;
-    padding: 30px 40px;
+    background-color: #f9f9f9; /* fond clair, professionnel */
+    padding: 30px;
     border-radius: 8px;
     max-width: 500px;
-    width: 90%;
     text-align: center;
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
-    font-family: 'Segoe UI', sans-serif;
   }
 
   #consent-popup p {
@@ -95,12 +93,12 @@
     background-color: #007bff;
     color: white;
     border: none;
-    padding: 10px 25px;
-    font-size: 0.95rem;
-    font-weight: 500;
+    padding: 10px 20px;
+    font-weight: bold;
     border-radius: 5px;
     cursor: pointer;
-    transition: background-color 0.2s ease-in-out;
+    margin-top: 15px;
+    transition: background-color 0.3s ease-in-out;
   }
 
   #consent-popup button:hover {
@@ -110,12 +108,12 @@
 
 <div id="consent-popup">
   <div id="consent-popup-content">
-    <p><strong>Consentement requis</strong><br><br>Nous collectons certaines données personnelles dans le cadre de cette souscription. Veuillez confirmer que vous acceptez cela pour continuer.</p>
+    <p>⚠️ En continuant, vous acceptez que vos données personnelles soient collectées et utilisées dans le cadre de cette souscription.</p>
     <button onclick="acceptConsent()">J’accepte</button>
   </div>
 </div>
 
-<!-- ✅ Script de gestion du consentement -->
+<!-- ✅ Script pour gérer l'affichage -->
 <script>
   function acceptConsent() {
     localStorage.setItem('consentGiven', 'true');
