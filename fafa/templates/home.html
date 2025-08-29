@@ -2,9 +2,14 @@
 <html lang="fr">
 <head>
     <meta charset="utf-8">
-    <title>{% block title %}FAFA{% endblock %}</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <title>{% block title %}FAFA Assurance{% endblock %}</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- CSS -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <!-- Font / Icons -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;600&display=swap" rel="stylesheet">
+    <script src="https://kit.fontawesome.com/yourkitid.js" crossorigin="anonymous"></script>
 </head>
 <body>
 
@@ -20,7 +25,8 @@
       {% endif %}
     {% endwith %}
 
-    <header>
+    <!-- Header -->
+    <header class="main-header">
         <div class="navbar">
             <div class="logo">
                 <img src="{{ url_for('static', filename='logo_FAFA.png') }}" alt="FAFA Logo">
@@ -29,18 +35,61 @@
             <input type="checkbox" id="toggle" class="toggle-menu">
             <label for="toggle" class="hamburger">&#9776;</label>
             <nav class="nav-links">
-                
                 <a href="{{ url_for('index') }}">Souscription</a>
                 <a href="{{ url_for('manuel') }}">Aide</a>
-                <a href="https://www.nsiaassurances.ci" target="_blank">NSIA Assurance</a>
+                <a href="https://nsiadirect.tg/" target="_blank">NSIA Assurance</a>
                 <a href="https://www.boad.org" target="_blank">BOAD</a>
             </nav>
         </div>
     </header>
 
+    <!-- Hero Section / Carrousel -->
+    <section class="hero">
+        <div class="hero-content">
+            <h1>Bienvenue chez FAFA Assurance</h1>
+            <p>Votre partenaire fiable pour toutes vos assurances</p>
+            <a href="{{ url_for('index') }}" class="btn-primary">Souscrire maintenant</a>
+        </div>
+    </section>
+
+    <!-- Services Cards -->
+    <section class="services">
+        <h2>Nos Services</h2>
+        <div class="card-container">
+            <div class="card">
+                <i class="fas fa-car"></i>
+                <h3>Assurance Auto</h3>
+                <p>Protégez votre véhicule avec des offres adaptées à vos besoins.</p>
+            </div>
+            <div class="card">
+                <i class="fas fa-user-shield"></i>
+                <h3>Assurance Santé</h3>
+                <p>Couvrez vos soins de santé avec tranquillité et efficacité.</p>
+            </div>
+            <div class="card">
+                <i class="fas fa-home"></i>
+                <h3>Assurance Habitation</h3>
+                <p>Sécurisez votre logement contre tous les risques majeurs.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contenu dynamique -->
     <main>
         {% block content %}{% endblock %}
     </main>
+
+    <!-- Footer -->
+    <footer>
+        <div class="footer-content">
+            <p>&copy; {{ current_year }} FAFA Assurance. Tous droits réservés.</p>
+            <div class="socials">
+                <a href="#"><i class="fab fa-facebook"></i></a>
+                <a href="#"><i class="fab fa-twitter"></i></a>
+                <a href="#"><i class="fab fa-linkedin"></i></a>
+            </div>
+        </div>
+    </footer>
+
 </body>
 </html>
-
