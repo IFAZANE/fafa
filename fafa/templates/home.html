@@ -213,50 +213,67 @@
         </div>
     </header>
 
-    <!-- Contenu principal -->
-    <main class="main-content container">
-        <section class="about-fafa">
-            <h2>QU’EST CE QUE FAFA ?</h2>
-            <p>
-                FAFA est une assurance solidaire créée par la
-                Banque Ouest Africaine de Développement
-                (BOAD) et NSIA Assurances Togo. Elle a pour
-                but d'aider les personnes vulnérables et de
-                rendre les solutions d’assurances accessibles à
-                ceux qui ont de faibles revenus et qui n'ont pas
-                accès aux couvertures classiques.
-            </p>
-            <p>
-                FAFA, qui signifie paix et sérénité, mise sur
-                l'innovation. Elle contribue à l'amélioration des
-                conditions de vie et à la réduction de la pauvreté,
-                tout en renforçant la cohésion sociale et
-                économique dans la sous-région.
-            </p>
+    <!-- Carousel principal -->
+    <main class="carousel-container">
+        <div class="carousel">
 
-            <h2>QUI EST CONCERNÉ ?</h2>
-            <p>Toute personne issue du secteur informel.</p>
+            <!-- Slide 1 -->
+            <section class="slide active">
+                <div class="slide-text">
+                    <h2>QU’EST CE QUE FAFA ?</h2>
+                    <p>
+                        FAFA est une assurance solidaire créée par la Banque Ouest Africaine de Développement (BOAD) et NSIA Assurances Togo.
+                        Elle aide les personnes vulnérables en rendant l’assurance accessible à ceux qui ont de faibles revenus.
+                    </p>
+                    <p>
+                        FAFA, qui signifie paix et sérénité, mise sur l'innovation. Elle contribue à améliorer les conditions de vie, réduire la pauvreté et renforcer la cohésion sociale et économique dans la sous-région.
+                    </p>
+                </div>
+                <div class="slide-image">
+                    <img src="{{ url_for('static', filename='women1.jpg') }}" alt="Femme souriante">
+                </div>
+            </section>
 
-            <h2>QUELLES SONT LES GARANTIES ?</h2>
-            <ul>
-                <li><strong>Individuelle Accidents :</strong> Elle permet de couvrir les Frais médicaux en cas d’accident, bénéficier d’un capital en cas d’invalidité et de verser un capital aux ayants droits en cas de décès suite à un accident.</li>
-                <li><strong>Décès Toutes Causes :</strong> Permet de verser un capital à la famille de l’assurée en guise d’assistance aux frais funéraires.</li>
-                <li><strong>Hospitalisation :</strong> Permet de verser un forfait journalier à l’assurée pour soulager de la charge des frais médicaux.</li>
-                <li><strong>Indemnité Journalière :</strong> Permet de verser une indemnité journalière à l’assurée en cas d’immobilisation prolongée suite à un accident.</li>
-            </ul>
+            <!-- Slide 2 -->
+            <section class="slide">
+                <div class="slide-text">
+                    <h2>QUI EST CONCERNÉ ?</h2>
+                    <p>Toute personne issue du secteur informel.</p>
 
-            <h2>QUELLES SONT LES OFFRES ?</h2>
-            <p>
-                Deux options sont offertes pour FAFA, permettant
-                aux clients de choisir celle qui correspond le
-                mieux à leurs besoins et à leurs préférences.
-            </p>
-            <ol>
-                <li>Rendez vous dans une agence NSIA pour remplir une fiche de souscription.</li>
-                <li>Après paiement, un code QR vous sera transmis avec votre numéro d’identification FAFA.</li>
-                <li>En cas de sinistres, contactez le .... pour une prise en charge rapide.</li>
-            </ol>
-        </section>
+                    <h2>QUELLES SONT LES GARANTIES ?</h2>
+                    <ul>
+                        <li><strong>Individuelle Accidents :</strong> Couverture des frais médicaux en cas d’accident, capital en cas d’invalidité, capital aux ayants droits en cas de décès suite à un accident.</li>
+                        <li><strong>Décès Toutes Causes :</strong> Capital versé à la famille pour assistance aux frais funéraires.</li>
+                        <li><strong>Hospitalisation :</strong> Forfait journalier pour soulager les frais médicaux.</li>
+                        <li><strong>Indemnité Journalière :</strong> Indemnité en cas d’immobilisation prolongée suite à un accident.</li>
+                    </ul>
+                </div>
+                <div class="slide-image">
+                    <img src="{{ url_for('static', filename='women2.jpg') }}" alt="Femme professionnelle">
+                </div>
+            </section>
+
+            <!-- Slide 3 -->
+            <section class="slide">
+                <div class="slide-text">
+                    <h2>QUELLES SONT LES OFFRES ?</h2>
+                    <p>Deux options sont offertes, permettant aux clientes de choisir celle qui correspond le mieux à leurs besoins et préférences.</p>
+                    <ol>
+                        <li>Rendez-vous dans une agence NSIA pour remplir une fiche de souscription.</li>
+                        <li>Après paiement, un code QR vous sera transmis avec votre numéro d’identification FAFA.</li>
+                        <li>En cas de sinistre, contactez le .... pour une prise en charge rapide.</li>
+                    </ol>
+                </div>
+                <div class="slide-image">
+                    <img src="{{ url_for('static', filename='women3.jpg') }}" alt="Femme heureuse">
+                </div>
+            </section>
+
+        </div>
+
+        <!-- Flèches de navigation -->
+        <button class="carousel-btn prev" aria-label="Slide précédente">&#10094;</button>
+        <button class="carousel-btn next" aria-label="Slide suivante">&#10095;</button>
     </main>
 
     <!-- Footer -->
@@ -271,6 +288,163 @@
         </div>
     </footer>
 
+    <!-- JS Carousel -->
+    <script>
+        const slides = document.querySelectorAll('.slide');
+        const prevBtn = document.querySelector('.carousel-btn.prev');
+        const nextBtn = document.querySelector('.carousel-btn.next');
+        let current = 0;
+
+        function showSlide(index) {
+            slides.forEach((slide, i) => {
+                slide.classList.toggle('active', i === index);
+            });
+        }
+
+        prevBtn.addEventListener('click', () => {
+            current = (current === 0) ? slides.length -1 : current -1;
+            showSlide(current);
+        });
+
+        nextBtn.addEventListener('click', () => {
+            current = (current === slides.length -1) ? 0 : current +1;
+            showSlide(current);
+        });
+
+        // Optionnel: auto slide toutes les 8 secondes
+        setInterval(() => {
+            nextBtn.click();
+        }, 8000);
+    </script>
+
+    <style>
+        /* --- Carrousel container --- */
+        .carousel-container {
+            position: relative;
+            max-width: 900px;
+            margin: 50px auto 80px;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .carousel {
+            display: flex;
+            width: 100%;
+            position: relative;
+            overflow: hidden;
+            height: 350px;
+        }
+
+        .slide {
+            display: none;
+            flex-shrink: 0;
+            width: 100%;
+            opacity: 0;
+            transition: opacity 0.8s ease;
+            padding: 20px;
+            box-sizing: border-box;
+            display: flex;
+            align-items: center;
+            gap: 30px;
+        }
+
+        .slide.active {
+            display: flex;
+            opacity: 1;
+        }
+
+        .slide-text {
+            flex: 1;
+            color: #003f88;
+        }
+
+        .slide-text h2 {
+            margin-top: 0;
+            font-size: 1.8rem;
+            font-weight: 700;
+            margin-bottom: 15px;
+        }
+
+        .slide-text p, .slide-text ul, .slide-text ol {
+            font-size: 1.1rem;
+            line-height: 1.5;
+            margin-bottom: 15px;
+        }
+
+        .slide-text ul, .slide-text ol {
+            padding-left: 20px;
+        }
+
+        .slide-image {
+            flex: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .slide-image img {
+            max-height: 300px;
+            border-radius: 12px;
+            object-fit: cover;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            max-width: 100%;
+        }
+
+        /* Navigation buttons */
+        .carousel-btn {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            background: rgba(0, 86, 179, 0.7);
+            border: none;
+            color: white;
+            font-size: 2.5rem;
+            padding: 5px 12px;
+            cursor: pointer;
+            border-radius: 50%;
+            user-select: none;
+            transition: background 0.3s ease;
+            z-index: 10;
+        }
+
+        .carousel-btn:hover {
+            background: #003f88;
+        }
+
+        .carousel-btn.prev {
+            left: 10px;
+        }
+
+        .carousel-btn.next {
+            right: 10px;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .carousel-container {
+                max-width: 95%;
+                height: auto;
+            }
+            .slide {
+                flex-direction: column;
+                height: auto;
+            }
+            .slide-image {
+                margin-top: 20px;
+            }
+            .slide-image img {
+                max-height: 200px;
+            }
+        }
+    </style>
+
 </body>
+
 
 </html>
