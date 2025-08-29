@@ -27,6 +27,15 @@ def logout():
     session.pop('admin', None)
     return redirect(url_for('admin.login'))
 
+from collections import defaultdict
+
+def aggregate_city_data(rows):
+    data = defaultdict(int)
+    for row in rows:
+        data[row.city] += 1  # ou row.subscription_count selon votre modèle
+    return list(data.keys()), list(data.values())
+
+
 @admin_bp.route('/')
 def dashboard():
     if not session.get('admin'):
@@ -97,3 +106,4 @@ def export_excel():
         download_name='souscriptions.xlsx',
         as_attachment=True
     )
+
