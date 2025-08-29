@@ -205,18 +205,18 @@ footer {
 
 /* --- Carrousel container --- */
 .carousel-container {
-    position: relative;
-    width: 100vw;          /* pleine largeur */
-    height: 80vh;          /* hauteur relative à la fenêtre */
-    margin: 0 auto;
+        position: fixed;  /* fixé par rapport à la fenêtre */
+    top: 0;
+    left: 0;
+    width: 100vw;     /* pleine largeur */
+    height: 100vh;    /* pleine hauteur */
     background: white;
-    border-radius: 0;
-    box-shadow: none;
     overflow: hidden;
     display: flex;
     align-items: center;
     justify-content: center;
-    padding: 20px;
+    padding: 0;       /* plus de padding sinon ça crée de l’espace */
+    z-index: 9999;    /* au-dessus du reste */
 }
 
 .carousel {
