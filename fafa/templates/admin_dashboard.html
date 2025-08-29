@@ -31,12 +31,10 @@
     const cityLabels = {{ city_labels|default([])|tojson }};
     const cityCounts = {{ city_counts|default([])|tojson }};
 
-    // Choix du type : 'bar' ou 'pie'
-    const chartType = 'bar'; // ou 'pie'
-
+    // Graphique des produits : en barres
     const productCtx = document.getElementById('productChart').getContext('2d');
     const productChart = new Chart(productCtx, {
-        type: chartType,
+        type: 'bar',
         data: {
             labels: productLabels,
             datasets: [{
@@ -53,22 +51,26 @@
         }
     });
 
+    // Graphique des villes : en camembert (pie chart)
     const cityCtx = document.getElementById('cityChart').getContext('2d');
     const cityChart = new Chart(cityCtx, {
-        type: chartType,
+        type: 'pie',
         data: {
             labels: cityLabels,
             datasets: [{
                 label: 'Nombre de souscriptions',
                 data: cityCounts,
                 backgroundColor: cityLabels.map((_, i) => `hsl(${i*60 % 360}, 70%, 60%)`),
-                borderColor: cityLabels.map((_, i) => `hsl(${i*60 % 360}, 70%, 40%)`),
+                borderColor: '#fff',
                 borderWidth: 1
             }]
         },
         options: {
             responsive: true,
-            plugins: { legend: { position: 'top' }, tooltip: { enabled: true } }
+            plugins: {
+                legend: { position: 'right' },
+                tooltip: { enabled: true }
+            }
         }
     });
 </script>
