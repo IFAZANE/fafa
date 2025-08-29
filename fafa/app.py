@@ -34,7 +34,11 @@ with app.app_context():
 app.register_blueprint(admin_bp)
 
 # 6️⃣ Route principale : page d'inscription
-@app.route('/', methods=['GET', 'POST'])
+@app.route('/')
+def accueil():
+    return render_template('home.html')
+    
+@app.route('/index', methods=['GET', 'POST'])
 def index():
     form = SouscriptionForm()
     total = Subscription.query.count()
@@ -99,6 +103,7 @@ def debug_form():
 # 1️⃣2️⃣ Exécution de l'application
 if __name__ == '__main__':
     app.run(debug=True)
+
 
 
 
