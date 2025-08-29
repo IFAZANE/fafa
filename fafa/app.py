@@ -34,7 +34,7 @@ with app.app_context():
 app.register_blueprint(admin_bp)
 
 # 6️⃣ Route principale : page d'inscription
-@app.route('/')
+@app.route('/home')
 def accueil():
     return render_template('home.html')
     
@@ -103,6 +103,7 @@ def debug_form():
 # 1️⃣2️⃣ Exécution de l'application
 if __name__ == '__main__':
     app.run(debug=True)
+
 
 
 
