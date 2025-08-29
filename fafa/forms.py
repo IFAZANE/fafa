@@ -16,8 +16,8 @@ class SouscriptionForm(FlaskForm):
     produit = SelectField(
     "Produit",
     choices=[
-        ('Option1', 'Option1 (15 000 F/ans)'),
-        ('Option2', 'Option2 (20 000 F/ans)'),
+        ('Option1', 'Option1 (15 000 FCFA/an)'),
+        ('Option2', 'Option2 (20 000 FCFA/an)'),
         #('Bronze', 'Bronze'),
         #('Silver', 'Silver')
     ],
@@ -25,6 +25,7 @@ class SouscriptionForm(FlaskForm):
 )
 
     recaptcha = RecaptchaField()
+
 
 
 
