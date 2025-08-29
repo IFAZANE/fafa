@@ -1,6 +1,8 @@
 {% extends 'base.html' %}
+
 {% block content %}
 <div class="container">
+
     {% with messages = get_flashed_messages(with_categories=true) %}
       {% if messages %}
         <div>
@@ -11,7 +13,8 @@
       {% endif %}
     {% endwith %}
 
-    <div class="form-container">
+    <!-- Formulaire masqué tant que le consentement n’est pas donné -->
+    <div class="form-container" style="display: none;">
         <div class="form-header" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
             <h2>Formulaire de souscription</h2>
             <a href="{{ url_for('manuel') }}" target="_blank" style="font-size: 0.95em; color: #007bff; text-decoration: none;">❓Aide</a>
@@ -55,6 +58,66 @@
     </div>
 </div>
 
+<!-- ✅ Popup de consentement -->
+<style>
+  #consent-popup {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(180, 0, 0, 0.95);
+    color: white;
+    z-index: 9999;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  #consent-popup-content {
+    background-color: #ff4d4d;
+    padding: 30px;
+    border-radius: 8px;
+    max-width: 500px;
+    text-align: center;
+    box-shadow: 0 0 10px #000;
+  }
+
+  #consent-popup button {
+    background-color: white;
+    color: #b30000;
+    border: none;
+    padding: 10px 20px;
+    font-weight: bold;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-top: 15px;
+  }
+</style>
+
+<div id="consent-popup">
+  <div id="consent-popup-content">
+    <p>⚠️ En continuant, vous acceptez que vos données personnelles soient collectées et utilisées dans le cadre de cette souscription.</p>
+    <button onclick="acceptConsent()">J’accepte</button>
+  </div>
+</div>
+
+<!-- ✅ Script pour gérer l'affichage -->
+<script>
+  function acceptConsent() {
+    localStorage.setItem('consentGiven', 'true');
+    document.getElementById('consent-popup').style.display = 'none';
+    document.querySelector('.form-container').style.display = 'block';
+  }
+
+  window.addEventListener('DOMContentLoaded', () => {
+    const consent = localStorage.getItem('consentGiven');
+    if (consent === 'true') {
+      document.getElementById('consent-popup').style.display = 'none';
+      document.querySelector('.form-container').style.display = 'block';
+    }
+  });
+</script>
+
 <script src="https://www.google.com/recaptcha/api.js" async defer></script>
 {% endblock %}
-
