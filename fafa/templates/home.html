@@ -2,7 +2,7 @@
 <html lang="fr">
 <head>
     <meta charset="utf-8">
-    <title>{% block title %}FAFA Assurance{% endblock %}</title>
+    <title>FAFA Assurance</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <!-- CSS -->
@@ -10,126 +10,191 @@
     <!-- Font / Icons -->
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;600&display=swap" rel="stylesheet">
     <script src="https://kit.fontawesome.com/yourkitid.js" crossorigin="anonymous"></script>
+
     <style>
         body {
-    margin: 0;
-    font-family: 'Poppins', sans-serif;
-    background: linear-gradient(to right, #f7f9fc, #e2ecf9);
-    color: #333;
-}
+            margin: 0;
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(to right, #f7f9fc, #e2ecf9);
+            color: #333;
+        }
 
-.main-header {
-    background-color: #ffffff;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-}
+        .main-header {
+            background-color: #ffffff;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
 
-.navbar {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 1rem 2rem;
-}
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 2rem;
+        }
 
-.logo img {
-    height: 40px;
-    margin-right: 10px;
-}
-.logo span {
-    font-weight: 600;
-    font-size: 1.2rem;
-    color: #0056b3;
-}
+        .logo {
+            display: flex;
+            align-items: center;
+        }
 
-.nav-links a {
-    margin: 0 15px;
-    text-decoration: none;
-    color: #333;
-}
-.nav-links a:hover {
-    color: #0056b3;
-}
+        .logo img {
+            height: 40px;
+            margin-right: 10px;
+        }
 
-.hero {
-    background: url('/static/hero-background.jpg') no-repeat center center/cover;
-    color: white;
-    text-align: center;
-    padding: 100px 20px;
-}
+        .logo span {
+            font-weight: 600;
+            font-size: 1.2rem;
+            color: #0056b3;
+        }
 
-.hero-content h1 {
-    font-size: 2.5rem;
-}
-.hero-content p {
-    font-size: 1.2rem;
-}
-.btn-primary {
-    margin-top: 20px;
-    padding: 10px 20px;
-    background-color: #0056b3;
-    color: white;
-    border: none;
-    border-radius: 5px;
-    text-decoration: none;
-}
-.btn-primary:hover {
-    background-color: #003f88;
-}
+        .nav-links a {
+            margin: 0 15px;
+            text-decoration: none;
+            color: #333;
+        }
 
-.services {
-    padding: 50px 20px;
-    text-align: center;
-}
-.card-container {
-    display: flex;
-    justify-content: space-around;
-    flex-wrap: wrap;
-    margin-top: 30px;
-}
-.card {
-    background: white;
-    padding: 20px;
-    width: 300px;
-    margin: 10px;
-    border-radius: 8px;
-    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-}
-.card i {
-    font-size: 2rem;
-    margin-bottom: 10px;
-    color: #0056b3;
-}
-.card h3 {
-    margin-top: 0;
-}
+        .nav-links a:hover {
+            color: #0056b3;
+        }
 
-footer {
-    background-color: #f1f1f1;
-    padding: 20px;
-    text-align: center;
-}
-.footer-content .socials a {
-    margin: 0 10px;
-    color: #555;
-    font-size: 1.2rem;
-}
-.footer-content .socials a:hover {
-    color: #0056b3;
-}
+        .hero {
+            background: url('/static/hero-background.jpg') no-repeat center center/cover;
+            color: white;
+            text-align: center;
+            padding: 100px 20px;
+        }
+
+        .hero-content h1 {
+            font-size: 2.5rem;
+        }
+
+        .hero-content p {
+            font-size: 1.2rem;
+        }
+
+        .btn-primary {
+            margin-top: 20px;
+            padding: 10px 20px;
+            background-color: #0056b3;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            text-decoration: none;
+        }
+
+        .btn-primary:hover {
+            background-color: #003f88;
+        }
+
+        .services {
+            padding: 50px 20px;
+            text-align: center;
+        }
+
+        .card-container {
+            display: flex;
+            justify-content: space-around;
+            flex-wrap: wrap;
+            margin-top: 30px;
+        }
+
+        .card {
+            background: white;
+            padding: 20px;
+            width: 300px;
+            margin: 10px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .card i {
+            font-size: 2rem;
+            margin-bottom: 10px;
+            color: #0056b3;
+        }
+
+        .card h3 {
+            margin-top: 0;
+        }
+
+        .about, .testimonials, .cta {
+            padding: 50px 20px;
+            text-align: center;
+        }
+
+        .about p {
+            max-width: 700px;
+            margin: 20px auto;
+            font-size: 1.1rem;
+        }
+
+        .testimonials .card-container {
+            justify-content: center;
+        }
+
+        .testimonials .card p {
+            font-style: italic;
+        }
+
+        .testimonials .card strong {
+            display: block;
+            margin-top: 10px;
+            font-style: normal;
+            color: #0056b3;
+        }
+
+        footer {
+            background-color: #f1f1f1;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .footer-content .socials a {
+            margin: 0 10px;
+            color: #555;
+            font-size: 1.2rem;
+        }
+
+        .footer-content .socials a:hover {
+            color: #0056b3;
+        }
+
+        /* Flash messages (facultatif) */
+        .flash-messages {
+            text-align: center;
+            margin-top: 10px;
+        }
+
+        .flash.success {
+            background-color: #d4edda;
+            color: #155724;
+            padding: 10px;
+            margin: 10px auto;
+            max-width: 600px;
+            border-radius: 5px;
+        }
+
+        .flash.error {
+            background-color: #f8d7da;
+            color: #721c24;
+            padding: 10px;
+            margin: 10px auto;
+            max-width: 600px;
+            border-radius: 5px;
+        }
 
     </style>
 </head>
 <body>
 
     {% with messages = get_flashed_messages(with_categories=true) %}
-      {% if messages %}
-        <div class="flash-messages">
-          {% for category, message in messages %}
-            <div class="flash {{ category }}">
-              {{ message }}
+        {% if messages %}
+            <div class="flash-messages">
+                {% for category, message in messages %}
+                    <div class="flash {{ category }}">{{ message }}</div>
+                {% endfor %}
             </div>
-          {% endfor %}
-        </div>
-      {% endif %}
+        {% endif %}
     {% endwith %}
 
     <!-- Header -->
@@ -139,8 +204,6 @@ footer {
                 <img src="{{ url_for('static', filename='logo_FAFA.png') }}" alt="FAFA Logo">
                 <span>FAFA Assurance</span>
             </div>
-            <input type="checkbox" id="toggle" class="toggle-menu">
-            <label for="toggle" class="hamburger">&#9776;</label>
             <nav class="nav-links">
                 <a href="{{ url_for('index') }}">Souscription</a>
                 <a href="{{ url_for('manuel') }}">Aide</a>
@@ -150,7 +213,7 @@ footer {
         </div>
     </header>
 
-    <!-- Hero Section / Carrousel -->
+    <!-- Hero Section -->
     <section class="hero">
         <div class="hero-content">
             <h1>Bienvenue chez FAFA Assurance</h1>
@@ -159,7 +222,7 @@ footer {
         </div>
     </section>
 
-    <!-- Services Cards -->
+    <!-- Services Section -->
     <section class="services">
         <h2>Nos Services</h2>
         <div class="card-container">
@@ -181,10 +244,36 @@ footer {
         </div>
     </section>
 
-    <!-- Contenu dynamique -->
-    <main>
-        {% block content %}{% endblock %}
-    </main>
+    <!-- À propos -->
+    <section class="about">
+        <h2>Pourquoi FAFA ?</h2>
+        <p>FAFA Assurance vous accompagne avec professionnalisme et transparence pour assurer ce qui vous est cher. Nos solutions sont pensées pour votre sécurité et votre sérénité.</p>
+    </section>
+
+    <!-- Témoignages -->
+    <section class="testimonials">
+        <h2>Témoignages</h2>
+        <div class="card-container">
+            <div class="card">
+                <p>💬 "Service rapide et professionnel. Très satisfait de l’accompagnement FAFA."</p>
+                <strong>– M. Kouadio</strong>
+            </div>
+            <div class="card">
+                <p>💬 "Souscription simple et claire, avec des conseillers disponibles."</p>
+                <strong>– Awa B.</strong>
+            </div>
+            <div class="card">
+                <p>💬 "Support client réactif, je recommande à 100%."</p>
+                <strong>– Paul T.</strong>
+            </div>
+        </div>
+    </section>
+
+    <!-- Appel à l'action -->
+    <section class="cta">
+        <h2>Prêt à être protégé ?</h2>
+        <a href="{{ url_for('index') }}" class="btn-primary">Commencer dès maintenant</a>
+    </section>
 
     <!-- Footer -->
     <footer>
