@@ -4,7 +4,7 @@
 
     <h2>Merci {{ subscription.nom }} {{ subscription.prenom }} !</h2>
     <p>Votre souscription a été enregistrée avec succès.</p>
-    <p><strong>Code unique :</strong> {{ subscription.uuid }}</p> 
+    <p><strong>Code unique :</strong> <bold>{{ subscription.uuid }}</bold></p> 
 
     <a href="{{ url_for('index') }}" class="btn-retour" style="
         display: inline-block;
@@ -17,3 +17,4 @@
     ">Quitter</a>
 </div>
 {% endblock %}
+
