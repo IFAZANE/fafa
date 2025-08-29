@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="fr">
+<head>
+    <meta charset="utf-8">
+    <title>{% block title %}FAFA{% endblock %}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<body>
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        <div class="flash-messages">
+          {% for category, message in messages %}
+            <div class="flash {{ category }}">
+              {{ message }}
+            </div>
+          {% endfor %}
+        </div>
+      {% endif %}
+    {% endwith %}
+
+    <header>
+        <div class="navbar">
+            <div class="logo">
+                <img src="{{ url_for('static', filename='logo_FAFA.png') }}" alt="FAFA Logo">
+                <span>FAFA Assurance</span>
+            </div>
+            <input type="checkbox" id="toggle" class="toggle-menu">
+            <label for="toggle" class="hamburger">&#9776;</label>
+            <nav class="nav-links">
+                <a href="{{ url_for('accueil') }}">Accueil</a>
+                <a href="{{ url_for('souscription') }}">Souscription</a>
+                <a href="{{ url_for('aide') }}">Aide</a>
+                <a href="https://www.nsiaassurances.ci" target="_blank">NSIA Assurance</a>
+                <a href="https://www.boad.org" target="_blank">BOAD</a>
+            </nav>
+        </div>
+    </header>
+
+    <main>
+        {% block content %}{% endblock %}
+    </main>
+</body>
+</html>
