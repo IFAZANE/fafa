@@ -58,7 +58,7 @@
     </div>
 </div>
 
-<!-- ✅ Popup de consentement -->
+<!-- ✅ Popup de consentement professionnel -->
 <style>
   #consent-popup {
     position: fixed;
@@ -66,8 +66,8 @@
     left: 0;
     width: 100%;
     height: 100%;
-    background: rgba(180, 0, 0, 0.95);
-    color: white;
+    background: rgba(0, 0, 0, 0.7); /* fond sombre transparent */
+    color: #333;
     z-index: 9999;
     display: flex;
     justify-content: center;
@@ -75,34 +75,47 @@
   }
 
   #consent-popup-content {
-    background-color: #ff4d4d;
-    padding: 30px;
+    background-color: #fff;
+    padding: 30px 40px;
     border-radius: 8px;
     max-width: 500px;
+    width: 90%;
     text-align: center;
-    box-shadow: 0 0 10px #000;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+    font-family: 'Segoe UI', sans-serif;
+  }
+
+  #consent-popup p {
+    font-size: 1rem;
+    color: #444;
+    margin-bottom: 20px;
   }
 
   #consent-popup button {
-    background-color: white;
-    color: #b30000;
+    background-color: #007bff;
+    color: white;
     border: none;
-    padding: 10px 20px;
-    font-weight: bold;
+    padding: 10px 25px;
+    font-size: 0.95rem;
+    font-weight: 500;
     border-radius: 5px;
     cursor: pointer;
-    margin-top: 15px;
+    transition: background-color 0.2s ease-in-out;
+  }
+
+  #consent-popup button:hover {
+    background-color: #0056b3;
   }
 </style>
 
 <div id="consent-popup">
   <div id="consent-popup-content">
-    <p>⚠️ En continuant, vous acceptez que vos données personnelles soient collectées et utilisées dans le cadre de cette souscription.</p>
+    <p><strong>Consentement requis</strong><br><br>Nous collectons certaines données personnelles dans le cadre de cette souscription. Veuillez confirmer que vous acceptez cela pour continuer.</p>
     <button onclick="acceptConsent()">J’accepte</button>
   </div>
 </div>
 
-<!-- ✅ Script pour gérer l'affichage -->
+<!-- ✅ Script de gestion du consentement -->
 <script>
   function acceptConsent() {
     localStorage.setItem('consentGiven', 'true');
