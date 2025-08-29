@@ -1,6 +1,7 @@
 from flask import Blueprint, render_template, redirect, url_for, request, session, flash, Response, send_file
 from models import Subscription
 from io import StringIO, BytesIO
+from collections import Counter
 import csv
 import pandas as pd
 
@@ -31,8 +32,27 @@ def dashboard():
     if not session.get('admin'):
         return redirect(url_for('admin.login'))
 
-    total = Subscription.query.count()
-    return render_template('admin_dashboard.html', total=total)
+    subs = Subscription.query.all()
+    total = len(subs)
+
+    # Répartition par produit
+    product_counts_raw = Counter([s.produit for s in subs if s.produit])
+    product_labels = list(product_counts_raw.keys())
+    product_counts = list(product_counts_raw.values())
+
+    # Répartition par ville
+    city_counts_raw = Counter([s.ville for s in subs if s.ville])
+    city_labels = list(city_counts_raw.keys())
+    city_counts = list(city_counts_raw.values())
+
+    return render_template(
+        'admin_dashboard.html',
+        total=total,
+        product_labels=product_labels,
+        product_counts=product_counts,
+        city_labels=city_labels,
+        city_counts=city_counts
+    )
 
 @admin_bp.route('/export/csv')
 def export_csv():
