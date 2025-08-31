@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <title>QUESTIONNAIRE FAFA — Souscription</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+    body { background: #f7f7fb; }
+    .section-title { font-weight: 700; letter-spacing:.3px; }
+    .small-text { font-size: .95rem; }
+    .muted { color: #6c757d; }
+    .kpi { background:#fff; border:1px solid #eee; border-radius: .75rem; padding:1rem; }
+    .legal-card pre, .legal-card p { white-space: pre-wrap; }
+    .barreme-table td, .barreme-table th { vertical-align: middle; }
+    .required::after { content:" *"; color:#dc3545; font-weight:700; }
+  </style>
+</head>
+<body>
+<div class="container my-4">
+
+  <!-- Bandeau d'urgence / info -->
+  <div class="alert alert-info shadow-sm" role="alert">
+    <div class="d-flex flex-column flex-md-row align-items-md-center justify-content-between">
+      <div class="mb-2 mb-md-0">
+        <strong>En cas d’accident, d’urgence ou de besoin d’informations suite à la souscription à FAFA,</strong><br/>
+        Veuillez appeler les numéros&nbsp;: <strong>Tél : 22 23 49 00 / 91 45 55 55</strong>
+      </div>
+      <span class="badge text-bg-primary">QUESTIONNAIRE FAFA</span>
+    </div>
+  </div>
+
+  <!-- Mentions contractuelles -->
+  <div class="card mb-4 shadow-sm">
+    <div class="card-body small-text">
+      <p class="mb-2">
+        Le présent contrat est régi tant par les présentes Conditions Particulières que, dans la mesure où il n’y est pas dérogé,
+        par les <strong>Conditions Générales Individuelle Accidents et Santé</strong> dont l’assuré reconnaît avoir reçu un exemplaire.
+        Sont nulles, toutes adjonctions ou modifications non revêtues du visa de la Direction ou de son représentant autorisé.
+      </p>
+    </div>
+  </div>
+
+  <!-- Formulaire -->
+  <h2 class="section-title mb-3 text-center">Formulaire de souscription</h2>
+  <form method="POST" novalidate>
+    {{ form.hidden_tag() }}
+
+    <!-- Durée du contrat -->
+    <div class="card mb-4 shadow-sm">
+      <div class="card-header fw-semibold">Durée du contrat</div>
+      <div class="card-body small-text">
+        <div class="form-check">
+          {{ form.duree_contrat(class="form-check-input", id="opt_societe", value="societe") }}
+          <label for="opt_societe" class="form-check-label">
+            Le contrat est souscrit pour la durée de la société, avec faculté réciproque de résiliation annuelle moyennant préavis de deux mois au moins avant la date anniversaire de la prise d'effet.
+          </label>
+        </div>
+        <div class="form-check mt-2">
+          {{ form.duree_contrat(class="form-check-input", id="opt_ferme", value="ferme") }}
+          <label for="opt_ferme" class="form-check-label">
+            Le contrat est souscrit pour une durée ferme d’un an et cessera ses effets sans autre avis à sa date anniversaire à 24h00.
+          </label>
+        </div>
+
+        <div class="row g-3 mt-2">
+          <div class="col-md-4">
+            <label class="form-label">Pour la période du</label>
+            {{ form.periode_debut(class="form-control") }}
+          </div>
+          <div class="col-md-4">
+            <label class="form-label">au</label>
+            {{ form.periode_fin(class="form-control") }}
+          </div>
+          <div class="col-md-4">
+            {{ form.periodicite.label(class="form-label") }}
+            {{ form.periodicite(class="form-select") }}
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Prime -->
+    <div class="card mb-4 shadow-sm">
+      <div class="card-header fw-semibold">Prime</div>
+      <div class="card-body small-text">
+        <div class="row g-3">
+          <div class="col-md-3">
+            {{ form.prime_nette.label(class="form-label") }}
+            {{ form.prime_nette(class="form-control", id="prime_nette", step="0.01", min="0") }}
+          </div>
+          <div class="col-md-3">
+            {{ form.accessoires.label(class="form-label") }}
+            {{ form.accessoires(class="form-control", id="accessoires", step="0.01", min="0") }}
+          </div>
+          <div class="col-md-3">
+            {{ form.taxes.label(class="form-label") }}
+            {{ form.taxes(class="form-control", id="taxes", step="0.01", min="0") }}
+          </div>
+          <div class="col-md-3">
+            {{ form.prime_totale.label(class="form-label") }}
+            {{ form.prime_totale(class="form-control", id="prime_totale", step="0.01", min="0", readonly=True) }}
+            <div class="form-text">Calculée automatiquement = nette + accessoires + taxes</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Risques et capitaux garantis -->
+    <div class="card mb-4 shadow-sm">
+      <div class="card-header fw-semibold">Risques et capitaux garantis</div>
+      <div class="card-body small-text">
+        <div class="row g-3">
+          <div class="col-md-6">
+            {{ form.deces_accident.label(class="form-label") }}
+            {{ form.deces_accident(class="form-control", step="0.01", min="0") }}
+          </div>
+          <div class="col-md-6">
+            {{ form.deces_toutes_causes.label(class="form-label") }}
+            {{ form.deces_toutes_causes(class="form-control", step="0.01", min="0") }}
+          </div>
+          <div class="col-md-4">
+            {{ form.invalidite.label(class="form-label") }}
+            {{ form.invalidite(class="form-control", step="0.01", min="0") }}
+          </div>
+          <div class="col-md-4">
+            {{ form.hospitalisation.label(class="form-label") }}
+            {{ form.hospitalisation(class="form-control", step="0.01", min="0") }}
+          </div>
+          <div class="col-md-4">
+            {{ form.traitement_medical.label(class="form-label") }}
+            {{ form.traitement_medical(class="form-control", step="0.01", min="0") }}
+          </div>
+          <div class="col-md-4">
+            {{ form.indemnite_journaliere.label(class="form-label") }}
+            {{ form.indemnite_journaliere(class="form-control", step="0.01", min="0") }}
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Assuré (si différent du souscripteur) -->
+    <div class="card mb-4 shadow-sm">
+      <div class="card-header fw-semibold">Assuré (si différent du souscripteur)</div>
+      <div class="card-body small-text">
+        <div class="row g-3">
+          <div class="col-md-6">{{ form.assure_nom.label(class="form-label") }} {{ form.assure_nom(class="form-control") }}</div>
+          <div class="col-md-6">{{ form.assure_prenoms.label(class="form-label") }} {{ form.assure_prenoms(class="form-control") }}</div>
+          <div class="col-md-4">{{ form.assure_tel.label(class="form-label") }} {{ form.assure_tel(class="form-control") }}</div>
+          <div class="col-md-4">{{ form.assure_date_naissance.label(class="form-label") }} {{ form.assure_date_naissance(class="form-control") }}</div>
+          <div class="col-md-12">{{ form.assure_adresse.label(class="form-label") }} {{ form.assure_adresse(class="form-control") }}</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Bénéficiaire -->
+    <div class="card mb-4 shadow-sm">
+      <div class="card-header fw-semibold">Bénéficiaire (en cas de décès)</div>
+      <div class="card-body small-text">
+        <div class="row g-3">
+          <div class="col-md-6">{{ form.beneficiaire_nom.label(class="form-label") }} {{ form.beneficiaire_nom(class="form-control") }}</div>
+          <div class="col-md-6">{{ form.beneficiaire_prenoms.label(class="form-label") }} {{ form.beneficiaire_prenoms(class="form-control") }}</div>
+          <div class="col-md-6">{{ form.beneficiaire_tel.label(class="form-label") }} {{ form.beneficiaire_tel(class="form-control") }}</div>
+          <div class="col-md-6">{{ form.beneficiaire_profession.label(class="form-label") }} {{ form.beneficiaire_profession(class="form-control") }}</div>
+          <div class="col-12">{{ form.beneficiaire_adresse.label(class="form-label") }} {{ form.beneficiaire_adresse(class="form-control") }}</div>
+          <div class="col-md-4">{{ form.beneficiaire_lateralite.label(class="form-label") }} {{ form.beneficiaire_lateralite(class="form-select") }}</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Souscripteur -->
+    <div class="card mb-4 shadow-sm">
+      <div class="card-header fw-semibold">Souscripteur</div>
+      <div class="card-body small-text">
+        <div class="row g-3">
+          <div class="col-md-6">{{ form.souscripteur_nom.label(class="form-label required") }} {{ form.souscripteur_nom(class="form-control") }}</div>
+          <div class="col-md-6">{{ form.souscripteur_prenoms.label(class="form-label required") }} {{ form.souscripteur_prenoms(class="form-control") }}</div>
+          <div class="col-md-4">{{ form.souscripteur_tel.label(class="form-label required") }} {{ form.souscripteur_tel(class="form-control") }}</div>
+          <div class="col-md-4">{{ form.souscripteur_date_naissance.label(class="form-label required") }} {{ form.souscripteur_date_naissance(class="form-control") }}</div>
+          <div class="col-12">{{ form.souscripteur_adresse.label(class="form-label") }} {{ form.souscripteur_adresse(class="form-control") }}</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Conditions Générales (texte intégral + barème) -->
+    <div class="card mb-4 shadow-sm legal-card">
+      <div class="card-header fw-semibold">CONDITIONS GÉNÉRALES — Individuelle Accidents et Santé</div>
+      <div class="card-body small-text">
+        <details>
+          <summary class="mb-3">Lire les Conditions Générales complètes</summary>
+
+          <h6 class="mt-3">Article 1 — Objet du contrat</h6>
+          <p>
+La Société garantit le paiement des indemnités définies à l’article 4 ci-dessous en cas d’accident atteignant la personne assurée.
+Par « accident », il faut entendre toute atteinte corporelle non intentionnelle de la part de l’assuré et provenant de l’action soudaine d’une cause extérieure.
+La garantie prend effet et se termine aux dates et heures précisées aux Conditions Particulières. Toutefois, si un déplacement effectué par l’assuré (transport terrestre, maritime ou aérien)
+se termine, pour une cause de force majeure, après l’expiration de la période assurée alors qu’il aurait dû normalement achever avant l’expiration de cette période, la garantie
+est prolongée de plein droit du nombre strictement nécessaire de périodes de 24 heures (sans que le total n’excède sept).          </p>
+
+          <h6 class="mt-3">Article 2 — Risques exclus</h6>
+          <p>
+Sont exclus notamment : les accidents intentionnellement causés par l’assuré ; guerre, émeute, actes de terrorisme ou sabotage ; événements nucléaires et radiations ionisantes ;
+maladies, insolation, apoplexie, effets de température/pression (sauf s’ils résultent d’un accident garanti ou d’un dysfonctionnement de transport) ; intoxication alimentaire ;
+lumbago, rupture de muscles, hernie (même d’origine traumatique) ; accidents résultant de traitements ou opérations (sauf s’ils découlent d’un accident garanti) ; usage de cycles à moteur de type sport
+ou > 50 cm³ ; sports à risques (hockey sur glace, bobsleigh, skeleton, ski, alpinisme par voies non frayées, spéléologie, etc.) ; participation (concurrent, commissaire, entraîneur, arbitre)
+à courses/compétitions/exhibitions et entraînements correspondants ; travaux manuels professionnels ; transport aérien autrement que comme passager d’une compagnie agréée. 
+Est exclue toute personne ayant intentionnellement causé ou provoqué le sinistre.          </p>
+
+          <h6 class="mt-3">Article 3 — Indemnités garanties</h6>
+          <p>
+En cas de mort dans les douze mois des suites d’un accident garanti : capital payable au bénéficiaire désigné (ou à défaut aux ayants droit).<br/>
+En cas d’infirmité permanente (totale ou partielle) : indemnité calculée selon l’article 5.<br/>
+En cas de traitement médical : selon dispositions des Conditions Particulières.          </p>
+
+          <h6 class="mt-3">Article 4 — Infirmité permanente</h6>
+          <p>
+a) <em>Infirmité permanente totale</em> : droit à la somme maxima stipulée (trouble mental incurable, perte totale/incapacité fonctionnelle absolue des deux yeux, deux bras, deux mains,
+deux jambes, deux pieds, d’un bras et d’une jambe, d’un bras et d’un pied, d’une main et d’une jambe, d’une main et d’un pied).<br/>
+b) <em>Infirmité permanente partielle</em> : droit aux pourcentages ci-dessous de la somme assurée pour l’infirmité totale.          </p>
+
+          <div class="table-responsive">
+            <table class="table table-sm table-bordered barreme-table">
+              <thead class="table-light">
+                <tr>
+                  <th>Lésion / Perte</th>
+                  <th class="text-center">Droit</th>
+                  <th class="text-center">Gauche</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr><td>Perte totale du bras ou de la main</td><td class="text-center">60%</td><td class="text-center">50%</td></tr>
+                <tr><td>Perte totale du mouvement de l’épaule</td><td class="text-center">25%</td><td class="text-center">20%</td></tr>
+                <tr><td>Perte totale du mouvement du coude</td><td class="text-center">25%</td><td class="text-center">20%</td></tr>
+                <tr><td>Perte totale du mouvement du poignet</td><td class="text-center">20%</td><td class="text-center">15%</td></tr>
+                <tr><td>Perte totale du pouce et de l’index</td><td class="text-center">30%</td><td class="text-center">25%</td></tr>
+                <tr><td>Perte totale d’une jambe ou d’un pied</td><td class="text-center" colspan="2">50%</td></tr>
+                <tr><td>Amputation partielle d’un pied comprenant tous les orteils</td><td class="text-center" colspan="2">50%</td></tr>
+                <tr><td>Ablation de la mâchoire inférieure</td><td class="text-center" colspan="2">30%</td></tr>
+                <tr><td>Perte totale d’un œil ou réduction à la moitié de la vision binoculaire</td><td class="text-center" colspan="2">~25%</td></tr>
+                <tr><td>Surdité complète des deux oreilles</td><td class="text-center" colspan="2">40%</td></tr>
+                <tr><td>Surdité complète d’une oreille</td><td class="text-center" colspan="2">10%</td></tr>
+                <tr><td>Fracture non consolidée d’une jambe ou d’un pied</td><td class="text-center" colspan="2">25%</td></tr>
+                <tr><td>Fracture consolidée d’une rotule</td><td class="text-center" colspan="2">20%</td></tr>
+                <tr><td>Perte totale du mouvement d’une hanche ou d’un genou</td><td class="text-center" colspan="2">20%</td></tr>
+                <tr><td>Raccourcissement ≥ 5 cm d’un membre inférieur</td><td class="text-center" colspan="2">15%</td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <p>
+Les infirmités non énumérées sont indemnisées proportionnellement à leur gravité, sans tenir compte de la profession.
+L’indemnité totale due pour plusieurs lésions d’un même accident s’obtient par addition en appliquant le barème dans l’ordre choisi : la première au taux plein, les suivantes sur la capacité restante.
+L’incapacité fonctionnelle (totale/partielle) d’un membre ou organe est assimilée à sa perte (totale/partielle).
+Si l’assuré est gaucher, les taux du membre supérieur droit s’appliquent au gauche, et inversement. Un même accident ne peut donner droit qu’à l’une des indemnités (mort ou infirmité) ; en cas de décès après indemnité d’infirmité, le capital décès est versé diminué de l’indemnité déjà perçue (si inférieure au capital).          </p>
+
+          <h6 class="mt-3">Article 5 — Aggravation</h6>
+          <p>
+Si les conséquences sont aggravées par l’état de la victime, une maladie, une négligence de soins ou un traitement empirique, l’indemnité est calculée comme chez un sujet sain soumis à un traitement rationnel.          </p>
+
+          <h6 class="mt-3">Article 6 — Déclaration de sinistres</h6>
+          <p>
+Déclaration dans les 5 jours (sauf cas fortuit/force majeure) à la Société/Agence (écrit ou verbal contre récépissé). L’assuré doit limiter les effets de l’accident et transmettre sous 10 jours les certificats médicaux et pièces probantes. Les médecins/délégués doivent pouvoir constater l’état de l’assuré. Fausses déclarations : déchéance de garantie pour le sinistre.          </p>
+
+          <h6 class="mt-3">Article 7 — Expertises</h6>
+          <p>
+Causes de la mort, degré d’infirmité, durée d’incapacité : constatées d’un commun accord ou par deux médecins (un par partie). En cas de divergence, un troisième est désigné (ou par le Président du Tribunal compétent).          </p>
+
+          <h6 class="mt-3">Article 8 — Règlement des indemnités</h6>
+          <p>
+En cas de mort : paiement dans les 30 jours de la remise des pièces à la Société. En cas d’infirmité permanente : indemnité calculée selon l’article 5.          </p>
+
+          <h6 class="mt-3">Article 9 — Prescription</h6>
+          <p>
+Toute action dérivant du contrat est prescrite par 2 ans (art. 28 du code CIMA).          </p>
+        </details>
+      </div>
+    </div>
+
+    <!-- Mentions finales / signature -->
+    <div class="card mb-4 shadow-sm">
+      <div class="card-body small-text">
+        <div class="form-check">
+          {{ form.ack_conditions(class="form-check-input", id="ack_conditions") }}
+          <label for="ack_conditions" class="form-check-label">
+            {{ form.ack_conditions.label.text }}
+          </label>
+        </div>
+        <div class="row g-3 mt-2">
+          <div class="col-md-6">
+            {{ form.lieu_signature.label(class="form-label") }}
+            {{ form.lieu_signature(class="form-control", placeholder="Lomé") }}
+          </div>
+          <div class="col-md-6">
+            {{ form.date_signature.label(class="form-label") }}
+            {{ form.date_signature(class="form-control") }}
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="text-center">
+      {{ form.submit(class="btn btn-primary px-4") }}
+    </div>
+  </form>
+
+  <!-- Pied de page compact -->
+  <p class="text-center mt-4 mb-0 muted small-text">&copy; {{ 2025 }} — FAFA Assurance</p>
+</div>
+
+<script>
+  // Calcul dynamique de la prime totale
+  function toNumber(v){ return isNaN(parseFloat(v)) ? 0 : parseFloat(v); }
+  function calcPrime(){
+    const n = toNumber(document.getElementById('prime_nette')?.value);
+    const a = toNumber(document.getElementById('accessoires')?.value);
+    const t = toNumber(document.getElementById('taxes')?.value);
+    const total = (n + a + t).toFixed(2);
+    const el = document.getElementById('prime_totale');
+    if (el) { el.value = total; }
+  }
+  ['prime_nette','accessoires','taxes'].forEach(id=>{
+    const el = document.getElementById(id);
+    if(el){ el.addEventListener('input', calcPrime); }
+  });
+</script>
+</body>
+</html>
