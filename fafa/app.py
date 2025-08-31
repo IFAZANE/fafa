@@ -33,6 +33,17 @@ with app.app_context():
 # 5️⃣ Enregistrer les blueprints
 app.register_blueprint(admin_bp)
 
+
+@app.route("/questionnaire", methods=["GET", "POST"])
+def questionnaire():
+    form = QuestionnaireForm()
+    if form.validate_on_submit():
+        # TODO: insérer en base (SQLAlchemy ou SQL brut)
+        flash("Souscription enregistrée", "success")
+        return redirect(url_for("questionnaire"))
+    return render_template("questionnaire.html", form=form)
+
+
 # 6️⃣ Route principale : page d'inscription
 @app.route('/')
 def accueil():
@@ -103,6 +114,7 @@ def debug_form():
 # 1️⃣2️⃣ Exécution de l'application
 if __name__ == '__main__':
     app.run(debug=True)
+
 
 
 
