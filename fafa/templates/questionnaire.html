@@ -1,12 +1,15 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="fr">
 <head>
-  <meta charset="UTF-8" />
-  <title>QUESTIONNAIRE FAFA — Souscription</title>
+  <meta charset="utf-8">
+  <title>FAFA Souscription</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
   <style>
     body { background: #f7f7fb; }
+    header { text-align: center; padding: 2rem 0; background-color: #fff; border-bottom: 1px solid #eee; margin-bottom: 1.5rem; }
+    header img { max-height: 60px; margin-bottom: 1rem; }
     .section-title { font-weight: 700; letter-spacing:.3px; }
     .small-text { font-size: .95rem; }
     .muted { color: #6c757d; }
@@ -14,37 +17,58 @@
     .legal-card pre, .legal-card p { white-space: pre-wrap; }
     .barreme-table td, .barreme-table th { vertical-align: middle; }
     .required::after { content:" *"; color:#dc3545; font-weight:700; }
+    .flash-messages .flash { padding: .75rem 1rem; margin-bottom: 1rem; border-radius: .5rem; }
+    .flash.success { background-color: #d1e7dd; color: #0f5132; }
+    .flash.error { background-color: #f8d7da; color: #842029; }
   </style>
 </head>
 <body>
-<div class="container my-4">
 
-  <!-- Bandeau d'urgence / info -->
-  <div class="alert alert-info shadow-sm" role="alert">
-    <div class="d-flex flex-column flex-md-row align-items-md-center justify-content-between">
-      <div class="mb-2 mb-md-0">
-        <strong>En cas d’accident, d’urgence ou de besoin d’informations suite à la souscription à FAFA,</strong><br/>
-        Veuillez appeler les numéros&nbsp;: <strong>Tél : 22 23 49 00 / 91 45 55 55</strong>
+  {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+      <div class="container flash-messages">
+        {% for category, message in messages %}
+          <div class="flash {{ category }}">{{ message }}</div>
+        {% endfor %}
       </div>
-      <span class="badge text-bg-primary">QUESTIONNAIRE FAFA</span>
-    </div>
-  </div>
+    {% endif %}
+  {% endwith %}
 
-  <!-- Mentions contractuelles -->
-  <div class="card mb-4 shadow-sm">
-    <div class="card-body small-text">
-      <p class="mb-2">
-        Le présent contrat est régi tant par les présentes Conditions Particulières que, dans la mesure où il n’y est pas dérogé,
-        par les <strong>Conditions Générales Individuelle Accidents et Santé</strong> dont l’assuré reconnaît avoir reçu un exemplaire.
-        Sont nulles, toutes adjonctions ou modifications non revêtues du visa de la Direction ou de son représentant autorisé.
-      </p>
-    </div>
-  </div>
+  <header>
+    <img src="{{ url_for('static', filename='logo_FAFA.png') }}" alt="FAFA Logo">
+    <h1 class="h4">Souscris à FAFA !</h1>
+  </header>
 
-  <!-- Formulaire -->
-  <h2 class="section-title mb-3 text-center">Formulaire de souscription</h2>
-  <form method="POST" novalidate>
-    {{ form.hidden_tag() }}
+  <main>
+    <div class="container my-4">
+
+      <!-- Alerte -->
+      <div class="alert alert-info shadow-sm" role="alert">
+        <div class="d-flex flex-column flex-md-row align-items-md-center justify-content-between">
+          <div class="mb-2 mb-md-0">
+            <strong>En cas d’urgence :</strong><br />
+            Tél : <strong>22 23 49 00 / 91 45 55 55</strong>
+          </div>
+          <span class="badge text-bg-primary">QUESTIONNAIRE FAFA</span>
+        </div>
+      </div>
+
+      <!-- Mentions -->
+      <div class="card mb-4 shadow-sm">
+        <div class="card-body small-text">
+          <p class="mb-2">
+            Le présent contrat est régi par les présentes Conditions Particulières et par les
+            <strong>Conditions Générales Individuelle Accidents et Santé</strong> que l’assuré reconnaît avoir reçues.
+            Toute modification non visée par la Direction est nulle.
+          </p>
+        </div>
+      </div>
+
+      <!-- Formulaire -->
+      <h2 class="section-title mb-4 text-center">Formulaire de souscription</h2>
+      <form method="POST" novalidate>
+        {{ form.hidden_tag() }}
+
 
     <!-- Durée du contrat -->
     <div class="card mb-4 shadow-sm">
@@ -299,29 +323,29 @@ Toute action dérivant du contrat est prescrite par 2 ans (art. 28 du code CIMA)
     </div>
 
     <div class="text-center">
-      {{ form.submit(class="btn btn-primary px-4") }}
+          {{ form.submit(class="btn btn-primary px-4") }}
+        </div>
+      </form>
+
+      <p class="text-center mt-4 mb-0 muted small-text">&copy; {{ 2025 }} — FAFA Assurance</p>
     </div>
-  </form>
+  </main>
 
-  <!-- Pied de page compact -->
-  <p class="text-center mt-4 mb-0 muted small-text">&copy; {{ 2025 }} — FAFA Assurance</p>
-</div>
+  <script>
+    function toNumber(v) { return isNaN(parseFloat(v)) ? 0 : parseFloat(v); }
+    function calcPrime() {
+      const n = toNumber(document.getElementById('prime_nette')?.value);
+      const a = toNumber(document.getElementById('accessoires')?.value);
+      const t = toNumber(document.getElementById('taxes')?.value);
+      const total = (n + a + t).toFixed(2);
+      const el = document.getElementById('prime_totale');
+      if (el) { el.value = total; }
+    }
+    ['prime_nette', 'accessoires', 'taxes'].forEach(id => {
+      const el = document.getElementById(id);
+      if (el) { el.addEventListener('input', calcPrime); }
+    });
+  </script>
 
-<script>
-  // Calcul dynamique de la prime totale
-  function toNumber(v){ return isNaN(parseFloat(v)) ? 0 : parseFloat(v); }
-  function calcPrime(){
-    const n = toNumber(document.getElementById('prime_nette')?.value);
-    const a = toNumber(document.getElementById('accessoires')?.value);
-    const t = toNumber(document.getElementById('taxes')?.value);
-    const total = (n + a + t).toFixed(2);
-    const el = document.getElementById('prime_totale');
-    if (el) { el.value = total; }
-  }
-  ['prime_nette','accessoires','taxes'].forEach(id=>{
-    const el = document.getElementById(id);
-    if(el){ el.addEventListener('input', calcPrime); }
-  });
-</script>
 </body>
 </html>
