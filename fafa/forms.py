@@ -12,7 +12,7 @@ from flask_wtf import FlaskForm
 from wtforms import StringField, DateField, FloatField, BooleanField, SubmitField, SelectField
 from wtforms.validators import DataRequired, Optional
 
-class QuestionnaireFAFAForm(FlaskForm):
+class QuestionnaireForm(FlaskForm):
     periode_debut = DateField("Pour la période du", validators=[DataRequired()])
     periode_fin = DateField("au", validators=[DataRequired()])
     periodicite = SelectField("Périodicité", choices=[('Mensuelle','Mensuelle'),('Annuel','Annuel')], validators=[DataRequired()])
@@ -82,6 +82,7 @@ class SouscriptionForm(FlaskForm):
 )
 
     recaptcha = RecaptchaField()
+
 
 
 
