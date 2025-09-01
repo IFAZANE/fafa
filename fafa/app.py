@@ -160,7 +160,7 @@ def questionnaire_step2():
 from weasyprint import HTML
 from datetime import datetime
 
-@app.route('/etape3', methods=['GET', 'POST'])
+@app.route('/step3', methods=['GET', 'POST'])
 def questionnaire_step3():
     form = Etape3Form()
 
@@ -191,7 +191,7 @@ def questionnaire_step3():
         form.lieu_signature.data = session.get('lieu_signature')
         form.date_signature.data = datetime.strptime(session.get('date_signature'), '%Y-%m-%d') if session.get('date_signature') else None
 
-    return render_template('etape3.html', form=form)
+    return render_template('step3.html', form=form)
 
 
 
@@ -363,6 +363,7 @@ def debug_form():
 # 1️⃣2️⃣ Exécution de l'application
 if __name__ == '__main__':
     app.run(debug=True)
+
 
 
 
