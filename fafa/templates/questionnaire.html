@@ -71,48 +71,44 @@
       </div>
 
       <!-- Formulaire -->
-     <!-- Formulaire -->
-<h2 class="section-title mb-4 text-center">Formulaire de souscription</h2>
-<form method="POST" novalidate>
-  {{ form.hidden_tag() }}
+      <h2 class="section-title mb-4 text-center">Formulaire de souscription</h2>
+      <form method="POST" novalidate>
+        {{ form.hidden_tag() }}
 
-  <!-- Durée du contrat -->
-  <div class="row justify-content-center">
-    <div class="col-md-8">
-      <div class="card mb-2 shadow-sm w-100">
-        <div class="card-header fw-semibold">Durée du contrat</div>
-        <div class="card-body small-text">
-          <div class="form-check">
-            {{ form.duree_contrat(class="form-check-input", id="opt_societe", value="societe") }}
-            <label for="opt_societe" class="form-check-label">
-              Le contrat est souscrit pour la durée de la société, avec faculté réciproque de résiliation annuelle moyennant préavis de deux mois au moins avant la date anniversaire de la prise d'effet.
-            </label>
-          </div>
-          <div class="form-check mt-2">
-            {{ form.duree_contrat(class="form-check-input", id="opt_ferme", value="ferme") }}
-            <label for="opt_ferme" class="form-check-label">
-              Le contrat est souscrit pour une durée ferme d’un an et cessera ses effets sans autre avis à sa date anniversaire à 24h00.
-            </label>
-          </div>
 
-          <div class="row g-3 mt-2">
-            <div class="col-md-4">
-              <label class="form-label">Pour la période du</label>
-              {{ form.periode_debut(class="form-control") }}
-            </div>
-            <div class="col-md-4">
-              <label class="form-label">au</label>
-              {{ form.periode_fin(class="form-control") }}
-            </div>
-            <div class="col-md-4">
-              {{ form.periodicite.label(class="form-label") }}
-              {{ form.periodicite(class="form-select") }}
-            </div>
+    <!-- Durée du contrat -->
+    <div class="card mb-4 shadow-sm">
+      <div class="card-header fw-semibold">Durée du contrat</div>
+      <div class="card-body small-text">
+        <div class="form-check">
+          {{ form.duree_contrat(class="form-check-input", id="opt_societe", value="societe") }}
+          <label for="opt_societe" class="form-check-label">
+            Le contrat est souscrit pour la durée de la société, avec faculté réciproque de résiliation annuelle moyennant préavis de deux mois au moins avant la date anniversaire de la prise d'effet.
+          </label>
+        </div>
+        <div class="form-check mt-2">
+          {{ form.duree_contrat(class="form-check-input", id="opt_ferme", value="ferme") }}
+          <label for="opt_ferme" class="form-check-label">
+            Le contrat est souscrit pour une durée ferme d’un an et cessera ses effets sans autre avis à sa date anniversaire à 24h00.
+          </label>
+        </div>
+
+        <div class="row g-3 mt-2">
+          <div class="col-md-4">
+            <label class="form-label">Pour la période du</label>
+            {{ form.periode_debut(class="form-control") }}
+          </div>
+          <div class="col-md-4">
+            <label class="form-label">au</label>
+            {{ form.periode_fin(class="form-control") }}
+          </div>
+          <div class="col-md-4">
+            {{ form.periodicite.label(class="form-label") }}
+            {{ form.periodicite(class="form-select") }}
           </div>
         </div>
       </div>
     </div>
-  </div>
 
     <!-- Prime -->
     <div class="card mb-4 shadow-sm">
@@ -223,33 +219,30 @@
         <details>
           <summary class="mb-3">Lire les Conditions Générales complètes</summary>
 
-          <h2 class="mt-3">Article 1 — Objet du contrat</h2>
+          <h6 class="mt-3">Article 1 — Objet du contrat</h6>
           <p>
 La Société garantit le paiement des indemnités définies à l’article 4 ci-dessous en cas d’accident atteignant la personne assurée.
 Par « accident », il faut entendre toute atteinte corporelle non intentionnelle de la part de l’assuré et provenant de l’action soudaine d’une cause extérieure.
 La garantie prend effet et se termine aux dates et heures précisées aux Conditions Particulières. Toutefois, si un déplacement effectué par l’assuré (transport terrestre, maritime ou aérien)
 se termine, pour une cause de force majeure, après l’expiration de la période assurée alors qu’il aurait dû normalement achever avant l’expiration de cette période, la garantie
-est prolongée de plein droit du nombre strictement nécessaire de périodes de 24 heures (sans que le total n’excède sept).
-          </p>
+est prolongée de plein droit du nombre strictement nécessaire de périodes de 24 heures (sans que le total n’excède sept).          </p>
 
-          <h2 class="mt-3">Article 2 — Risques exclus</h2>
+          <h6 class="mt-3">Article 2 — Risques exclus</h6>
           <p>
 Sont exclus notamment : les accidents intentionnellement causés par l’assuré ; guerre, émeute, actes de terrorisme ou sabotage ; événements nucléaires et radiations ionisantes ;
 maladies, insolation, apoplexie, effets de température/pression (sauf s’ils résultent d’un accident garanti ou d’un dysfonctionnement de transport) ; intoxication alimentaire ;
 lumbago, rupture de muscles, hernie (même d’origine traumatique) ; accidents résultant de traitements ou opérations (sauf s’ils découlent d’un accident garanti) ; usage de cycles à moteur de type sport
 ou > 50 cm³ ; sports à risques (hockey sur glace, bobsleigh, skeleton, ski, alpinisme par voies non frayées, spéléologie, etc.) ; participation (concurrent, commissaire, entraîneur, arbitre)
 à courses/compétitions/exhibitions et entraînements correspondants ; travaux manuels professionnels ; transport aérien autrement que comme passager d’une compagnie agréée. 
-Est exclue toute personne ayant intentionnellement causé ou provoqué le sinistre.         
-          </p>
+Est exclue toute personne ayant intentionnellement causé ou provoqué le sinistre.          </p>
 
-          <h2 class="mt-3">Article 3 — Indemnités garanties</h2>
+          <h6 class="mt-3">Article 3 — Indemnités garanties</h6>
           <p>
 En cas de mort dans les douze mois des suites d’un accident garanti : capital payable au bénéficiaire désigné (ou à défaut aux ayants droit).<br/>
 En cas d’infirmité permanente (totale ou partielle) : indemnité calculée selon l’article 5.<br/>
-En cas de traitement médical : selon dispositions des Conditions Particulières.          
-          </p>
+En cas de traitement médical : selon dispositions des Conditions Particulières.          </p>
 
-          <h2 class="mt-3">Article 4 — Infirmité permanente</h2>
+          <h6 class="mt-3">Article 4 — Infirmité permanente</h6>
           <p>
 a) <em>Infirmité permanente totale</em> : droit à la somme maxima stipulée (trouble mental incurable, perte totale/incapacité fonctionnelle absolue des deux yeux, deux bras, deux mains,
 deux jambes, deux pieds, d’un bras et d’une jambe, d’un bras et d’un pied, d’une main et d’une jambe, d’une main et d’un pied).<br/>
@@ -290,23 +283,23 @@ L’indemnité totale due pour plusieurs lésions d’un même accident s’obti
 L’incapacité fonctionnelle (totale/partielle) d’un membre ou organe est assimilée à sa perte (totale/partielle).
 Si l’assuré est gaucher, les taux du membre supérieur droit s’appliquent au gauche, et inversement. Un même accident ne peut donner droit qu’à l’une des indemnités (mort ou infirmité) ; en cas de décès après indemnité d’infirmité, le capital décès est versé diminué de l’indemnité déjà perçue (si inférieure au capital).          </p>
 
-          <h2 class="mt-3">Article 5 — Aggravation</h2>
+          <h6 class="mt-3">Article 5 — Aggravation</h6>
           <p>
 Si les conséquences sont aggravées par l’état de la victime, une maladie, une négligence de soins ou un traitement empirique, l’indemnité est calculée comme chez un sujet sain soumis à un traitement rationnel.          </p>
 
-          <h2 class="mt-3">Article 6 — Déclaration de sinistres</h2>
+          <h6 class="mt-3">Article 6 — Déclaration de sinistres</h6>
           <p>
 Déclaration dans les 5 jours (sauf cas fortuit/force majeure) à la Société/Agence (écrit ou verbal contre récépissé). L’assuré doit limiter les effets de l’accident et transmettre sous 10 jours les certificats médicaux et pièces probantes. Les médecins/délégués doivent pouvoir constater l’état de l’assuré. Fausses déclarations : déchéance de garantie pour le sinistre.          </p>
 
-          <h2 class="mt-3">Article 7 — Expertises</h2>
+          <h6 class="mt-3">Article 7 — Expertises</h6>
           <p>
 Causes de la mort, degré d’infirmité, durée d’incapacité : constatées d’un commun accord ou par deux médecins (un par partie). En cas de divergence, un troisième est désigné (ou par le Président du Tribunal compétent).          </p>
 
-          <h2 class="mt-3">Article 8 — Règlement des indemnités</h2>
+          <h6 class="mt-3">Article 8 — Règlement des indemnités</h6>
           <p>
 En cas de mort : paiement dans les 30 jours de la remise des pièces à la Société. En cas d’infirmité permanente : indemnité calculée selon l’article 5.          </p>
 
-          <h2 class="mt-3">Article 9 — Prescription</h2>
+          <h6 class="mt-3">Article 9 — Prescription</h6>
           <p>
 Toute action dérivant du contrat est prescrite par 2 ans (art. 28 du code CIMA).          </p>
         </details>
