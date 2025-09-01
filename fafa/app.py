@@ -1,4 +1,4 @@
-from flask import Flask, render_template, redirect, flash, url_for, Response
+from flask import Flask, render_template,request,session,send_file, redirect, flash, url_for, Response
 from config import Config
 from models import db, Subscription
 from forms import SouscriptionForm, QuestionnaireForm
@@ -8,6 +8,9 @@ import uuid
 import csv
 from io import StringIO, BytesIO
 from openpyxl import Workbook
+
+from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer
+from reportlab.lib.styles import getSampleStyleSheet
 
 # 1️⃣ Créer l'application Flask
 app = Flask(__name__)
@@ -162,6 +165,7 @@ def debug_form():
 # 1️⃣2️⃣ Exécution de l'application
 if __name__ == '__main__':
     app.run(debug=True)
+
 
 
 
