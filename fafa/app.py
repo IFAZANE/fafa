@@ -56,14 +56,49 @@ app = Flask(__name__)
 app.secret_key = "secret-key"  # nécessaire pour utiliser session
 
 # ✅ Step 1 : informations de l’assuré
-@app.route("/step1", methods=["GET", "POST"])
-def step1():
-    if request.method == "POST":
-        session["assure_nom"] = request.form.get("assure_nom")
-        session["assure_prenom"] = request.form.get("assure_prenom")
-        session["assure_tel"] = request.form.get("assure_tel")
-        return redirect(url_for("step2"))
-    return render_template("step1.html")
+from flask import Flask, render_template, request, session, redirect, url_for, flash
+from forms import Etape1Form
+from datetime import datetime
+
+@app.route('/step1', methods=['GET', 'POST'])
+def questionnaire_step1():
+    form = Etape1Form()
+
+    if form.validate_on_submit():
+        # 🔹 Sauvegarde des données dans la session
+        session['duree_contrat'] = form.duree_contrat.data
+        session['periode_debut'] = form.periode_debut.data.strftime('%Y-%m-%d') if form.periode_debut.data else None
+        session['periode_fin'] = form.periode_fin.data.strftime('%Y-%m-%d') if form.periode_fin.data else None
+        session['periodicite'] = form.periodicite.data
+        session['prime_nette'] = float(form.prime_nette.data)
+        session['accessoires'] = float(form.accessoires.data) if form.accessoires.data else 0.0
+        session['taxes'] = float(form.taxes.data) if form.taxes.data else 0.0
+        session['prime_totale'] = session['prime_nette'] + session['accessoires'] + session['taxes']
+
+        # Risques
+        session['deces_accident'] = float(form.deces_accident.data)
+        session['deces_toutes_causes'] = float(form.deces_toutes_causes.data)
+        session['invalidite'] = float(form.invalidite.data)
+
+        flash("Étape 1 enregistrée !", "success")
+        return redirect(url_for('questionnaire_step2'))  # redirection vers étape 2
+
+    # Pré-remplir le formulaire si les données sont déjà dans la session
+    if 'duree_contrat' in session:
+        form.duree_contrat.data = session.get('duree_contrat')
+        form.periode_debut.data = datetime.strptime(session.get('periode_debut'), '%Y-%m-%d') if session.get('periode_debut') else None
+        form.periode_fin.data = datetime.strptime(session.get('periode_fin'), '%Y-%m-%d') if session.get('periode_fin') else None
+        form.periodicite.data = session.get('periodicite')
+        form.prime_nette.data = session.get('prime_nette')
+        form.accessoires.data = session.get('accessoires')
+        form.taxes.data = session.get('taxes')
+        form.prime_totale.data = session.get('prime_totale')
+        form.deces_accident.data = session.get('deces_accident')
+        form.deces_toutes_causes.data = session.get('deces_toutes_causes')
+        form.invalidite.data = session.get('invalidite')
+
+    return render_template('step1.html', form=form)
+
 
 # ✅ Step 2 : informations du bénéficiaire
 @app.route("/step2", methods=["GET", "POST"])
@@ -274,6 +309,7 @@ def debug_form():
 # 1️⃣2️⃣ Exécution de l'application
 if __name__ == '__main__':
     app.run(debug=True)
+
 
 
 
