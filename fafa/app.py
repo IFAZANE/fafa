@@ -48,41 +48,50 @@ def questionnaire():
     return render_template("questionnaire.html", form=form)
 
 
-#@app.route("/questionnaire", methods=["GET", "POST"])
-#def questionnaire():
-#    return redirect(url_for('step1'))
-#
-#@app.route('/step1', methods=['GET', 'POST'])
-#def step1():
-#    if request.method == 'POST':
-#        session['souscripteur_nom'] = request.form['souscripteur_nom']
-#        session['souscripteur_prenom'] = request.form['souscripteur_prenom']
-#        session['souscripteur_tel'] = request.form['souscripteur_tel']
-#        session['souscripteur_naissance'] = request.form['souscripteur_naissance']
-#        session['souscripteur_adresse'] = request.form['souscripteur_adresse']
-#        return redirect(url_for('step2'))
-#    return render_template('step1.html')
-
-#@app.route('/step2', methods=['GET', 'POST'])
-#def step2():
-#    if request.method == 'POST':
-#        session['assure_nom'] = request.form['assure_nom']
-#        session['assure_prenom'] = request.form['assure_prenom']
-#        session['assure_tel'] = request.form['assure_tel']
-#        session['assure_naissance'] = request.form['assure_naissance']
-#        session['assure_adresse'] = request.form['assure_adresse']
-#        return redirect(url_for('step3'))
-#    return render_template('step2.html')
-
-#@app.route('/step3', methods=['GET', 'POST'])
-#def step3():
-#    if request.method == 'POST':
-#        session['beneficiaire_nom'] = request.form['beneficiaire_nom']
-#        session['beneficiaire_prenom'] = request.form['beneficiaire_prenom']
-#        session['beneficiaire_tel'] = request.form['beneficiaire_tel']
-#        session['beneficiaire_adresse'] = request.form['beneficiaire_adresse']
-#        return redirect(url_for('confirmation'))
-#    return render_template('step3.html')
+@app.route('/souscription', methods=['GET', 'POST'])
+def souscription():
+    form = QuestionnaireFAFAForm()
+    if form.validate_on_submit():
+        # Créer l'enregistrement
+        new_entry = QuestionnaireFAFA(
+            periode_debut=form.periode_debut.data,
+            periode_fin=form.periode_fin.data,
+            periodicite=form.periodicite.data,
+            prime_nette=form.prime_nette.data,
+            accessoires=form.accessoires.data,
+            taxes=form.taxes.data,
+            prime_totale=form.prime_totale.data,
+            deces_accident=form.deces_accident.data,
+            deces_toutes_causes=form.deces_toutes_causes.data,
+            invalidite=form.invalidite.data,
+            hospitalisation=form.hospitalisation.data,
+            traitement_medical=form.traitement_medical.data,
+            indemnite_journaliere=form.indemnite_journaliere.data,
+            assure_nom=form.assure_nom.data,
+            assure_prenoms=form.assure_prenoms.data,
+            assure_tel=form.assure_tel.data,
+            assure_date_naissance=form.assure_date_naissance.data,
+            assure_adresse=form.assure_adresse.data,
+            beneficiaire_nom=form.beneficiaire_nom.data,
+            beneficiaire_prenoms=form.beneficiaire_prenoms.data,
+            beneficiaire_tel=form.beneficiaire_tel.data,
+            beneficiaire_profession=form.beneficiaire_profession.data,
+            beneficiaire_adresse=form.beneficiaire_adresse.data,
+            beneficiaire_lateralite=form.beneficiaire_lateralite.data,
+            souscripteur_nom=form.souscripteur_nom.data,
+            souscripteur_prenoms=form.souscripteur_prenoms.data,
+            souscripteur_tel=form.souscripteur_tel.data,
+            souscripteur_date_naissance=form.souscripteur_date_naissance.data,
+            souscripteur_adresse=form.souscripteur_adresse.data,
+            ack_conditions=form.ack_conditions.data,
+            lieu_signature=form.lieu_signature.data,
+            date_signature=form.date_signature.data
+        )
+        db.session.add(new_entry)
+        db.session.commit()
+        flash("Souscription enregistrée avec succès !", "success")
+        return redirect(url_for('souscription'))
+    return render_template('souscription.html', form=form)
 
 @app.route('/confirmation1')
 def confirmation1():
@@ -176,6 +185,7 @@ def debug_form():
 # 1️⃣2️⃣ Exécution de l'application
 if __name__ == '__main__':
     app.run(debug=True)
+
 
 
 
