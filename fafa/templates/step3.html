@@ -1,0 +1,11 @@
+{% extends 'base.html' %}
+{% block content %}
+<h2>Étape 3 : Informations du Bénéficiaire</h2>
+<form method="POST">
+  <label>Nom :</label><input type="text" name="beneficiaire_nom" required><br>
+  <label>Prénom :</label><input type="text" name="beneficiaire_prenom" required><br>
+  <label>Téléphone :</label><input type="text" name="beneficiaire_tel" required><br>
+  <label>Adresse :</label><input type="text" name="beneficiaire_adresse" required><br>
+  <button type="submit">Valider</button>
+</form>
+{% endblock %}
