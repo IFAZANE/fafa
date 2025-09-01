@@ -83,19 +83,24 @@
       <div class="card-body small-text">
 
         <!-- Options de durée -->
-        <div class="form-check mb-3">
-          {{ form.duree_contrat(class="form-check-input", id="opt_societe", value="societe") }}
-          <label for="opt_societe" class="form-check-label d-block">
-            Le contrat est souscrit pour la durée de la société, avec faculté réciproque de résiliation annuelle moyennant préavis de deux mois au moins avant la date anniversaire de la prise d'effet.
-          </label>
-        </div>
+       <div class="mb-3 d-flex align-items-start">
+  {{ form.duree_contrat(class="form-check-input mt-1 me-2", id="opt_societe", value="societe") }}
+  <div>
+    <label for="opt_societe" class="form-check-label">
+      Le contrat est souscrit pour la durée de la société, avec faculté réciproque de résiliation annuelle moyennant préavis de deux mois au moins avant la date anniversaire de la prise d'effet.
+    </label>
+  </div>
+</div>
 
-        <div class="form-check mb-3">
-          {{ form.duree_contrat(class="form-check-input", id="opt_ferme", value="ferme") }}
-          <label for="opt_ferme" class="form-check-label d-block">
-            Le contrat est souscrit pour une durée ferme d’un an et cessera ses effets sans autre avis à sa date anniversaire à 24h00.
-          </label>
-        </div>
+<div class="mb-3 d-flex align-items-start">
+  {{ form.duree_contrat(class="form-check-input mt-1 me-2", id="opt_ferme", value="ferme") }}
+  <div>
+    <label for="opt_ferme" class="form-check-label">
+      Le contrat est souscrit pour une durée ferme d’un an et cessera ses effets sans autre avis à sa date anniversaire à 24h00.
+    </label>
+  </div>
+</div>
+
 
         <!-- Période et périodicité -->
         <div class="row g-3">
