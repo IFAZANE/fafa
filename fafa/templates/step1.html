@@ -1,62 +1,132 @@
 <!doctype html>
 <html lang="fr">
 <head>
-  <meta charset="utf-8">
-  <title>FAFA Souscription — Étape 1</title>
-  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <meta charset="utf-8">
+    <title>FAFA Souscription — Étape 1</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- CSS principal -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+
+    <!-- Bootstrap pour les composants -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Google Fonts + FontAwesome -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;600&display=swap" rel="stylesheet">
+    <script src="https://kit.fontawesome.com/yourkitid.js" crossorigin="anonymous"></script>
 </head>
+
 <body>
-  <div class="container my-4">
-    <h2 class="mb-4 text-center">Étape 1 — Contrat et Garanties</h2>
 
-    <form method="POST">
-      {{ form.hidden_tag() }}
+    <!-- Flash messages -->
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            <div class="flash-messages">
+                {% for category, message in messages %}
+                    <div class="flash {{ category }}">{{ message }}</div>
+                {% endfor %}
+            </div>
+        {% endif %}
+    {% endwith %}
 
-      <!-- Durée du contrat -->
-      <div class="card mb-4 shadow-sm">
-        <div class="card-header">Durée du contrat</div>
-        <div class="card-body">
-          {{ form.duree_contrat.label(class="form-label") }}
-          {{ form.duree_contrat(class="form-control") }}
+    <!-- Header commun FAFA -->
+    <header class="main-header">
+        <div class="navbar">
+            <div class="logo">
+                <img src="{{ url_for('static', filename='logo_FAFA.png') }}" alt="FAFA Logo">
+                <span>FAFA Assurance</span>
+            </div>
+            <nav class="nav-links">
+                <a href="{{ url_for('questionnaire') }}" class="nav-button">Souscription</a>
+                <a href="{{ url_for('manuel') }}" class="nav-button">Aide</a>
+                <a href="https://nsiadirect.tg/" target="_blank" class="nav-button">NSIA Assurance</a>
+                <a href="https://www.boad.org" target="_blank" class="nav-button">BOAD</a>
+            </nav>
         </div>
-      </div>
+    </header>
 
-      <!-- Période -->
-      <div class="card mb-4 shadow-sm">
-        <div class="card-header">Période et périodicité</div>
-        <div class="card-body">
-          {{ form.periode_debut.label }} {{ form.periode_debut(class="form-control") }}
-          {{ form.periode_fin.label }} {{ form.periode_fin(class="form-control") }}
-          {{ form.periodicite.label }} {{ form.periodicite(class="form-select") }}
+    <!-- Contenu principal -->
+    <main class="container my-5">
+        <h2 class="mb-4 text-center">Étape 1 — Contrat et Garanties</h2>
+
+        <form method="POST">
+            {{ form.hidden_tag() }}
+
+            <!-- Durée du contrat -->
+            <div class="card mb-4 shadow-sm">
+                <div class="card-header">Durée du contrat</div>
+                <div class="card-body">
+                    {{ form.duree_contrat.label(class="form-label") }}
+                    {{ form.duree_contrat(class="form-control") }}
+                </div>
+            </div>
+
+            <!-- Période -->
+            <div class="card mb-4 shadow-sm">
+                <div class="card-header">Période et périodicité</div>
+                <div class="card-body">
+                    {{ form.periode_debut.label(class="form-label") }}
+                    {{ form.periode_debut(class="form-control") }}
+
+                    {{ form.periode_fin.label(class="form-label mt-3") }}
+                    {{ form.periode_fin(class="form-control") }}
+
+                    {{ form.periodicite.label(class="form-label mt-3") }}
+                    {{ form.periodicite(class="form-select") }}
+                </div>
+            </div>
+
+            <!-- Prime -->
+            <div class="card mb-4 shadow-sm">
+                <div class="card-header">Prime</div>
+                <div class="card-body">
+                    {{ form.prime_nette.label(class="form-label") }}
+                    {{ form.prime_nette(class="form-control") }}
+
+                    {{ form.accessoires.label(class="form-label mt-3") }}
+                    {{ form.accessoires(class="form-control") }}
+
+                    {{ form.taxes.label(class="form-label mt-3") }}
+                    {{ form.taxes(class="form-control") }}
+
+                    {{ form.prime_totale.label(class="form-label mt-3") }}
+                    {{ form.prime_totale(class="form-control", readonly=True) }}
+                </div>
+            </div>
+
+            <!-- Risques -->
+            <div class="card mb-4 shadow-sm">
+                <div class="card-header">Risques et capitaux garantis</div>
+                <div class="card-body">
+                    {{ form.deces_accident.label(class="form-label") }}
+                    {{ form.deces_accident(class="form-control") }}
+
+                    {{ form.deces_toutes_causes.label(class="form-label mt-3") }}
+                    {{ form.deces_toutes_causes(class="form-control") }}
+
+                    {{ form.invalidite.label(class="form-label mt-3") }}
+                    {{ form.invalidite(class="form-control") }}
+                </div>
+            </div>
+
+            <!-- Bouton -->
+            <div class="text-end">
+                <button type="submit" class="btn btn-primary">Suivant</button>
+            </div>
+        </form>
+    </main>
+
+    <!-- Footer facultatif -->
+    <footer>
+        <div class="footer-content">
+            <p>© 2025 FAFA Assurance — Tous droits réservés.</p>
+            <div class="socials">
+                <a href="#"><i class="fab fa-facebook-f"></i></a>
+                <a href="#"><i class="fab fa-twitter"></i></a>
+                <a href="#"><i class="fab fa-linkedin-in"></i></a>
+            </div>
         </div>
-      </div>
+    </footer>
 
-      <!-- Prime -->
-      <div class="card mb-4 shadow-sm">
-        <div class="card-header">Prime</div>
-        <div class="card-body">
-          {{ form.prime_nette.label }} {{ form.prime_nette(class="form-control") }}
-          {{ form.accessoires.label }} {{ form.accessoires(class="form-control") }}
-          {{ form.taxes.label }} {{ form.taxes(class="form-control") }}
-          {{ form.prime_totale.label }} {{ form.prime_totale(class="form-control", readonly=True) }}
-        </div>
-      </div>
-
-      <!-- Risques -->
-      <div class="card mb-4 shadow-sm">
-        <div class="card-header">Risques et capitaux garantis</div>
-        <div class="card-body">
-          {{ form.deces_accident.label }} {{ form.deces_accident(class="form-control") }}
-          {{ form.deces_toutes_causes.label }} {{ form.deces_toutes_causes(class="form-control") }}
-          {{ form.invalidite.label }} {{ form.invalidite(class="form-control") }}
-        </div>
-      </div>
-
-      <div class="text-end">
-        <button type="submit" class="btn btn-primary">Suivant</button>
-      </div>
-    </form>
-  </div>
 </body>
 </html>
