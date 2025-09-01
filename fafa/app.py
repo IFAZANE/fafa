@@ -118,6 +118,16 @@ def questionnaire():
 
     return render_template('questionnaire.html', form=form)
 
+@app.route('/questionnaire/pdf/<int:id>')
+def generate_pdf(id):
+    q = QuestionnaireFafa.query.get_or_404(id)
+    html = render_template('questionnaire_pdf.html', form=q, current_year=date.today().year)
+    pdf = HTML(string=html).write_pdf()
+    response = make_response(pdf)
+    response.headers['Content-Type'] = 'application/pdf'
+    response.headers['Content-Disposition'] = f'inline; filename=questionnaire_{id}.pdf'
+    return response
+
 
 @app.route('/confirmation1')
 def confirmation1():
@@ -211,6 +221,7 @@ def debug_form():
 # 1️⃣2️⃣ Exécution de l'application
 if __name__ == '__main__':
     app.run(debug=True)
+
 
 
 
