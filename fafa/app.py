@@ -67,6 +67,7 @@ from datetime import datetime
 
 @app.route('/step1', methods=['GET', 'POST'])
 def questionnaire_step1():
+    session.clear()
     form = Etape1Form()
 
     if form.validate_on_submit():
@@ -112,6 +113,7 @@ from datetime import datetime
 
 @app.route('/step2', methods=['GET', 'POST'])
 def questionnaire_step2():
+    session.clear()
     form = Etape2Form()
 
     if form.validate_on_submit():
@@ -165,6 +167,7 @@ def questionnaire_step2():
 
 @app.route('/step3', methods=['GET', 'POST'])
 def questionnaire_step3():
+    session.clear()
     form = Etape3Form()
 
     if form.validate_on_submit():
@@ -414,6 +417,7 @@ def debug_form():
 # 1️⃣2️⃣ Exécution de l'application
 if __name__ == '__main__':
     app.run(debug=True)
+
 
 
 
