@@ -67,6 +67,19 @@ class Etape2Form(FlaskForm):
     submit = SubmitField('Suivant')
 
 
+from flask_wtf import FlaskForm
+from wtforms import StringField, DateField, BooleanField, SubmitField
+from wtforms.validators import DataRequired, Length
+
+class Etape3Form(FlaskForm):
+    # Conditions Générales
+    ack_conditions = BooleanField('J\'accepte les conditions générales', validators=[DataRequired()])
+
+    # Signature
+    lieu_signature = StringField('Lieu de signature', validators=[DataRequired(), Length(max=100)])
+    date_signature = DateField('Date de signature', format='%Y-%m-%d', validators=[DataRequired()])
+
+    submit = SubmitField('Valider')
 
 
 
@@ -145,6 +158,7 @@ class SouscriptionForm(FlaskForm):
 )
 
     recaptcha = RecaptchaField()
+
 
 
 
