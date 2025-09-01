@@ -8,73 +8,51 @@ from wtforms.validators import DataRequired, Length, Regexp
 
 
 
-
 from flask_wtf import FlaskForm
-from wtforms import (
-    StringField, DateField, SubmitField, SelectField, TelField, TextAreaField,
-    DecimalField, RadioField, BooleanField
-)
-from wtforms.validators import DataRequired, Length, Optional, NumberRange, InputRequired
+from wtforms import StringField, DateField, FloatField, BooleanField, SubmitField, SelectField
+from wtforms.validators import DataRequired, Optional
 
-class QuestionnaireForm(FlaskForm):
-    # ── Contrat / mentions ──────────────────────────────────────────────────────
-    duree_contrat = RadioField(
-        "Durée du contrat",
-        choices=[
-            ("societe", "Durée de la société, résiliation annuelle (préavis ≥ 2 mois)"),
-            ("ferme", "Durée ferme d’un an, cessation à la date anniversaire à 24h00"),
-        ],
-        validators=[DataRequired()]
-    )
-    periode_debut = DateField("Période du (date de début)", validators=[Optional()])
-    periode_fin = DateField("au (date de fin)", validators=[Optional()])
-    periodicite = SelectField("Périodicité de paiement de la prime", choices=[("annuelle", "Annuelle")])
-
-    # ── Prime ───────────────────────────────────────────────────────────────────
-    prime_nette = DecimalField("Prime nette", places=2, rounding=None, validators=[Optional(), NumberRange(min=0)])
-    accessoires = DecimalField("Accessoires", places=2, rounding=None, validators=[Optional(), NumberRange(min=0)])
-    taxes = DecimalField("Taxes", places=2, rounding=None, validators=[Optional(), NumberRange(min=0)])
-    prime_totale = DecimalField("Prime totale", places=2, rounding=None, validators=[Optional(), NumberRange(min=0)])
-
-    # ── Risques et capitaux garantis ────────────────────────────────────────────
-    deces_accident = DecimalField("Décès (à la suite d’accident)", places=2, validators=[Optional(), NumberRange(min=0)])
-    deces_toutes_causes = DecimalField("Décès toutes causes", places=2, validators=[Optional(), NumberRange(min=0)])
-    invalidite = DecimalField("Invalidité", places=2, validators=[Optional(), NumberRange(min=0)])
-    hospitalisation = DecimalField("Hospitalisation", places=2, validators=[Optional(), NumberRange(min=0)])
-    traitement_medical = DecimalField("Traitement médical", places=2, validators=[Optional(), NumberRange(min=0)])
-    indemnite_journaliere = DecimalField("Indemnité journalière", places=2, validators=[Optional(), NumberRange(min=0)])
-
-    # ── Assuré (si différent du souscripteur) ──────────────────────────────────
-    assure_nom = StringField("Nom de l’assuré", validators=[Optional(), Length(max=100)])
-    assure_prenoms = StringField("Prénoms de l’assuré", validators=[Optional(), Length(max=100)])
-    assure_tel = TelField("Téléphone de l’assuré", validators=[Optional(), Length(max=20)])
-    assure_date_naissance = DateField("Date de naissance de l’assuré", validators=[Optional()])
-    assure_adresse = TextAreaField("Adresse de l’assuré", validators=[Optional(), Length(max=255)])
-
-    # ── Bénéficiaire ───────────────────────────────────────────────────────────
-    beneficiaire_nom = StringField("Nom du bénéficiaire", validators=[Optional(), Length(max=100)])
-    beneficiaire_prenoms = StringField("Prénoms du bénéficiaire", validators=[Optional(), Length(max=100)])
-    beneficiaire_tel = TelField("Téléphone du bénéficiaire", validators=[Optional(), Length(max=20)])
-    beneficiaire_adresse = TextAreaField("Adresse du bénéficiaire", validators=[Optional(), Length(max=255)])
-    beneficiaire_profession = StringField("Profession du bénéficiaire", validators=[Optional(), Length(max=100)])
-    beneficiaire_lateralite = SelectField("Latéralité", choices=[("droitier", "Droitier"), ("gaucher", "Gaucher")], validators=[Optional()])
-
-    # ── Souscripteur ───────────────────────────────────────────────────────────
-    souscripteur_nom = StringField("Nom du souscripteur", validators=[DataRequired(), Length(max=100)])
-    souscripteur_prenoms = StringField("Prénoms du souscripteur", validators=[DataRequired(), Length(max=100)])
-    souscripteur_tel = TelField("Téléphone du souscripteur", validators=[DataRequired(), Length(max=20)])
-    souscripteur_date_naissance = DateField("Date de naissance du souscripteur", validators=[DataRequired()])
-    souscripteur_adresse = TextAreaField("Adresse du souscripteur", validators=[Optional(), Length(max=255)])
-
-    # ── Mentions / signatures ──────────────────────────────────────────────────
-    ack_conditions = BooleanField(
-        "Je reconnais avoir reçu un exemplaire des Conditions Générales",
-        validators=[InputRequired(message="Veuillez reconnaître réception des Conditions Générales")]
-    )
-    lieu_signature = StringField("Fait à", validators=[Optional(), Length(max=100)])
-    date_signature = DateField("Le", validators=[Optional()])
-
-    submit = SubmitField("Enregistrer")
+class QuestionnaireFAFAForm(FlaskForm):
+    periode_debut = DateField("Pour la période du", validators=[DataRequired()])
+    periode_fin = DateField("au", validators=[DataRequired()])
+    periodicite = SelectField("Périodicité", choices=[('Mensuelle','Mensuelle'),('Annuel','Annuel')], validators=[DataRequired()])
+    
+    prime_nette = FloatField("Prime nette", validators=[DataRequired()])
+    accessoires = FloatField("Accessoires", validators=[DataRequired()])
+    taxes = FloatField("Taxes", validators=[DataRequired()])
+    prime_totale = FloatField("Prime totale", validators=[DataRequired()])
+    
+    deces_accident = FloatField("Décès accident", validators=[Optional()])
+    deces_toutes_causes = FloatField("Décès toutes causes", validators=[Optional()])
+    invalidite = FloatField("Invalidité", validators=[Optional()])
+    hospitalisation = FloatField("Hospitalisation", validators=[Optional()])
+    traitement_medical = FloatField("Traitement médical", validators=[Optional()])
+    indemnite_journaliere = FloatField("Indemnité journalière", validators=[Optional()])
+    
+    assure_nom = StringField("Nom", validators=[Optional()])
+    assure_prenoms = StringField("Prénoms", validators=[Optional()])
+    assure_tel = StringField("Téléphone", validators=[Optional()])
+    assure_date_naissance = DateField("Date de naissance", validators=[Optional()])
+    assure_adresse = StringField("Adresse", validators=[Optional()])
+    
+    beneficiaire_nom = StringField("Nom bénéficiaire", validators=[Optional()])
+    beneficiaire_prenoms = StringField("Prénoms bénéficiaire", validators=[Optional()])
+    beneficiaire_tel = StringField("Téléphone bénéficiaire", validators=[Optional()])
+    beneficiaire_profession = StringField("Profession bénéficiaire", validators=[Optional()])
+    beneficiaire_adresse = StringField("Adresse bénéficiaire", validators=[Optional()])
+    beneficiaire_lateralite = SelectField("Latéralité", choices=[('Droit','Droit'),('Gauche','Gauche')], validators=[Optional()])
+    
+    souscripteur_nom = StringField("Nom souscripteur", validators=[DataRequired()])
+    souscripteur_prenoms = StringField("Prénoms souscripteur", validators=[DataRequired()])
+    souscripteur_tel = StringField("Téléphone souscripteur", validators=[DataRequired()])
+    souscripteur_date_naissance = DateField("Date de naissance souscripteur", validators=[DataRequired()])
+    souscripteur_adresse = StringField("Adresse souscripteur", validators=[Optional()])
+    
+    ack_conditions = BooleanField("J'accepte les conditions générales", validators=[DataRequired()])
+    lieu_signature = StringField("Lieu de signature", validators=[Optional()])
+    date_signature = DateField("Date de signature", validators=[Optional()])
+    
+    submit = SubmitField("Soumettre")
 
 
 
@@ -104,6 +82,7 @@ class SouscriptionForm(FlaskForm):
 )
 
     recaptcha = RecaptchaField()
+
 
 
 
