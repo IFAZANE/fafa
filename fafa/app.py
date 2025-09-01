@@ -11,6 +11,10 @@ from io import StringIO, BytesIO
 from openpyxl import Workbook
 from weasyprint import HTML
 from datetime import datetime
+from weasyprint import HTML
+
+
+from models import QuestionnaireFafa  # Assure-toi que c’est bien importé en haut
 
 from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer
 from reportlab.lib.styles import getSampleStyleSheet
@@ -157,22 +161,66 @@ def questionnaire_step2():
     return render_template('step2.html', form=form)
 
 # ✅ Step 3 : choix du produit + sauvegarde
-from weasyprint import HTML
-from datetime import datetime
 
 @app.route('/step3', methods=['GET', 'POST'])
 def questionnaire_step3():
     form = Etape3Form()
 
     if form.validate_on_submit():
-        # 🔹 Sauvegarde des données dans la session
+        # 🔹 Sauvegarde dans session
         session['ack_conditions'] = form.ack_conditions.data
         session['lieu_signature'] = form.lieu_signature.data
         session['date_signature'] = form.date_signature.data.strftime('%Y-%m-%d') if form.date_signature.data else datetime.utcnow().strftime('%Y-%m-%d')
 
         flash("Étape 3 enregistrée !", "success")
 
-        # 🔹 Générer le PDF avec toutes les informations des 3 étapes
+        try:
+            # 🔹 Création de l'objet en base
+            souscription = QuestionnaireFafa(
+                duree_contrat=session.get('duree_contrat'),
+                periode_debut=datetime.strptime(session.get('periode_debut'), '%Y-%m-%d') if session.get('periode_debut') else None,
+                periode_fin=datetime.strptime(session.get('periode_fin'), '%Y-%m-%d') if session.get('periode_fin') else None,
+                periodicite=session.get('periodicite'),
+                prime_nette=session.get('prime_nette'),
+                accessoires=session.get('accessoires'),
+                taxes=session.get('taxes'),
+                prime_totale=session.get('prime_totale'),
+                deces_accident=session.get('deces_accident'),
+                deces_toutes_causes=session.get('deces_toutes_causes'),
+                invalidite=session.get('invalidite'),
+                # Champs manquants si non remplis à l'étape 1
+                hospitalisation=session.get('hospitalisation'),
+                traitement_medical=session.get('traitement_medical'),
+                indemnite_journaliere=session.get('indemnite_journaliere'),
+                assure_nom=session.get('assure_nom'),
+                assure_prenoms=session.get('assure_prenoms'),
+                assure_tel=session.get('assure_tel'),
+                assure_date_naissance=datetime.strptime(session.get('assure_date_naissance'), '%Y-%m-%d') if session.get('assure_date_naissance') else None,
+                assure_adresse=session.get('assure_adresse'),
+                beneficiaire_nom=session.get('beneficiaire_nom'),
+                beneficiaire_prenoms=session.get('beneficiaire_prenoms'),
+                beneficiaire_tel=session.get('beneficiaire_tel'),
+                beneficiaire_adresse=session.get('beneficiaire_adresse'),
+                beneficiaire_profession=session.get('beneficiaire_profession'),
+                beneficiaire_lateralite=session.get('beneficiaire_lateralite'),  # si utilisé
+                souscripteur_nom=session.get('souscripteur_nom'),
+                souscripteur_prenoms=session.get('souscripteur_prenoms'),
+                souscripteur_tel=session.get('souscripteur_tel'),
+                souscripteur_date_naissance=datetime.strptime(session.get('souscripteur_date_naissance'), '%Y-%m-%d') if session.get('souscripteur_date_naissance') else None,
+                souscripteur_adresse=session.get('souscripteur_adresse'),
+                ack_conditions=session.get('ack_conditions', False),
+                lieu_signature=session.get('lieu_signature'),
+                date_signature=datetime.strptime(session.get('date_signature'), '%Y-%m-%d') if session.get('date_signature') else datetime.utcnow()
+            )
+            db.session.add(souscription)
+            db.session.commit()
+            flash("Souscription enregistrée en base !", "success")
+        except Exception as e:
+            db.session.rollback()
+            flash(f"Erreur lors de l'enregistrement en base : {str(e)}", "danger")
+            return redirect(url_for('questionnaire_step3'))
+
+        # 🔹 Générer le PDF
         rendered = render_template('questionnaire_pdf.html', session=session)
         pdf_file = BytesIO()
         HTML(string=rendered).write_pdf(pdf_file)
@@ -185,7 +233,7 @@ def questionnaire_step3():
             mimetype='application/pdf'
         )
 
-    # Pré-remplissage si déjà dans la session
+    # Pré-remplissage
     if 'lieu_signature' in session:
         form.ack_conditions.data = session.get('ack_conditions', False)
         form.lieu_signature.data = session.get('lieu_signature')
@@ -363,6 +411,7 @@ def debug_form():
 # 1️⃣2️⃣ Exécution de l'application
 if __name__ == '__main__':
     app.run(debug=True)
+
 
 
 
