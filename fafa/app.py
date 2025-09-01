@@ -50,6 +50,59 @@ app.register_blueprint(admin_bp)
 #    return render_template("questionnaire.html", form=form)
 
 
+import uuid
+
+app = Flask(__name__)
+app.secret_key = "secret-key"  # nécessaire pour utiliser session
+
+# ✅ Step 1 : informations de l’assuré
+@app.route("/step1", methods=["GET", "POST"])
+def step1():
+    if request.method == "POST":
+        session["assure_nom"] = request.form.get("assure_nom")
+        session["assure_prenom"] = request.form.get("assure_prenom")
+        session["assure_tel"] = request.form.get("assure_tel")
+        return redirect(url_for("step2"))
+    return render_template("step1.html")
+
+# ✅ Step 2 : informations du bénéficiaire
+@app.route("/step2", methods=["GET", "POST"])
+def step2():
+    if request.method == "POST":
+        session["benef_nom"] = request.form.get("beneficiaire_nom")
+        session["benef_prenom"] = request.form.get("beneficiaire_prenom")
+        session["benef_tel"] = request.form.get("beneficiaire_tel")
+        return redirect(url_for("step3"))
+    return render_template("step2.html")
+
+# ✅ Step 3 : choix du produit + sauvegarde
+@app.route("/step3", methods=["GET", "POST"])
+def step3():
+    if request.method == "POST":
+        produit = request.form.get("produit")  # 15 000 ou 25 000 FCFA
+        transaction_code = str(uuid.uuid4())[:8]  # code unique
+
+        # Sauvegarde en DB
+        new_sub = Subscription(
+            assure_nom=session.get("assure_nom"),
+            assure_prenom=session.get("assure_prenom"),
+            assure_tel=session.get("assure_tel"),
+            benef_nom=session.get("benef_nom"),
+            benef_prenom=session.get("benef_prenom"),
+            benef_tel=session.get("benef_tel"),
+            produit=produit,
+            transaction_code=transaction_code
+        )
+        db.session.add(new_sub)
+        db.session.commit()
+
+        flash("Souscription enregistrée. Redirection vers le paiement...", "success")
+
+        # Redirection vers le paiement sandbox
+        return redirect(f"https://sandbox-paiement.com/pay?ref={transaction_code}&amount={produit}")
+
+    return render_template("step3.html")
+
 
 
 
@@ -221,6 +274,7 @@ def debug_form():
 # 1️⃣2️⃣ Exécution de l'application
 if __name__ == '__main__':
     app.run(debug=True)
+
 
 
 
