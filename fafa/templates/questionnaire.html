@@ -55,7 +55,7 @@
             <strong>En cas d’urgence :</strong><br />
             Tél : <strong>22 23 49 00 / 91 45 55 55</strong>
           </div>
-          <span class="badge text-bg-primary">QUESTIONNAIRE FAFA</span>
+         
         </div>
       </div>
 
@@ -76,7 +76,7 @@
         {{ form.hidden_tag() }}
 
 
-    <!-- Durée du contrat -->
+ <!-- Durée du contrat -->
 <div class="card mb-4 shadow-sm">
   <div class="card-header fw-semibold">Durée du contrat</div>
   <div class="card-body small-text">
@@ -100,28 +100,26 @@
   </div>
 </div>
 
-
-
-        <!-- Période et périodicité -->
-        <div class="row g-3">
-          <div class="col-12 col-md-4">
-            <label class="form-label">Pour la période du</label>
-            {{ form.periode_debut(class="form-control") }}
-          </div>
-          <div class="col-12 col-md-4">
-            <label class="form-label">au</label>
-            {{ form.periode_fin(class="form-control") }}
-          </div>
-          <div class="col-12 col-md-4">
-            {{ form.periodicite.label(class="form-label") }}
-            {{ form.periodicite(class="form-select") }}
-          </div>
-        </div>
-
+<!-- Période et périodicité -->
+<div class="card mb-4 shadow-sm">
+  <div class="card-header fw-semibold">Période et périodicité</div>
+  <div class="card-body small-text">
+    <div class="row g-3">
+      <div class="col-12 col-md-6">
+        <label class="form-label required">Pour la période du</label>
+        {{ form.periode_debut(class="form-control") }}
+      </div>
+      <div class="col-12 col-md-6">
+        <label class="form-label required">au</label>
+        {{ form.periode_fin(class="form-control") }}
+      </div>
+      <div class="col-12 col-md-6 mt-2">
+        {{ form.periodicite.label(class="form-label") }}
+        {{ form.periodicite(class="form-select") }}
       </div>
     </div>
-
-
+  </div>
+</div>
 
 
     <!-- Prime -->
