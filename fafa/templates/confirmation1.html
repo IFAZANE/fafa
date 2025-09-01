@@ -1,0 +1,11 @@
+{% extends 'base.html' %}
+{% block content %}
+<h2>Confirmation</h2>
+<p>Merci ! Voici le récapitulatif :</p>
+<ul>
+  {% for key, value in data.items() %}
+    <li><b>{{ key.replace('_',' ').capitalize() }} :</b> {{ value }}</li>
+  {% endfor %}
+</ul>
+<a href="{{ url_for('download_pdf') }}">📥 Télécharger le contrat en PDF</a>
+{% endblock %}
