@@ -1,0 +1,193 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <title>FAFA Souscription</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+
+  <style>
+    body { background: #f7f7fb; font-size: 0.95rem; }
+    header { text-align: center; padding: 2rem 0; background-color: #fff; border-bottom: 1px solid #eee; margin-bottom: 1.5rem; }
+    header img { max-height: 60px; margin-bottom: 1rem; }
+    .section-title { font-weight: 700; margin-bottom: 1rem; }
+    .card { margin-bottom: 1rem; }
+    .barreme-table td, .barreme-table th { vertical-align: middle; }
+    .legal-card pre, .legal-card p { white-space: pre-wrap; }
+    h6 { font-weight: 600; }
+  </style>
+</head>
+<body>
+
+  <!-- Header -->
+  <header>
+    <img src="{{ url_for('static', filename='logo_FAFA.png') }}" alt="FAFA Logo">
+    <h1 class="h4">Souscription FAFA</h1>
+  </header>
+
+  <main class="container my-4">
+
+    <!-- Contrat / mentions -->
+    <div class="card p-3">
+      <p>
+        Le présent contrat est régi par les présentes Conditions Particulières et par les
+        <strong>Conditions Générales Individuelle Accidents et Santé</strong> que l’assuré reconnaît avoir reçues.
+        Toute modification non visée par la Direction est nulle.<br>
+        Le contrat est souscrit pour la durée de la société, avec faculté réciproque de résiliation annuelle moyennant préavis de deux mois au moins avant la date anniversaire de la prise d'effet.<br>
+        Le contrat est souscrit pour une durée ferme d’un an et cessera ses effets sans autre avis à sa date anniversaire à 24h00.
+      </p>
+    </div>
+
+    <h2 class="section-title text-center">Formulaire de souscription</h2>
+
+    <!-- Formulaire / valeurs dynamiques -->
+    <div class="card p-3">
+      <strong>Durée du contrat :</strong> {{ form.duree_contrat.data }}
+    </div>
+
+    <div class="card p-3">
+      <strong>Période :</strong> {{ form.periode_debut.data }} au {{ form.periode_fin.data }}<br>
+      <strong>Périodicité :</strong> {{ form.periodicite.data }}
+    </div>
+
+    <div class="card p-3">
+      <strong>Prime nette :</strong> {{ form.prime_nette.data }} FCFA<br>
+      <strong>Accessoires :</strong> {{ form.accessoires.data }} FCFA<br>
+      <strong>Taxes :</strong> {{ form.taxes.data }} FCFA<br>
+      <strong>Prime totale :</strong> {{ form.prime_totale.data }} FCFA
+    </div>
+
+    <div class="card p-3">
+      <strong>Décès accident :</strong> {{ form.deces_accident.data }} FCFA<br>
+      <strong>Décès toutes causes :</strong> {{ form.deces_toutes_causes.data }} FCFA<br>
+      <strong>Invalidité :</strong> {{ form.invalidite.data }} FCFA<br>
+      <strong>Hospitalisation :</strong> {{ form.hospitalisation.data }} FCFA<br>
+      <strong>Traitement médical :</strong> {{ form.traitement_medical.data }} FCFA<br>
+      <strong>Indemnité journalière :</strong> {{ form.indemnite_journaliere.data }} FCFA
+    </div>
+
+    <div class="card p-3">
+      <h5>Assuré</h5>
+      <strong>Nom :</strong> {{ form.assure_nom.data }}<br>
+      <strong>Prénoms :</strong> {{ form.assure_prenoms.data }}<br>
+      <strong>Téléphone :</strong> {{ form.assure_tel.data }}<br>
+      <strong>Date de naissance :</strong> {{ form.assure_date_naissance.data }}<br>
+      <strong>Adresse :</strong> {{ form.assure_adresse.data }}
+    </div>
+
+    <div class="card p-3">
+      <h5>Bénéficiaire</h5>
+      <strong>Nom :</strong> {{ form.beneficiaire_nom.data }}<br>
+      <strong>Prénoms :</strong> {{ form.beneficiaire_prenoms.data }}<br>
+      <strong>Téléphone :</strong> {{ form.beneficiaire_tel.data }}<br>
+      <strong>Adresse :</strong> {{ form.beneficiaire_adresse.data }}<br>
+      <strong>Profession :</strong> {{ form.beneficiaire_profession.data }}<br>
+      <strong>Lateralité :</strong> {{ form.beneficiaire_lateralite.data }}
+    </div>
+
+    <div class="card p-3">
+      <h5>Souscripteur</h5>
+      <strong>Nom :</strong> {{ form.souscripteur_nom.data }}<br>
+      <strong>Prénoms :</strong> {{ form.souscripteur_prenoms.data }}<br>
+      <strong>Téléphone :</strong> {{ form.souscripteur_tel.data }}<br>
+      <strong>Date de naissance :</strong> {{ form.souscripteur_date_naissance.data }}<br>
+      <strong>Adresse :</strong> {{ form.souscripteur_adresse.data }}
+    </div>
+
+    <!-- Conditions générales intégrales -->
+    <div class="card p-3 legal-card">
+      <h5>Conditions Générales — Individuelle Accidents et Santé</h5>
+
+      <h6>Article 1 — Objet du contrat</h6>
+      <p>
+La Société garantit le paiement des indemnités définies à l’article 4 ci-dessous en cas d’accident atteignant la personne assurée. 
+Par « accident », il faut entendre toute atteinte corporelle non intentionnelle de la part de l’assuré et provenant de l’action soudaine d’une cause extérieure. 
+La garantie prend effet et se termine aux dates et heures précisées aux Conditions Particulières. Toutefois, si un déplacement effectué par l’assuré 
+se termine, pour une cause de force majeure, après l’expiration de la période assurée alors qu’il aurait dû normalement achever avant l’expiration de cette période, la garantie
+est prolongée de plein droit du nombre strictement nécessaire de périodes de 24 heures (sans que le total n’excède sept).
+      </p>
+
+      <h6>Article 2 — Risques exclus</h6>
+      <p>
+Sont exclus notamment : les accidents intentionnellement causés par l’assuré ; guerre, émeute, actes de terrorisme ou sabotage ; événements nucléaires et radiations ionisantes ;
+maladies, insolation, apoplexie, effets de température/pression (sauf s’ils résultent d’un accident garanti ou d’un dysfonctionnement de transport) ; intoxication alimentaire ;
+lumbago, rupture de muscles, hernie (même d’origine traumatique) ; accidents résultant de traitements ou opérations (sauf s’ils découlent d’un accident garanti) ; usage de cycles à moteur de type sport
+ou > 50 cm³ ; sports à risques (hockey sur glace, bobsleigh, skeleton, ski, alpinisme par voies non frayées, spéléologie, etc.) ; participation (concurrent, commissaire, entraîneur, arbitre)
+à courses/compétitions/exhibitions et entraînements correspondants ; travaux manuels professionnels ; transport aérien autrement que comme passager d’une compagnie agréée. 
+Est exclue toute personne ayant intentionnellement causé ou provoqué le sinistre.
+      </p>
+
+      <h6>Article 3 — Indemnités garanties</h6>
+      <p>
+En cas de mort dans les douze mois des suites d’un accident garanti : capital payable au bénéficiaire désigné (ou à défaut aux ayants droit).<br/>
+En cas d’infirmité permanente (totale ou partielle) : indemnité calculée selon l’article 5.<br/>
+En cas de traitement médical : selon dispositions des Conditions Particulières.
+      </p>
+
+      <h6>Article 4 — Infirmité permanente</h6>
+      <p>
+a) <em>Infirmité permanente totale</em> : droit à la somme maxima stipulée (trouble mental incurable, perte totale/incapacité fonctionnelle absolue des deux yeux, deux bras, deux mains,
+deux jambes, deux pieds, d’un bras et d’une jambe, d’un bras et d’un pied, d’une main et d’une jambe, d’un main et d’un pied).<br/>
+b) <em>Infirmité permanente partielle</em> : droit aux pourcentages ci-dessous de la somme assurée pour l’infirmité totale.
+      </p>
+
+      <div class="table-responsive">
+        <table class="table table-sm table-bordered barreme-table">
+          <thead class="table-light">
+            <tr>
+              <th>Lésion / Perte</th>
+              <th class="text-center">Droit</th>
+              <th class="text-center">Gauche</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td>Perte totale du bras ou de la main</td><td class="text-center">60%</td><td class="text-center">50%</td></tr>
+            <tr><td>Perte totale du mouvement de l’épaule</td><td class="text-center">25%</td><td class="text-center">20%</td></tr>
+            <tr><td>Perte totale du mouvement du coude</td><td class="text-center">25%</td><td class="text-center">20%</td></tr>
+            <tr><td>Perte totale du mouvement du poignet</td><td class="text-center">20%</td><td class="text-center">15%</td></tr>
+            <tr><td>Perte totale du pouce et de l’index</td><td class="text-center">30%</td><td class="text-center">25%</td></tr>
+            <tr><td>Perte totale d’une jambe ou d’un pied</td><td class="text-center" colspan="2">50%</td></tr>
+            <tr><td>Amputation partielle d’un pied comprenant tous les orteils</td><td class="text-center" colspan="2">50%</td></tr>
+            <tr><td>Ablation de la mâchoire inférieure</td><td class="text-center" colspan="2">30%</td></tr>
+            <tr><td>Perte totale d’un œil ou réduction à la moitié de la vision binoculaire</td><td class="text-center" colspan="2">~25%</td></tr>
+            <tr><td>Surdité complète des deux oreilles</td><td class="text-center" colspan="2">40%</td></tr>
+            <tr><td>Surdité complète d’une oreille</td><td class="text-center" colspan="2">10%</td></tr>
+            <tr><td>Fracture non consolidée d’une jambe ou d’un pied</td><td class="text-center" colspan="2">25%</td></tr>
+            <tr><td>Fracture consolidée d’une rotule</td><td class="text-center" colspan="2">20%</td></tr>
+            <tr><td>Perte totale du mouvement d’une hanche ou d’un genou</td><td class="text-center" colspan="2">20%</td></tr>
+            <tr><td>Raccourcissement ≥ 5 cm d’un membre inférieur</td><td class="text-center" colspan="2">15%</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h6>Article 5 — Aggravation</h6>
+      <p>
+Si les conséquences sont aggravées par l’état de la victime, une maladie, une négligence de soins ou un traitement empirique, l’indemnité est calculée comme chez un sujet sain soumis à un traitement rationnel.
+      </p>
+
+      <h6>Article 6 — Déclaration de sinistres</h6>
+      <p>
+Déclaration dans les 5 jours (sauf cas fortuit/force majeure) à la Société/Agence (écrit ou verbal contre récépissé). L’assuré doit limiter les effets de l’accident et transmettre sous 10 jours les certificats médicaux et pièces probantes. Fausses déclarations : déchéance de garantie pour le sinistre.
+      </p>
+
+      <h6>Article 7 — Expertises</h6>
+      <p>
+Causes de la mort, degré d’infirmité, durée d’incapacité : constatées d’un commun accord ou par deux médecins (un par partie). En cas de divergence, un troisième est désigné (ou par le Président du Tribunal compétent).
+      </p>
+
+      <h6>Article 8 — Règlement des indemnités</h6>
+      <p>
+En cas de mort : paiement dans les 30 jours de la remise des pièces à la Société. En cas d’infirmité permanente : indemnité calculée selon l’article 5.
+      </p>
+
+      <h6>Article 9 — Prescription</h6>
+      <p>
+Toute action dérivant du contrat est prescrite par 2 ans (art. 28 du code CIMA).
+      </p>
+    </div>
+
+    <p class="text-center mt-4 mb-0">&copy; {{ current_year }} — FAFA Assurance</p>
+
+  </main>
+</body>
+</html>
