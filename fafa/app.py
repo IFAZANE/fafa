@@ -101,14 +101,60 @@ def questionnaire_step1():
 
 
 # ✅ Step 2 : informations du bénéficiaire
-@app.route("/step2", methods=["GET", "POST"])
-def step2():
-    if request.method == "POST":
-        session["benef_nom"] = request.form.get("beneficiaire_nom")
-        session["benef_prenom"] = request.form.get("beneficiaire_prenom")
-        session["benef_tel"] = request.form.get("beneficiaire_tel")
-        return redirect(url_for("step3"))
-    return render_template("step2.html")
+from flask import Flask, render_template, request, session, redirect, url_for, flash
+from forms import Etape2Form
+from datetime import datetime
+
+@app.route('/step2', methods=['GET', 'POST'])
+def questionnaire_step2():
+    form = Etape2Form()
+
+    if form.validate_on_submit():
+        # 🔹 Assuré
+        session['assure_nom'] = form.assure_nom.data
+        session['assure_prenoms'] = form.assure_prenoms.data
+        session['assure_tel'] = form.assure_tel.data
+        session['assure_date_naissance'] = form.assure_date_naissance.data.strftime('%Y-%m-%d') if form.assure_date_naissance.data else None
+        session['assure_adresse'] = form.assure_adresse.data
+
+        # 🔹 Bénéficiaire
+        session['beneficiaire_nom'] = form.beneficiaire_nom.data
+        session['beneficiaire_prenoms'] = form.beneficiaire_prenoms.data
+        session['beneficiaire_tel'] = form.beneficiaire_tel.data
+        session['beneficiaire_profession'] = form.beneficiaire_profession.data
+        session['beneficiaire_adresse'] = form.beneficiaire_adresse.data
+
+        # 🔹 Souscripteur
+        session['souscripteur_nom'] = form.souscripteur_nom.data
+        session['souscripteur_prenoms'] = form.souscripteur_prenoms.data
+        session['souscripteur_tel'] = form.souscripteur_tel.data
+        session['souscripteur_date_naissance'] = form.souscripteur_date_naissance.data.strftime('%Y-%m-%d') if form.souscripteur_date_naissance.data else None
+        session['souscripteur_adresse'] = form.souscripteur_adresse.data
+
+        flash("Étape 2 enregistrée !", "success")
+        return redirect(url_for('questionnaire_step3'))  # redirection vers étape 3
+
+    # Pré-remplir le formulaire si des données sont déjà dans la session
+    if 'assure_nom' in session:
+        form.assure_nom.data = session.get('assure_nom')
+        form.assure_prenoms.data = session.get('assure_prenoms')
+        form.assure_tel.data = session.get('assure_tel')
+        form.assure_date_naissance.data = datetime.strptime(session.get('assure_date_naissance'), '%Y-%m-%d') if session.get('assure_date_naissance') else None
+        form.assure_adresse.data = session.get('assure_adresse')
+
+        form.beneficiaire_nom.data = session.get('beneficiaire_nom')
+        form.beneficiaire_prenoms.data = session.get('beneficiaire_prenoms')
+        form.beneficiaire_tel.data = session.get('beneficiaire_tel')
+        form.beneficiaire_profession.data = session.get('beneficiaire_profession')
+        form.beneficiaire_adresse.data = session.get('beneficiaire_adresse')
+
+        form.souscripteur_nom.data = session.get('souscripteur_nom')
+        form.souscripteur_prenoms.data = session.get('souscripteur_prenoms')
+        form.souscripteur_tel.data = session.get('souscripteur_tel')
+        form.souscripteur_date_naissance.data = datetime.strptime(session.get('souscripteur_date_naissance'), '%Y-%m-%d') if session.get('souscripteur_date_naissance') else None
+        form.souscripteur_adresse.data = session.get('souscripteur_adresse')
+
+    return render_template('step2.html', form=form)
 
 # ✅ Step 3 : choix du produit + sauvegarde
 @app.route("/step3", methods=["GET", "POST"])
@@ -309,6 +355,7 @@ def debug_form():
 # 1️⃣2️⃣ Exécution de l'application
 if __name__ == '__main__':
     app.run(debug=True)
+
 
 
 
