@@ -4,6 +4,7 @@ from models import db, Subscription
 from forms import SouscriptionForm, Etape1Form, Etape2Form, Etape3Form
 from forms import QuestionnaireForm
 from admin import admin_bp
+import io
 import os
 import uuid
 import csv
@@ -56,7 +57,7 @@ app.register_blueprint(admin_bp)
 
 import uuid
 
-app = Flask(__name__)
+#app = Flask(__name__)
 app.secret_key = "secret-key"  # nécessaire pour utiliser session
 
 # ✅ Step 1 : informations de l’assuré
@@ -214,7 +215,9 @@ def questionnaire_step3():
             )
             db.session.add(souscription)
             db.session.commit()
+            
             flash("Souscription enregistrée en base !", "success")
+            session.clear()
         except Exception as e:
             db.session.rollback()
             flash(f"Erreur lors de l'enregistrement en base : {str(e)}", "danger")
@@ -411,6 +414,7 @@ def debug_form():
 # 1️⃣2️⃣ Exécution de l'application
 if __name__ == '__main__':
     app.run(debug=True)
+
 
 
 
