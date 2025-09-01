@@ -18,9 +18,6 @@ class Etape1Form(FlaskForm):
     periodicite = SelectField(
         'Périodicité',
         choices=[
-            ('mensuelle', 'Mensuelle'),
-            ('trimestrielle', 'Trimestrielle'),
-            ('semestrielle', 'Semestrielle'),
             ('annuelle', 'Annuelle')
         ],
         validators=[DataRequired()]
@@ -158,6 +155,7 @@ class SouscriptionForm(FlaskForm):
 )
 
     recaptcha = RecaptchaField()
+
 
 
 
