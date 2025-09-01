@@ -2,10 +2,27 @@
 {% block content %}
 <h2>Étape 3 : Informations du Bénéficiaire</h2>
 <form method="POST">
-  <label>Nom :</label><input type="text" name="beneficiaire_nom" required><br>
-  <label>Prénom :</label><input type="text" name="beneficiaire_prenom" required><br>
-  <label>Téléphone :</label><input type="text" name="beneficiaire_tel" required><br>
-  <label>Adresse :</label><input type="text" name="beneficiaire_adresse" required><br>
+  <label>Nom :</label>
+  <input type="text" name="beneficiaire_nom" required><br>
+
+  <label>Prénom :</label>
+  <input type="text" name="beneficiaire_prenom" required><br>
+
+  <label>Téléphone :</label>
+  <input type="text" name="beneficiaire_tel" required><br>
+
+  <label>Adresse :</label>
+  <input type="text" name="beneficiaire_adresse" required><br>
+
+  <!-- Nouveau champ pour le type de produit -->
+  <label>Type de produit :</label>
+  <select name="beneficiaire_produit" required>
+    <option value="">--Sélectionnez--</option>
+    <option value="15000">15 000 FCFA/an</option>
+    <option value="25000">25 000 FCFA/an</option>
+  </select><br>
+
   <button type="submit">Valider</button>
 </form>
 {% endblock %}
+
