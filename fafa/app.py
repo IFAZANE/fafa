@@ -1,7 +1,8 @@
 from flask import Flask, render_template,request,session,send_file, redirect, flash, url_for, Response
 from config import Config
 from models import db, Subscription
-from forms import SouscriptionForm, QuestionnaireForm
+from forms import SouscriptionForm
+from forms import QuestionnaireFAFAForm
 from admin import admin_bp
 import os
 import uuid
@@ -175,6 +176,7 @@ def debug_form():
 # 1️⃣2️⃣ Exécution de l'application
 if __name__ == '__main__':
     app.run(debug=True)
+
 
 
 
