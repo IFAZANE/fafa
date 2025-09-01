@@ -4,6 +4,38 @@ from wtforms.validators import DataRequired, Length, Regexp
 
 
 
+from flask_wtf import FlaskForm
+from wtforms import StringField, DecimalField, DateField, SelectField
+from wtforms.validators import DataRequired, NumberRange, Optional
+
+class Etape1Form(FlaskForm):
+    # Durée du contrat
+    duree_contrat = StringField('Durée du contrat', validators=[DataRequired()])
+
+    # Période et périodicité
+    periode_debut = DateField('Date de début', format='%Y-%m-%d', validators=[DataRequired()])
+    periode_fin = DateField('Date de fin', format='%Y-%m-%d', validators=[DataRequired()])
+    periodicite = SelectField(
+        'Périodicité',
+        choices=[
+            ('mensuelle', 'Mensuelle'),
+            ('trimestrielle', 'Trimestrielle'),
+            ('semestrielle', 'Semestrielle'),
+            ('annuelle', 'Annuelle')
+        ],
+        validators=[DataRequired()]
+    )
+
+    # Prime
+    prime_nette = DecimalField('Prime nette', places=2, validators=[DataRequired(), NumberRange(min=0)])
+    accessoires = DecimalField('Accessoires', places=2, validators=[Optional(), NumberRange(min=0)])
+    taxes = DecimalField('Taxes', places=2, validators=[Optional(), NumberRange(min=0)])
+    prime_totale = DecimalField('Prime totale', places=2, validators=[Optional()])
+
+    # Risques et capitaux garantis
+    deces_accident = DecimalField('Décès accident', places=2, validators=[DataRequired(), NumberRange(min=0)])
+    deces_toutes_causes = DecimalField('Décès toutes causes', places=2, validators=[DataRequired(), NumberRange(min=0)])
+    invalidite = DecimalField('Invalidité', places=2, validators=[DataRequired(), NumberRange(min=0)])
 
 
 
@@ -82,6 +114,7 @@ class SouscriptionForm(FlaskForm):
 )
 
     recaptcha = RecaptchaField()
+
 
 
 
