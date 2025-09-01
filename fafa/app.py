@@ -157,33 +157,41 @@ def questionnaire_step2():
     return render_template('step2.html', form=form)
 
 # ✅ Step 3 : choix du produit + sauvegarde
-@app.route("/step3", methods=["GET", "POST"])
-def step3():
-    if request.method == "POST":
-        produit = request.form.get("produit")  # 15 000 ou 25 000 FCFA
-        transaction_code = str(uuid.uuid4())[:8]  # code unique
+from weasyprint import HTML
+from datetime import datetime
 
-        # Sauvegarde en DB
-        new_sub = Subscription(
-            assure_nom=session.get("assure_nom"),
-            assure_prenom=session.get("assure_prenom"),
-            assure_tel=session.get("assure_tel"),
-            benef_nom=session.get("benef_nom"),
-            benef_prenom=session.get("benef_prenom"),
-            benef_tel=session.get("benef_tel"),
-            produit=produit,
-            transaction_code=transaction_code
+@app.route('/etape3', methods=['GET', 'POST'])
+def questionnaire_step3():
+    form = Etape3Form()
+
+    if form.validate_on_submit():
+        # 🔹 Sauvegarde des données dans la session
+        session['ack_conditions'] = form.ack_conditions.data
+        session['lieu_signature'] = form.lieu_signature.data
+        session['date_signature'] = form.date_signature.data.strftime('%Y-%m-%d') if form.date_signature.data else datetime.utcnow().strftime('%Y-%m-%d')
+
+        flash("Étape 3 enregistrée !", "success")
+
+        # 🔹 Générer le PDF avec toutes les informations des 3 étapes
+        rendered = render_template('questionnaire_pdf.html', session=session)
+        pdf_file = BytesIO()
+        HTML(string=rendered).write_pdf(pdf_file)
+        pdf_file.seek(0)
+
+        return send_file(
+            pdf_file,
+            download_name="formulaire_FAFA.pdf",
+            as_attachment=True,
+            mimetype='application/pdf'
         )
-        db.session.add(new_sub)
-        db.session.commit()
 
-        flash("Souscription enregistrée. Redirection vers le paiement...", "success")
+    # Pré-remplissage si déjà dans la session
+    if 'lieu_signature' in session:
+        form.ack_conditions.data = session.get('ack_conditions', False)
+        form.lieu_signature.data = session.get('lieu_signature')
+        form.date_signature.data = datetime.strptime(session.get('date_signature'), '%Y-%m-%d') if session.get('date_signature') else None
 
-        # Redirection vers le paiement sandbox
-        return redirect(f"https://sandbox-paiement.com/pay?ref={transaction_code}&amount={produit}")
-
-    return render_template("step3.html")
-
+    return render_template('etape3.html', form=form)
 
 
 
@@ -355,6 +363,7 @@ def debug_form():
 # 1️⃣2️⃣ Exécution de l'application
 if __name__ == '__main__':
     app.run(debug=True)
+
 
 
 
