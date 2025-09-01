@@ -1,0 +1,12 @@
+{% extends 'base.html' %}
+{% block content %}
+<h2>Étape 1 : Informations du Souscripteur</h2>
+<form method="POST">
+  <label>Nom :</label><input type="text" name="souscripteur_nom" required><br>
+  <label>Prénom :</label><input type="text" name="souscripteur_prenom" required><br>
+  <label>Téléphone :</label><input type="text" name="souscripteur_tel" required><br>
+  <label>Date de naissance :</label><input type="date" name="souscripteur_naissance" required><br>
+  <label>Adresse :</label><input type="text" name="souscripteur_adresse" required><br>
+  <button type="submit">Suivant</button>
+</form>
+{% endblock %}
