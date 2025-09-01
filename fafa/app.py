@@ -36,13 +36,61 @@ app.register_blueprint(admin_bp)
 
 @app.route("/questionnaire", methods=["GET", "POST"])
 def questionnaire():
-    form = QuestionnaireForm()
-    if form.validate_on_submit():
-        # TODO: insérer en base (SQLAlchemy ou SQL brut)
-        flash("Souscription enregistrée", "success")
-        return redirect(url_for("questionnaire"))
-    return render_template("questionnaire.html", form=form)
+    return redirect(url_for('step1'))
 
+@app.route('/step1', methods=['GET', 'POST'])
+def step1():
+    if request.method == 'POST':
+        session['souscripteur_nom'] = request.form['souscripteur_nom']
+        session['souscripteur_prenom'] = request.form['souscripteur_prenom']
+        session['souscripteur_tel'] = request.form['souscripteur_tel']
+        session['souscripteur_naissance'] = request.form['souscripteur_naissance']
+        session['souscripteur_adresse'] = request.form['souscripteur_adresse']
+        return redirect(url_for('step2'))
+    return render_template('step1.html')
+
+@app.route('/step2', methods=['GET', 'POST'])
+def step2():
+    if request.method == 'POST':
+        session['assure_nom'] = request.form['assure_nom']
+        session['assure_prenom'] = request.form['assure_prenom']
+        session['assure_tel'] = request.form['assure_tel']
+        session['assure_naissance'] = request.form['assure_naissance']
+        session['assure_adresse'] = request.form['assure_adresse']
+        return redirect(url_for('step3'))
+    return render_template('step2.html')
+
+@app.route('/step3', methods=['GET', 'POST'])
+def step3():
+    if request.method == 'POST':
+        session['beneficiaire_nom'] = request.form['beneficiaire_nom']
+        session['beneficiaire_prenom'] = request.form['beneficiaire_prenom']
+        session['beneficiaire_tel'] = request.form['beneficiaire_tel']
+        session['beneficiaire_adresse'] = request.form['beneficiaire_adresse']
+        return redirect(url_for('confirmation'))
+    return render_template('step3.html')
+
+@app.route('/confirmation')
+def confirmation():
+    return render_template('confirmation.html', data=session)
+
+@app.route('/download_pdf')
+def download_pdf():
+    buffer = io.BytesIO()
+    doc = SimpleDocTemplate(buffer)
+    styles = getSampleStyleSheet()
+    story = []
+
+    story.append(Paragraph("CONTRAT FAFA - Souscription", styles["Title"]))
+    story.append(Spacer(1, 12))
+
+    for key, value in session.items():
+        story.append(Paragraph(f"<b>{key.replace('_',' ').capitalize()}:</b> {value}", styles["Normal"]))
+        story.append(Spacer(1, 8))
+
+    doc.build(story)
+    buffer.seek(0)
+    return send_file(buffer, as_attachment=True, download_name="contrat_fafa.pdf", mimetype="application/pdf")
 
 # 6️⃣ Route principale : page d'inscription
 @app.route('/')
@@ -114,6 +162,7 @@ def debug_form():
 # 1️⃣2️⃣ Exécution de l'application
 if __name__ == '__main__':
     app.run(debug=True)
+
 
 
 
