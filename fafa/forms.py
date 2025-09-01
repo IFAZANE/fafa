@@ -38,6 +38,37 @@ class Etape1Form(FlaskForm):
     invalidite = DecimalField('Invalidité', places=2, validators=[DataRequired(), NumberRange(min=0)])
 
 
+from flask_wtf import FlaskForm
+from wtforms import StringField, DateField, SubmitField
+from wtforms.validators import DataRequired, Length, Regexp
+
+class Etape2Form(FlaskForm):
+    # Assuré
+    assure_nom = StringField('Nom', validators=[DataRequired(), Length(max=100)])
+    assure_prenoms = StringField('Prénoms', validators=[DataRequired(), Length(max=100)])
+    assure_tel = StringField('Téléphone', validators=[DataRequired(), Regexp(r'^\+?\d{8,15}$', message="Numéro de téléphone invalide")])
+    assure_date_naissance = DateField('Date de naissance', format='%Y-%m-%d', validators=[DataRequired()])
+    assure_adresse = StringField('Adresse', validators=[DataRequired(), Length(max=200)])
+
+    # Bénéficiaire
+    beneficiaire_nom = StringField('Nom', validators=[DataRequired(), Length(max=100)])
+    beneficiaire_prenoms = StringField('Prénoms', validators=[DataRequired(), Length(max=100)])
+    beneficiaire_tel = StringField('Téléphone', validators=[DataRequired(), Regexp(r'^\+?\d{8,15}$', message="Numéro de téléphone invalide")])
+    beneficiaire_profession = StringField('Profession', validators=[DataRequired(), Length(max=100)])
+    beneficiaire_adresse = StringField('Adresse', validators=[DataRequired(), Length(max=200)])
+
+    # Souscripteur
+    souscripteur_nom = StringField('Nom', validators=[DataRequired(), Length(max=100)])
+    souscripteur_prenoms = StringField('Prénoms', validators=[DataRequired(), Length(max=100)])
+    souscripteur_tel = StringField('Téléphone', validators=[DataRequired(), Regexp(r'^\+?\d{8,15}$', message="Numéro de téléphone invalide")])
+    souscripteur_date_naissance = DateField('Date de naissance', format='%Y-%m-%d', validators=[DataRequired()])
+    souscripteur_adresse = StringField('Adresse', validators=[DataRequired(), Length(max=200)])
+
+    submit = SubmitField('Suivant')
+
+
+
+
 
 
 from flask_wtf import FlaskForm
@@ -114,6 +145,7 @@ class SouscriptionForm(FlaskForm):
 )
 
     recaptcha = RecaptchaField()
+
 
 
 
