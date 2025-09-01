@@ -73,9 +73,9 @@ def step3():
         return redirect(url_for('confirmation'))
     return render_template('step3.html')
 
-@app.route('/confirmation')
-def confirmation():
-    return render_template('confirmation.html', data=session)
+@app.route('/confirmation1')
+def confirmation1():
+    return render_template('confirmation1.html', data=session)
 
 @app.route('/download_pdf')
 def download_pdf():
@@ -165,6 +165,7 @@ def debug_form():
 # 1️⃣2️⃣ Exécution de l'application
 if __name__ == '__main__':
     app.run(debug=True)
+
 
 
 
