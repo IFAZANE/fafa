@@ -77,7 +77,7 @@ OAUTH2_CREDENTIALS = {
     "username": "api_cashpay.nsia",
     "password": "btCZkiiluA",
     "client_id": "api_cashpay.nsia",
-    "client_reference": "tgIeTQpShnfewy33opbigMmhrtNqvTsj"
+    "client_secret": "tgIeTQpShnfewy33opbigMmhrtNqvTsj"
 }
 
 # -----------------------------
@@ -289,6 +289,7 @@ def manuel():
 # -----------------------------
 if __name__ == '__main__':
     app.run(debug=True)
+
 
 
 
