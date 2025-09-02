@@ -175,7 +175,7 @@ def paiement():
         session['transaction_id'] = transaction_id
 
         # -----------------------------
-        # 1️⃣ Auth OAuth 2.0 SEMOA
+        # Étape 1 : Auth SEMOA
         # -----------------------------
         try:
             auth_resp = requests.post(
@@ -189,24 +189,27 @@ def paiement():
                 timeout=10
             )
             auth_resp.raise_for_status()
-            # Forcer la conversion JSON, sinon None
+
+            # DEBUG : afficher la réponse brute
+            print("🔍 Réponse brute SEMOA Auth:", auth_resp.text)
+
             try:
                 auth_data = auth_resp.json()
             except ValueError:
-                auth_data = {}
-                flash(f"Réponse SEMOA invalide : {auth_resp.text}", "danger")
+                flash(f"Réponse non-JSON de SEMOA : {auth_resp.text}", "danger")
                 return redirect(url_for('paiement'))
 
             access_token = auth_data.get('access_token')
             if not access_token:
-                flash(f"Erreur OAuth SEMOA : token manquant\n{auth_resp.text}", "danger")
+                flash(f"Token manquant dans la réponse SEMOA : {auth_resp.text}", "danger")
                 return redirect(url_for('paiement'))
+
         except requests.exceptions.RequestException as e:
             flash(f"Erreur de connexion SEMOA : {str(e)}", "danger")
             return redirect(url_for('paiement'))
 
         # -----------------------------
-        # 2️⃣ Créer la commande
+        # Étape 2 : Créer la commande
         # -----------------------------
         payment_data = {
             "amount": int(montant),
@@ -216,29 +219,29 @@ def paiement():
             "callback_url": url_for('confirmation_paiement', transaction_id=transaction_id, _external=True)
         }
 
-        headers = {
-            "Authorization": f"Bearer {access_token}",
-            "Content-Type": "application/json"
-        }
+        headers = {"Authorization": f"Bearer {access_token}", "Content-Type": "application/json"}
 
         try:
             resp = requests.post(f"{SEMOA_BASE}/orders", json=payment_data, headers=headers, timeout=10)
             resp.raise_for_status()
+            print("🔍 Réponse brute SEMOA Order:", resp.text)
+
             try:
                 order_data = resp.json()
             except ValueError:
-                order_data = {}
-                flash(f"Réponse SEMOA invalide lors de la création du paiement : {resp.text}", "danger")
+                flash(f"Réponse non-JSON lors de la commande : {resp.text}", "danger")
                 return redirect(url_for('paiement'))
 
             gateway_info = order_data.get('gateway', {})
             session['gateway_url'] = gateway_info.get('url')
             flash(f"Paiement de {montant} XOF initié avec succès !", "success")
             return redirect(url_for('confirmation_paiement', transaction_id=transaction_id))
+
         except requests.exceptions.RequestException as e:
             flash(f"Erreur lors de la création du paiement : {str(e)}", "danger")
 
     return render_template('paiement.html', montant=montant)
+
 
 
 
@@ -286,6 +289,7 @@ def manuel():
 # -----------------------------
 if __name__ == '__main__':
     app.run(debug=True)
+
 
 
 
