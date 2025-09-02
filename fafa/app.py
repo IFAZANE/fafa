@@ -1,23 +1,18 @@
 from flask import (
     Flask, render_template, request, session, send_file, redirect,
-    flash, url_for, make_response
+    flash, url_for
 )
 from config import Config
-from models import db, Subscription, QuestionnaireFafa
-from forms import (
-    SouscriptionForm, Etape1Form, Etape2Form, Etape3Form,
-    QuestionnaireForm
-)
+from models import db, Subscription
+from forms import Etape1Form, Etape2Form, Etape3Form
 from admin import admin_bp
 from export import export_csv, export_excel
 import requests
 import uuid
 import os
 from io import BytesIO
-from datetime import datetime, date
+from datetime import datetime
 from weasyprint import HTML
-from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer
-from reportlab.lib.styles import getSampleStyleSheet
 
 # -----------------------------
 # 1️⃣ Création de l'application
@@ -27,7 +22,7 @@ app.config.from_object(Config)
 app.secret_key = os.environ.get('SECRET_KEY', 'changeme')
 
 # -----------------------------
-# 2️⃣ Configuration base de données
+# 2️⃣ Base de données
 # -----------------------------
 app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get(
     'DATABASE_URL',
@@ -47,20 +42,19 @@ app.register_blueprint(admin_bp)
 # 4️⃣ Fonctions utilitaires
 # -----------------------------
 def to_float(x):
-    """Convertit proprement '10,50' ou Decimal/int/float en float."""
     if x in (None, ''):
         return 0.0
     try:
         return float(x)
-    except Exception:
+    except:
         s = str(x).strip().replace(' ', '').replace(',', '.')
         try:
             return float(s)
-        except Exception:
+        except:
             return 0.0
 
 # -----------------------------
-# 5️⃣ Configuration SEMOA
+# 5️⃣ Configuration SEMOA OAuth 2.0
 # -----------------------------
 SEMOA_BASE = "https://api.semoa-payments.ovh/sandbox"
 OAUTH2_CREDENTIALS = {
@@ -91,7 +85,6 @@ def questionnaire_step1():
         flash("Étape 1 enregistrée !", "success")
         return redirect(url_for('questionnaire_step2'))
 
-    # Pré-remplissage depuis session
     if session.get('duree_contrat'):
         form.duree_contrat.data = session.get('duree_contrat')
         form.periode_debut.data = datetime.strptime(session['periode_debut'], '%Y-%m-%d') if session.get('periode_debut') else None
@@ -111,7 +104,6 @@ def questionnaire_step1():
 def questionnaire_step2():
     form = Etape2Form()
     if form.validate_on_submit():
-        # Sauvegarde en session
         for prefix in ['assure', 'beneficiaire', 'souscripteur']:
             for field_name, field in form._fields.items():
                 if field_name.startswith(prefix):
@@ -119,7 +111,6 @@ def questionnaire_step2():
         flash("Étape 2 enregistrée !", "success")
         return redirect(url_for('questionnaire_step3'))
 
-    # Pré-remplissage
     for field_name, field in form._fields.items():
         if field_name in session:
             value = session[field_name]
@@ -139,7 +130,6 @@ def questionnaire_step3():
         flash("Étape 3 enregistrée ! Vous allez être redirigé vers le paiement.", "success")
         return redirect(url_for('paiement'))
 
-    # Pré-remplissage
     if session.get('lieu_signature'):
         form.ack_conditions.data = session.get('ack_conditions', False)
         form.lieu_signature.data = session.get('lieu_signature')
@@ -148,18 +138,16 @@ def questionnaire_step3():
     return render_template('step3.html', form=form)
 
 # -----------------------------
-# 7️⃣ Route paiement
+# 7️⃣ Route paiement avec SEMOA OAuth 2.0
 # -----------------------------
 @app.route('/paiement', methods=['GET', 'POST'])
 def paiement():
-    if request.method == 'POST':
-        # Montant réel de la session
-        montant = session.get('prime_totale')
-        if montant is None:
-            flash("Montant introuvable. Veuillez recommencer la souscription.", "danger")
-            return redirect(url_for('questionnaire_step1'))
+    montant = session.get('prime_totale')
+    if montant is None:
+        flash("Montant introuvable. Veuillez recommencer la souscription.", "danger")
+        return redirect(url_for('questionnaire_step1'))
 
-        # Récupération du numéro de téléphone
+    if request.method == 'POST':
         phone = request.form.get('phone')
         if not phone:
             flash("Veuillez saisir un numéro de téléphone valide.", "warning")
@@ -168,7 +156,7 @@ def paiement():
         transaction_id = str(uuid.uuid4())
         session['transaction_id'] = transaction_id
 
-        # Auth OAuth SEMOA
+        # Auth OAuth 2.0 SEMOA
         auth_resp = requests.post(
             f"{SEMOA_BASE}/oauth/token",
             data={
@@ -185,37 +173,42 @@ def paiement():
 
         access_token = auth_resp.json().get('access_token')
 
-        # Préparer le paiement avec le numéro fourni
+        # Préparer la commande
         payment_data = {
-            "amount": montant,
+            "amount": int(montant),
             "currency": "XOF",
-            "payment_method": "mobilemoney",
-            "phone": phone,  # ✅ numéro fourni par l'utilisateur
-            "client_reference": OAUTH2_CREDENTIALS['client_reference'],
-            "transaction_id": transaction_id
+            "merchant_reference": transaction_id,
+            "description": "Souscription FAFA",
+            "callback_url": url_for('confirmation_paiement', transaction_id=transaction_id, _external=True),
+            "client": {
+                "phone": phone,
+                "firstname": session.get('assure_nom', 'UNKNOWN'),
+                "lastname": session.get('assure_prenom', 'UNKNOWN'),
+                "email": session.get('assure_email', 'unknown@example.com')
+            }
         }
 
         headers = {
             "Authorization": f"Bearer {access_token}",
             "Content-Type": "application/json"
         }
-        pay_resp = requests.post(f"{SEMOA_BASE}/payments", json=payment_data, headers=headers)
 
-        if pay_resp.status_code in (200, 201):
+        resp = requests.post(f"{SEMOA_BASE}/tpos/orders", json=payment_data, headers=headers)
+
+        if resp.status_code in (200, 201):
             flash(f"Paiement de {montant} XOF initié avec succès !", "success")
             return redirect(url_for('confirmation_paiement', transaction_id=transaction_id))
         else:
-            flash("Erreur lors de la création du paiement : " + pay_resp.text, "danger")
+            flash("Erreur lors de la création du paiement : " + resp.text, "danger")
 
-    # Affichage du montant réel
-    montant = session.get('prime_totale', 0)
     return render_template('paiement.html', montant=montant)
 
-
-
-
+# -----------------------------
+# 8️⃣ Confirmation paiement
+# -----------------------------
+@app.route('/confirmation/<transaction_id>')
 def confirmation_paiement(transaction_id):
-    # Pour sandbox, status simulé
+    # Ici, pour la sandbox, on simule le succès
     status = "success"
     if status != "success":
         flash("Paiement non encore validé.", "warning")
@@ -234,7 +227,7 @@ def confirmation_paiement(transaction_id):
             nom=session.get('assure_nom'),
             prenom=session.get('assure_prenom'),
             telephone=session.get('assure_telephone'),
-            produit=session.get('produit', '15 000 FCFA/an'),
+            produit=session.get('produit', 'Montant variable'),
             duree_contrat=session.get('duree_contrat'),
             date_debut=get_date('periode_debut'),
             date_fin=get_date('periode_fin'),
@@ -250,39 +243,19 @@ def confirmation_paiement(transaction_id):
     return render_template('confirmation.html', subscription=souscription)
 
 # -----------------------------
-# 8️⃣ Routes génériques et export
+# Routes génériques et export
 # -----------------------------
 @app.route('/')
 def accueil():
     return render_template('home.html')
 
-@app.route('/index', methods=['GET', 'POST'])
-def index():
-    form = SouscriptionForm()
-    total = Subscription.query.count()
-    if form.validate_on_submit():
-        existing = Subscription.query.filter_by(telephone=form.telephone.data).first()
-        if existing:
-            flash("Ce numéro est déjà enregistré.", "danger")
-        else:
-            sub = Subscription(
-                uuid=str(uuid.uuid4()),
-                nom=form.nom.data,
-                prenom=form.prenom.data,
-                telephone=form.telephone.data,
-                ville=form.ville.data,
-                produit=form.produit.data
-            )
-            db.session.add(sub)
-            db.session.commit()
-            flash("Souscription réussie !", "success")
-            return redirect(url_for('confirmation', uuid=sub.uuid))
-    return render_template('index.html', form=form, total=total)
-
-@app.route('/confirmation/<uuid>')
-def confirmation(uuid):
-    sub = Subscription.query.filter_by(uuid=uuid).first_or_404()
-    return render_template('confirmation.html', subscription=sub)
+@app.route('/export/pdf')
+def export_pdf():
+    buffer = BytesIO()
+    html = render_template('pdf_template.html', session=session)
+    HTML(string=html).write_pdf(buffer)
+    buffer.seek(0)
+    return send_file(buffer, as_attachment=True, download_name="souscription.pdf", mimetype='application/pdf')
 
 @app.route('/export/csv')
 def route_export_csv():
@@ -292,28 +265,8 @@ def route_export_csv():
 def route_export_excel():
     return export_excel()
 
-@app.route('/manuel')
-def manuel():
-    return render_template('manuel.html')
-
 # -----------------------------
-# 9️⃣ Génération PDF depuis questionnaire
-# -----------------------------
-@app.route('/export/pdf')
-def export_pdf():
-    buffer = BytesIO()
-    html = render_template('pdf_template.html', session=session)
-    HTML(string=html).write_pdf(buffer)
-    buffer.seek(0)
-    return send_file(buffer, as_attachment=True, download_name="souscription.pdf", mimetype='application/pdf')
-
-# -----------------------------
-# 10️⃣ Exécution
+# Exécution
 # -----------------------------
 if __name__ == '__main__':
     app.run(debug=True)
-
-
-
-
-
