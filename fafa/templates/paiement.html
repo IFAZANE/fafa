@@ -9,15 +9,18 @@
                     <h4>Paiement de votre souscription</h4>
                 </div>
                 <div class="card-body">
-                    <p class="mb-4 text-center">Montant à payer : <strong>{{ montant }} XOF</strong></p>
+                    <p class="mb-4 text-center fs-5">Montant à payer : <strong>{{ montant }} XOF</strong></p>
 
                     <form method="POST">
                         <div class="mb-3">
                             <label for="phone" class="form-label">Numéro de téléphone</label>
                             <input type="text" class="form-control" name="phone" id="phone" placeholder="Ex: 22890000000" required>
                         </div>
-                        <div class="d-grid">
-                            <button type="submit" class="btn btn-primary">Payer</button>
+
+                        <div class="d-grid mt-4">
+                            <button type="submit" class="btn btn-success btn-lg shadow-sm">
+                                💳 Payer maintenant
+                            </button>
                         </div>
                     </form>
 
