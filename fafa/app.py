@@ -174,27 +174,36 @@ def paiement():
         transaction_id = str(uuid.uuid4())
         session['transaction_id'] = transaction_id
 
+        # -----------------------------
         # 1️⃣ Auth OAuth 2.0 SEMOA
-        auth_resp = requests.post(
-            f"{SEMOA_BASE}/auth",
-            json={
-                "username": OAUTH2_CREDENTIALS['username'],
-                "password": OAUTH2_CREDENTIALS['password'],
-                "client_id": OAUTH2_CREDENTIALS['client_id'],
-                "client_secret": OAUTH2_CREDENTIALS.get('client_secret', '')
-            }
-        )
-
-        if auth_resp.status_code != 200:
-            flash("Erreur OAuth SEMOA : " + auth_resp.text, "danger")
+        # -----------------------------
+        try:
+            auth_resp = requests.post(
+                f"{SEMOA_BASE}/auth",
+                json={
+                    "username": OAUTH2_CREDENTIALS['username'],
+                    "password": OAUTH2_CREDENTIALS['password'],
+                    "client_id": OAUTH2_CREDENTIALS['client_id'],
+                    "client_secret": OAUTH2_CREDENTIALS.get('client_secret', '')
+                },
+                timeout=10
+            )
+            auth_resp.raise_for_status()
+            auth_data = auth_resp.json()
+            access_token = auth_data.get('access_token')
+            if not access_token:
+                flash(f"Erreur OAuth SEMOA : token manquant\n{auth_data}", "danger")
+                return redirect(url_for('paiement'))
+        except requests.exceptions.RequestException as e:
+            flash(f"Erreur de connexion SEMOA : {str(e)}", "danger")
+            return redirect(url_for('paiement'))
+        except ValueError:
+            flash(f"Erreur SEMOA : réponse JSON invalide\n{auth_resp.text}", "danger")
             return redirect(url_for('paiement'))
 
-        access_token = auth_resp.json().get('access_token')
-        if not access_token:
-            flash("Erreur OAuth SEMOA : token manquant", "danger")
-            return redirect(url_for('paiement'))
-
+        # -----------------------------
         # 2️⃣ Créer la commande
+        # -----------------------------
         payment_data = {
             "amount": int(montant),
             "currency": "XOF",
@@ -212,18 +221,21 @@ def paiement():
             "Content-Type": "application/json"
         }
 
-        resp = requests.post(f"{SEMOA_BASE}/orders", json=payment_data, headers=headers)
-
-        if resp.status_code in (200, 201):
-            flash(f"Paiement de {montant} XOF initié avec succès !", "success")
-            # On peut éventuellement récupérer la gateway pour rediriger l'utilisateur
-            gateway_info = resp.json().get('gateway', {})
+        try:
+            resp = requests.post(f"{SEMOA_BASE}/orders", json=payment_data, headers=headers, timeout=10)
+            resp.raise_for_status()
+            order_data = resp.json()
+            gateway_info = order_data.get('gateway', {})
             session['gateway_url'] = gateway_info.get('url')
+            flash(f"Paiement de {montant} XOF initié avec succès !", "success")
             return redirect(url_for('confirmation_paiement', transaction_id=transaction_id))
-        else:
-            flash("Erreur lors de la création du paiement : " + resp.text, "danger")
+        except requests.exceptions.RequestException as e:
+            flash(f"Erreur lors de la création du paiement : {str(e)}", "danger")
+        except ValueError:
+            flash(f"Erreur SEMOA : réponse JSON invalide lors de la création du paiement\n{resp.text}", "danger")
 
     return render_template('paiement.html', montant=montant)
+
 
 
 # -----------------------------
@@ -269,6 +281,7 @@ def manuel():
 # -----------------------------
 if __name__ == '__main__':
     app.run(debug=True)
+
 
 
 
