@@ -24,15 +24,19 @@ class Etape1Form(FlaskForm):
     )
 
     # Prime
-    prime_nette = DecimalField('Prime nette', places=2, validators=[DataRequired(), NumberRange(min=0)])
-    accessoires = DecimalField('Accessoires', places=2, validators=[NumberRange(min=0)])
-    taxes = DecimalField('Taxes', places=2, validators=[Optional(), NumberRange(min=0)])
-    prime_totale = DecimalField('Prime totale', places=2, validators=[Optional()])
+    type_contrat = SelectField(
+    "Type de contrat",
+    choices=[
+        ("15000", "15 000 FCFA / an"),
+        ("20000", "20 000 FCFA / an")
+    ],
+    validators=[DataRequired()]
+)
 
-    # Risques et capitaux garantis
-    deces_accident = DecimalField('Décès accident', places=2, validators=[DataRequired(), NumberRange(min=0)])
-    deces_toutes_causes = DecimalField('Décès toutes causes', places=2, validators=[DataRequired(), NumberRange(min=0)])
-    invalidite = DecimalField('Invalidité', places=2, validators=[DataRequired(), NumberRange(min=0)])
+    ## Risques et capitaux garantis
+    #deces_accident = DecimalField('Décès accident', places=2, validators=[DataRequired(), NumberRange(min=0)])
+    #deces_toutes_causes = DecimalField('Décès toutes causes', places=2, validators=[DataRequired(), NumberRange(min=0)])
+    #invalidite = DecimalField('Invalidité', places=2, validators=[DataRequired(), NumberRange(min=0)])
 
 
 from flask_wtf import FlaskForm
@@ -92,17 +96,21 @@ class QuestionnaireForm(FlaskForm):
     periode_fin = DateField("au", validators=[DataRequired()])
     periodicite = SelectField("Périodicité", choices=[('Mensuelle','Mensuelle'),('Annuel','Annuel')], validators=[DataRequired()])
     
-    prime_nette = FloatField("Prime nette", validators=[DataRequired()])
-    accessoires = FloatField("Accessoires", validators=[DataRequired()])
-    taxes = FloatField("Taxes", validators=[DataRequired()])
-    prime_totale = FloatField("Prime totale", validators=[DataRequired()])
+    type_contrat = SelectField(
+    "Type de contrat",
+    choices=[
+        ("15000", "15 000 FCFA / an"),
+        ("20000", "20 000 FCFA / an")
+    ],
+    validators=[DataRequired()]
+)
     
-    deces_accident = FloatField("Décès accident", validators=[Optional()])
-    deces_toutes_causes = FloatField("Décès toutes causes", validators=[Optional()])
-    invalidite = FloatField("Invalidité", validators=[Optional()])
-    hospitalisation = FloatField("Hospitalisation", validators=[Optional()])
-    traitement_medical = FloatField("Traitement médical", validators=[Optional()])
-    indemnite_journaliere = FloatField("Indemnité journalière", validators=[Optional()])
+    #deces_accident = FloatField("Décès accident", validators=[Optional()])
+    #deces_toutes_causes = FloatField("Décès toutes causes", validators=[Optional()])
+    #invalidite = FloatField("Invalidité", validators=[Optional()])
+    #hospitalisation = FloatField("Hospitalisation", validators=[Optional()])
+    #traitement_medical = FloatField("Traitement médical", validators=[Optional()])
+    #indemnite_journaliere = FloatField("Indemnité journalière", validators=[Optional()])
     
     assure_nom = StringField("Nom", validators=[Optional()])
     assure_prenoms = StringField("Prénoms", validators=[Optional()])
@@ -164,6 +172,7 @@ class SouscriptionForm(FlaskForm):
 )
 
     recaptcha = RecaptchaField()
+
 
 
 
