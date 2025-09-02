@@ -174,39 +174,37 @@ def paiement():
         transaction_id = str(uuid.uuid4())
         session['transaction_id'] = transaction_id
 
-        # Auth OAuth 2.0 SEMOA
+        # 1️⃣ Auth OAuth 2.0 SEMOA
         auth_resp = requests.post(
-    f"{SEMOA_BASE}/oauth/token",
-    headers={"Content-Type": "application/x-www-form-urlencoded"},
-    data={
-        "grant_type": "password",
-        "username": OAUTH2_CREDENTIALS['username'],
-        "password": OAUTH2_CREDENTIALS['password'],
-        "client_id": OAUTH2_CREDENTIALS['client_id'],
-        "client_secret": OAUTH2_CREDENTIALS.get('client_secret', '')
-    }
-)
-
+            f"{SEMOA_BASE}/auth",
+            json={
+                "username": OAUTH2_CREDENTIALS['username'],
+                "password": OAUTH2_CREDENTIALS['password'],
+                "client_id": OAUTH2_CREDENTIALS['client_id'],
+                "client_secret": OAUTH2_CREDENTIALS.get('client_secret', '')
+            }
+        )
 
         if auth_resp.status_code != 200:
             flash("Erreur OAuth SEMOA : " + auth_resp.text, "danger")
             return redirect(url_for('paiement'))
 
         access_token = auth_resp.json().get('access_token')
+        if not access_token:
+            flash("Erreur OAuth SEMOA : token manquant", "danger")
+            return redirect(url_for('paiement'))
 
-        # Préparer la commande
+        # 2️⃣ Créer la commande
         payment_data = {
             "amount": int(montant),
             "currency": "XOF",
-            "merchant_reference": transaction_id,
-            "description": "Souscription FAFA",
-            "callback_url": url_for('confirmation_paiement', transaction_id=transaction_id, _external=True),
             "client": {
-                "phone": phone,
-                "firstname": session.get('assure_nom', 'UNKNOWN'),
-                "lastname": session.get('assure_prenom', 'UNKNOWN'),
-                "email": session.get('assure_email', 'unknown@example.com')
-            }
+                "phone": phone
+            },
+            "gateway": {
+                "reference": transaction_id
+            },
+            "callback_url": url_for('confirmation_paiement', transaction_id=transaction_id, _external=True)
         }
 
         headers = {
@@ -214,15 +212,19 @@ def paiement():
             "Content-Type": "application/json"
         }
 
-        resp = requests.post(f"{SEMOA_BASE}/tpos/orders", json=payment_data, headers=headers)
+        resp = requests.post(f"{SEMOA_BASE}/orders", json=payment_data, headers=headers)
 
         if resp.status_code in (200, 201):
             flash(f"Paiement de {montant} XOF initié avec succès !", "success")
+            # On peut éventuellement récupérer la gateway pour rediriger l'utilisateur
+            gateway_info = resp.json().get('gateway', {})
+            session['gateway_url'] = gateway_info.get('url')
             return redirect(url_for('confirmation_paiement', transaction_id=transaction_id))
         else:
             flash("Erreur lors de la création du paiement : " + resp.text, "danger")
 
     return render_template('paiement.html', montant=montant)
+
 
 # -----------------------------
 # 8️⃣ Confirmation paiement
@@ -267,6 +269,7 @@ def manuel():
 # -----------------------------
 if __name__ == '__main__':
     app.run(debug=True)
+
 
 
 
