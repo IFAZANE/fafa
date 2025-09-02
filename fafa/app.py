@@ -239,6 +239,7 @@ def confirmation_paiement(transaction_id):
 # -----------------------------
 @app.route('/')
 def accueil():
+    session.clear()
     return render_template('home.html')
 
 @app.route('/export/pdf')
@@ -266,5 +267,6 @@ def manuel():
 # -----------------------------
 if __name__ == '__main__':
     app.run(debug=True)
+
 
 
