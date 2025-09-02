@@ -18,11 +18,20 @@ class QuestionnaireFafa(db.Model):
     __tablename__ = 'questionnaire_fafa'
     
     id = db.Column(db.Integer, primary_key=True)
-    #duree_contrat = db.Column(db.String(50))
+    duree_contrat = db.Column(db.String(50))
     periode_debut = db.Column(db.Date)
     periode_fin = db.Column(db.Date)
     periodicite = db.Column(db.String(50))
-    type_produit = db.Column(db.Integer, nullable=False)  # 15000 ou 20000 FCFA
+    prime_nette = db.Column(db.Float)
+    accessoires = db.Column(db.Float)
+    taxes = db.Column(db.Float)
+    prime_totale = db.Column(db.Float)
+    deces_accident = db.Column(db.Float)
+    deces_toutes_causes = db.Column(db.Float)
+    invalidite = db.Column(db.Float)
+    hospitalisation = db.Column(db.Float)
+    traitement_medical = db.Column(db.Float)
+    indemnite_journaliere = db.Column(db.Float)
     assure_nom = db.Column(db.String(100))
     assure_prenoms = db.Column(db.String(100))
     assure_tel = db.Column(db.String(20))
@@ -140,8 +149,6 @@ class Subscription(db.Model):
     telephone = db.Column(db.String(15), unique=True)
     ville = db.Column(db.String(50))
     produit = db.Column(db.String(50), nullable=False)
-
-
 
 
 
