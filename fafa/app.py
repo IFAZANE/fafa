@@ -45,15 +45,19 @@ with app.app_context():
 app.register_blueprint(admin_bp)
 
 
-#@app.route("/questionnaire", methods=["GET", "POST"])
-#def questionnaire():
-#    form = QuestionnaireForm()
-#    if form.validate_on_submit():
-#        # TODO: insérer en base (SQLAlchemy ou SQL brut)
-#        flash("Souscription enregistrée", "success")
-#        return redirect(url_for("questionnaire"))
-#    return render_template("questionnaire.html", form=form)
-
+def to_float(x):
+    """Convertit proprement '10,50' ou Decimal ou int/float en float."""
+    if x in (None, ''):
+        return 0.0
+    try:
+        # si c'est Decimal/int/float
+        return float(x)
+    except Exception:
+        s = str(x).strip().replace(' ', '').replace(',', '.')
+        try:
+            return float(s)
+        except Exception:
+            return 0.0
 
 import uuid
 
@@ -67,33 +71,40 @@ from datetime import datetime
 
 @app.route('/step1', methods=['GET', 'POST'])
 def questionnaire_step1():
-    session.clear()
     form = Etape1Form()
 
+    # Ne PAS effacer session ici -- sinon CSRF et valeurs sont perdues
     if form.validate_on_submit():
-        # 🔹 Sauvegarde des données dans la session
         session['duree_contrat'] = form.duree_contrat.data
         session['periode_debut'] = form.periode_debut.data.strftime('%Y-%m-%d') if form.periode_debut.data else None
         session['periode_fin'] = form.periode_fin.data.strftime('%Y-%m-%d') if form.periode_fin.data else None
         session['periodicite'] = form.periodicite.data
-        session['prime_nette'] = float(form.prime_nette.data)
-        session['accessoires'] = float(form.accessoires.data) if form.accessoires.data else 0.0
-        session['taxes'] = float(form.taxes.data) if form.taxes.data else 0.0
-        session['prime_totale'] = session['prime_nette'] + session['accessoires'] + session['taxes']
 
-        # Risques
-        session['deces_accident'] = float(form.deces_accident.data)
-        session['deces_toutes_causes'] = float(form.deces_toutes_causes.data)
-        session['invalidite'] = float(form.invalidite.data)
+        pnet = to_float(form.prime_nette.data)
+        acc  = to_float(form.accessoires.data)
+        tax  = to_float(form.taxes.data)
+        session['prime_nette'] = pnet
+        session['accessoires'] = acc
+        session['taxes'] = tax
+        session['prime_totale'] = round(pnet + acc + tax, 2)
+
+        session['deces_accident'] = to_float(form.deces_accident.data)
+        session['deces_toutes_causes'] = to_float(form.deces_toutes_causes.data)
+        session['invalidite'] = to_float(form.invalidite.data)
 
         flash("Étape 1 enregistrée !", "success")
-        return redirect(url_for('questionnaire_step2'))  # redirection vers étape 2
+        return redirect(url_for('questionnaire_step2'))  # attention au nom de la fonction pour step2
 
-    # Pré-remplir le formulaire si les données sont déjà dans la session
-    if 'duree_contrat' in session:
+    # debug si validate_on_submit() = False après POST
+    if request.method == 'POST' and not form.validate_on_submit():
+        app.logger.debug("Step1 validation failed: %s", form.errors)
+        flash(f"Erreur sur le formulaire (étape 1) : {form.errors}", "danger")
+
+    # Pré-remplissage depuis session
+    if session.get('duree_contrat'):
         form.duree_contrat.data = session.get('duree_contrat')
-        form.periode_debut.data = datetime.strptime(session.get('periode_debut'), '%Y-%m-%d') if session.get('periode_debut') else None
-        form.periode_fin.data = datetime.strptime(session.get('periode_fin'), '%Y-%m-%d') if session.get('periode_fin') else None
+        form.periode_debut.data = datetime.strptime(session['periode_debut'], '%Y-%m-%d') if session.get('periode_debut') else None
+        form.periode_fin.data = datetime.strptime(session['periode_fin'], '%Y-%m-%d') if session.get('periode_fin') else None
         form.periodicite.data = session.get('periodicite')
         form.prime_nette.data = session.get('prime_nette')
         form.accessoires.data = session.get('accessoires')
@@ -106,32 +117,24 @@ def questionnaire_step1():
     return render_template('step1.html', form=form)
 
 
-# ✅ Step 2 : informations du bénéficiaire
-from flask import Flask, render_template, request, session, redirect, url_for, flash
-from forms import Etape2Form
-from datetime import datetime
-
 @app.route('/step2', methods=['GET', 'POST'])
 def questionnaire_step2():
-    session.clear()
     form = Etape2Form()
 
+    # Ne PAS effacer session ici
     if form.validate_on_submit():
-        # 🔹 Assuré
         session['assure_nom'] = form.assure_nom.data
         session['assure_prenoms'] = form.assure_prenoms.data
         session['assure_tel'] = form.assure_tel.data
         session['assure_date_naissance'] = form.assure_date_naissance.data.strftime('%Y-%m-%d') if form.assure_date_naissance.data else None
         session['assure_adresse'] = form.assure_adresse.data
 
-        # 🔹 Bénéficiaire
         session['beneficiaire_nom'] = form.beneficiaire_nom.data
         session['beneficiaire_prenoms'] = form.beneficiaire_prenoms.data
         session['beneficiaire_tel'] = form.beneficiaire_tel.data
         session['beneficiaire_profession'] = form.beneficiaire_profession.data
         session['beneficiaire_adresse'] = form.beneficiaire_adresse.data
 
-        # 🔹 Souscripteur
         session['souscripteur_nom'] = form.souscripteur_nom.data
         session['souscripteur_prenoms'] = form.souscripteur_prenoms.data
         session['souscripteur_tel'] = form.souscripteur_tel.data
@@ -139,14 +142,18 @@ def questionnaire_step2():
         session['souscripteur_adresse'] = form.souscripteur_adresse.data
 
         flash("Étape 2 enregistrée !", "success")
-        return redirect(url_for('questionnaire_step3'))  # redirection vers étape 3
+        return redirect(url_for('questionnaire_step3'))
 
-    # Pré-remplir le formulaire si des données sont déjà dans la session
-    if 'assure_nom' in session:
+    if request.method == 'POST' and not form.validate_on_submit():
+        app.logger.debug("Step2 validation failed: %s", form.errors)
+        flash(f"Erreur sur le formulaire (étape 2) : {form.errors}", "danger")
+
+    # Pré-remplissage si existant
+    if session.get('assure_nom'):
         form.assure_nom.data = session.get('assure_nom')
         form.assure_prenoms.data = session.get('assure_prenoms')
         form.assure_tel.data = session.get('assure_tel')
-        form.assure_date_naissance.data = datetime.strptime(session.get('assure_date_naissance'), '%Y-%m-%d') if session.get('assure_date_naissance') else None
+        form.assure_date_naissance.data = datetime.strptime(session['assure_date_naissance'], '%Y-%m-%d') if session.get('assure_date_naissance') else None
         form.assure_adresse.data = session.get('assure_adresse')
 
         form.beneficiaire_nom.data = session.get('beneficiaire_nom')
@@ -158,28 +165,23 @@ def questionnaire_step2():
         form.souscripteur_nom.data = session.get('souscripteur_nom')
         form.souscripteur_prenoms.data = session.get('souscripteur_prenoms')
         form.souscripteur_tel.data = session.get('souscripteur_tel')
-        form.souscripteur_date_naissance.data = datetime.strptime(session.get('souscripteur_date_naissance'), '%Y-%m-%d') if session.get('souscripteur_date_naissance') else None
+        form.souscripteur_date_naissance.data = datetime.strptime(session['souscripteur_date_naissance'], '%Y-%m-%d') if session.get('souscripteur_date_naissance') else None
         form.souscripteur_adresse.data = session.get('souscripteur_adresse')
 
     return render_template('step2.html', form=form)
 
-# ✅ Step 3 : choix du produit + sauvegarde
 
 @app.route('/step3', methods=['GET', 'POST'])
 def questionnaire_step3():
-    session.clear()
     form = Etape3Form()
 
     if form.validate_on_submit():
-        # 🔹 Sauvegarde dans session
         session['ack_conditions'] = form.ack_conditions.data
         session['lieu_signature'] = form.lieu_signature.data
         session['date_signature'] = form.date_signature.data.strftime('%Y-%m-%d') if form.date_signature.data else datetime.utcnow().strftime('%Y-%m-%d')
 
-        flash("Étape 3 enregistrée !", "success")
-
+        # Enregistrer en base (exemple) puis GENERER le PDF AVANT de clear la session
         try:
-            # 🔹 Création de l'objet en base
             souscription = QuestionnaireFafa(
                 duree_contrat=session.get('duree_contrat'),
                 periode_debut=datetime.strptime(session.get('periode_debut'), '%Y-%m-%d') if session.get('periode_debut') else None,
@@ -192,10 +194,6 @@ def questionnaire_step3():
                 deces_accident=session.get('deces_accident'),
                 deces_toutes_causes=session.get('deces_toutes_causes'),
                 invalidite=session.get('invalidite'),
-                # Champs manquants si non remplis à l'étape 1
-                hospitalisation=session.get('hospitalisation'),
-                traitement_medical=session.get('traitement_medical'),
-                indemnite_journaliere=session.get('indemnite_journaliere'),
                 assure_nom=session.get('assure_nom'),
                 assure_prenoms=session.get('assure_prenoms'),
                 assure_tel=session.get('assure_tel'),
@@ -206,7 +204,6 @@ def questionnaire_step3():
                 beneficiaire_tel=session.get('beneficiaire_tel'),
                 beneficiaire_adresse=session.get('beneficiaire_adresse'),
                 beneficiaire_profession=session.get('beneficiaire_profession'),
-                beneficiaire_lateralite=session.get('beneficiaire_lateralite'),  # si utilisé
                 souscripteur_nom=session.get('souscripteur_nom'),
                 souscripteur_prenoms=session.get('souscripteur_prenoms'),
                 souscripteur_tel=session.get('souscripteur_tel'),
@@ -218,35 +215,42 @@ def questionnaire_step3():
             )
             db.session.add(souscription)
             db.session.commit()
-            
-            flash("Souscription enregistrée en base !", "success")
+
+            # Génération du PDF AVANT de clear la session
+            rendered = render_template('questionnaire_pdf.html', data=session)
+            pdf_file = BytesIO()
+            HTML(string=rendered).write_pdf(pdf_file)
+            pdf_file.seek(0)
+
+            # Maintenant tu peux vider la session si tu veux
             session.clear()
+            flash("Souscription enregistrée en base et PDF généré.", "success")
+
+            return send_file(
+                pdf_file,
+                download_name="formulaire_FAFA.pdf",
+                as_attachment=True,
+                mimetype='application/pdf'
+            )
+
         except Exception as e:
             db.session.rollback()
+            app.logger.exception("Erreur enregistrement souscription")
             flash(f"Erreur lors de l'enregistrement en base : {str(e)}", "danger")
-            return redirect(url_for('questionnaire_step3'))
+            # Ne pas rediriger aveuglément — laisse l'utilisateur corriger
+            return render_template('step3.html', form=form)
 
-        # 🔹 Générer le PDF
-        rendered = render_template('questionnaire_pdf.html', session=session)
-        pdf_file = BytesIO()
-        HTML(string=rendered).write_pdf(pdf_file)
-        pdf_file.seek(0)
+    if request.method == 'POST' and not form.validate_on_submit():
+        app.logger.debug("Step3 validation failed: %s", form.errors)
+        flash(f"Erreur sur le formulaire (étape 3) : {form.errors}", "danger")
 
-        return send_file(
-            pdf_file,
-            download_name="formulaire_FAFA.pdf",
-            as_attachment=True,
-            mimetype='application/pdf'
-        )
-
-    # Pré-remplissage
-    if 'lieu_signature' in session:
+    # Pré-remplissage si existant
+    if session.get('lieu_signature'):
         form.ack_conditions.data = session.get('ack_conditions', False)
         form.lieu_signature.data = session.get('lieu_signature')
-        form.date_signature.data = datetime.strptime(session.get('date_signature'), '%Y-%m-%d') if session.get('date_signature') else None
+        form.date_signature.data = datetime.strptime(session['date_signature'], '%Y-%m-%d') if session.get('date_signature') else None
 
     return render_template('step3.html', form=form)
-
 
 
 @app.route('/questionnaire', methods=['GET', 'POST'])
@@ -417,6 +421,7 @@ def debug_form():
 # 1️⃣2️⃣ Exécution de l'application
 if __name__ == '__main__':
     app.run(debug=True)
+
 
 
 
