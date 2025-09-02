@@ -214,7 +214,7 @@ def paiement():
             "amount": int(montant),
             "currency": "XOF",
             "client": {"phone": phone},
-            "gateway": {"reference": transaction_id},
+            "gateway": {"id": gateway_id},
             "callback_url": url_for('confirmation_paiement', transaction_id=transaction_id, _external=True)
         }
         headers = {
@@ -294,6 +294,7 @@ def manuel():
 # -----------------------------
 if __name__ == '__main__':
     app.run(debug=True)
+
 
 
 
