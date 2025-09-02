@@ -45,11 +45,11 @@ from wtforms.validators import DataRequired, Length, Regexp
 
 class Etape2Form(FlaskForm):
     # Assuré
-    assure_nom = StringField('Nom', validators=[DataRequired(), Length(max=100)])
-    assure_prenoms = StringField('Prénoms', validators=[DataRequired(), Length(max=100)])
-    assure_tel = StringField('Téléphone', validators=[DataRequired(), Regexp(r'^\+?\d{8,15}$', message="Numéro de téléphone invalide")])
-    assure_date_naissance = DateField('Date de naissance', format='%Y-%m-%d', validators=[DataRequired()])
-    assure_adresse = StringField('Adresse', validators=[DataRequired(), Length(max=200)])
+    #assure_nom = StringField('Nom', validators=[DataRequired(), Length(max=100)])
+    #assure_prenoms = StringField('Prénoms', validators=[DataRequired(), Length(max=100)])
+    #assure_tel = StringField('Téléphone', validators=[DataRequired(), Regexp(r'^\+?\d{8,15}$', message="Numéro de téléphone invalide")])
+    #assure_date_naissance = DateField('Date de naissance', format='%Y-%m-%d', validators=[DataRequired()])
+    #assure_adresse = StringField('Adresse', validators=[DataRequired(), Length(max=200)])
 
     # Bénéficiaire
     beneficiaire_nom = StringField('Nom', validators=[DataRequired(), Length(max=100)])
@@ -112,11 +112,11 @@ class QuestionnaireForm(FlaskForm):
     #traitement_medical = FloatField("Traitement médical", validators=[Optional()])
     #indemnite_journaliere = FloatField("Indemnité journalière", validators=[Optional()])
     
-    assure_nom = StringField("Nom", validators=[Optional()])
-    assure_prenoms = StringField("Prénoms", validators=[Optional()])
-    assure_tel = StringField("Téléphone", validators=[Optional()])
-    assure_date_naissance = DateField("Date de naissance", validators=[Optional()])
-    assure_adresse = StringField("Adresse", validators=[Optional()])
+    #assure_nom = StringField("Nom", validators=[Optional()])
+    #assure_prenoms = StringField("Prénoms", validators=[Optional()])
+    #assure_tel = StringField("Téléphone", validators=[Optional()])
+    #assure_date_naissance = DateField("Date de naissance", validators=[Optional()])
+    #assure_adresse = StringField("Adresse", validators=[Optional()])
     
     beneficiaire_nom = StringField("Nom bénéficiaire", validators=[Optional()])
     beneficiaire_prenoms = StringField("Prénoms bénéficiaire", validators=[Optional()])
@@ -172,6 +172,7 @@ class SouscriptionForm(FlaskForm):
 )
 
     recaptcha = RecaptchaField()
+
 
 
 
