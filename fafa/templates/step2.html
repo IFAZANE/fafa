@@ -500,6 +500,7 @@ footer {
             <div class="d-flex justify-content-between">
                 <a href="{{ url_for('questionnaire_step1') }}" class="btn btn-secondary">Retour</a>
                 <button type="submit" class="btn btn-primary">Suivant</button>
+                 {{ form.submit(class="btn btn-success px-4") }}
                  
             </div>
         </form>
