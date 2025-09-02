@@ -461,34 +461,11 @@ footer {
             <div class="card mb-4 shadow-sm">
                 <div class="card-header">Prime</div>
                 <div class="card-body">
-                    {{ form.prime_nette.label(class="form-label") }}
-                    {{ form.prime_nette(class="form-control") }}
-
-                    {{ form.accessoires.label(class="form-label mt-3") }}
-                    {{ form.accessoires(class="form-control") }}
-
-                    {{ form.taxes.label(class="form-label mt-3") }}
-                    {{ form.taxes(class="form-control") }}
-
-                    {{ form.prime_totale.label(class="form-label mt-3") }}
-                    {{ form.prime_totale(class="form-control", readonly=True) }}
+                     {{ form.type_contrat.label(class="form-label") }}
+                    {{ form.type_contrat(class="form-select") }}
                 </div>
             </div>
 
-            <!-- Risques -->
-            <div class="card mb-4 shadow-sm">
-                <div class="card-header">Risques et capitaux garantis</div>
-                <div class="card-body">
-                    {{ form.deces_accident.label(class="form-label") }}
-                    {{ form.deces_accident(class="form-control") }}
-
-                    {{ form.deces_toutes_causes.label(class="form-label mt-3") }}
-                    {{ form.deces_toutes_causes(class="form-control") }}
-
-                    {{ form.invalidite.label(class="form-label mt-3") }}
-                    {{ form.invalidite(class="form-control") }}
-                </div>
-            </div>
 
             <!-- Bouton -->
             <div class="text-end">
