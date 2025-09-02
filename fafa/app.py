@@ -3,7 +3,7 @@ from flask import (
     flash, url_for
 )
 from config import Config
-from models import db, Subscription
+from models import db, Subscription, QuestionnaireFafa
 from forms import Etape1Form, Etape2Form, Etape3Form
 from admin import admin_bp
 from export import export_csv, export_excel
@@ -287,6 +287,7 @@ def manuel():
 # -----------------------------
 if __name__ == '__main__':
     app.run(debug=True)
+
 
 
 
