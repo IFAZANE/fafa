@@ -81,47 +81,60 @@ class Etape3Form(FlaskForm):
 
 
 
+
+
 from flask_wtf import FlaskForm
 from wtforms import StringField, DateField, FloatField, BooleanField, SubmitField, SelectField
 from wtforms.validators import DataRequired, Optional
 
-class QuestionnaireFafa(db.Model):
-    __tablename__ = 'questionnaire_fafa'
+class QuestionnaireForm(FlaskForm):
+    periode_debut = DateField("Pour la période du", validators=[DataRequired()])
+    periode_fin = DateField("au", validators=[DataRequired()])
+    periodicite = SelectField("Périodicité", choices=[('Mensuelle','Mensuelle'),('Annuel','Annuel')], validators=[DataRequired()])
     
-    id = db.Column(db.Integer, primary_key=True)
-    duree_contrat = db.Column(db.String(50))
-    periode_debut = db.Column(db.Date)
-    periode_fin = db.Column(db.Date)
-    periodicite = db.Column(db.String(50))
-    prime_nette = db.Column(db.Float)
-    accessoires = db.Column(db.Float)
-    taxes = db.Column(db.Float)
-    prime_totale = db.Column(db.Float)
-    deces_accident = db.Column(db.Float)
-    deces_toutes_causes = db.Column(db.Float)
-    invalidite = db.Column(db.Float)
-    hospitalisation = db.Column(db.Float)
-    traitement_medical = db.Column(db.Float)
-    indemnite_journaliere = db.Column(db.Float)
-    assure_nom = db.Column(db.String(100))
-    assure_prenoms = db.Column(db.String(100))
-    assure_tel = db.Column(db.String(20))
-    assure_date_naissance = db.Column(db.Date)
-    assure_adresse = db.Column(db.String(200))
-    beneficiaire_nom = db.Column(db.String(100))
-    beneficiaire_prenoms = db.Column(db.String(100))
-    beneficiaire_tel = db.Column(db.String(20))
-    beneficiaire_adresse = db.Column(db.String(200))
-    beneficiaire_profession = db.Column(db.String(100))
-    beneficiaire_lateralite = db.Column(db.String(50))
-    souscripteur_nom = db.Column(db.String(100))
-    souscripteur_prenoms = db.Column(db.String(100))
-    souscripteur_tel = db.Column(db.String(20))
-    souscripteur_date_naissance = db.Column(db.Date)
-    souscripteur_adresse = db.Column(db.String(200))
-    ack_conditions = db.Column(db.Boolean)
-    lieu_signature = db.Column(db.String(100))
-    date_signature = db.Column(db.Date)
+    prime_nette = FloatField("Prime nette", validators=[DataRequired()])
+    accessoires = FloatField("Accessoires", validators=[DataRequired()])
+    taxes = FloatField("Taxes", validators=[DataRequired()])
+    prime_totale = FloatField("Prime totale", validators=[DataRequired()])
+    
+    deces_accident = FloatField("Décès accident", validators=[Optional()])
+    deces_toutes_causes = FloatField("Décès toutes causes", validators=[Optional()])
+    invalidite = FloatField("Invalidité", validators=[Optional()])
+    hospitalisation = FloatField("Hospitalisation", validators=[Optional()])
+    traitement_medical = FloatField("Traitement médical", validators=[Optional()])
+    indemnite_journaliere = FloatField("Indemnité journalière", validators=[Optional()])
+    
+    assure_nom = StringField("Nom", validators=[Optional()])
+    assure_prenoms = StringField("Prénoms", validators=[Optional()])
+    assure_tel = StringField("Téléphone", validators=[Optional()])
+    assure_date_naissance = DateField("Date de naissance", validators=[Optional()])
+    assure_adresse = StringField("Adresse", validators=[Optional()])
+    
+    beneficiaire_nom = StringField("Nom bénéficiaire", validators=[Optional()])
+    beneficiaire_prenoms = StringField("Prénoms bénéficiaire", validators=[Optional()])
+    beneficiaire_tel = StringField("Téléphone bénéficiaire", validators=[Optional()])
+    beneficiaire_profession = StringField("Profession bénéficiaire", validators=[Optional()])
+    beneficiaire_adresse = StringField("Adresse bénéficiaire", validators=[Optional()])
+    #beneficiaire_lateralite = SelectField("Latéralité", choices=[('Droit','Droit'),('Gauche','Gauche')], validators=[Optional()])
+    
+    souscripteur_nom = StringField("Nom souscripteur", validators=[DataRequired()])
+    souscripteur_prenoms = StringField("Prénoms souscripteur", validators=[DataRequired()])
+    souscripteur_tel = StringField("Téléphone souscripteur", validators=[DataRequired()])
+    souscripteur_date_naissance = DateField("Date de naissance souscripteur", validators=[DataRequired()])
+    souscripteur_adresse = StringField("Adresse souscripteur", validators=[Optional()])
+    
+    ack_conditions = BooleanField("J'accepte les conditions générales", validators=[DataRequired()])
+    lieu_signature = StringField("Lieu de signature", validators=[Optional()])
+    date_signature = DateField("Date de signature", validators=[Optional()])
+    
+    submit = SubmitField("Soumettre")
+
+
+
+from flask_wtf import FlaskForm
+from wtforms import StringField, DateField, FloatField, BooleanField, SubmitField, SelectField
+from wtforms.validators import DataRequired, Optional
+
 
 
 
@@ -151,6 +164,7 @@ class SouscriptionForm(FlaskForm):
 )
 
     recaptcha = RecaptchaField()
+
 
 
 
