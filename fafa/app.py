@@ -182,93 +182,109 @@ def paiement():
     montant = session.get('prime_totale')
     questionnaire_id = session.get('questionnaire_id')
 
+    # Vérifie que le questionnaire et le montant existent
+    if montant is None or questionnaire_id is None:
+        flash("Questionnaire ou montant introuvable. Veuillez compléter le questionnaire avant de payer.", "danger")
+        return redirect(url_for('questionnaire_step1'))
+
     if request.method == 'POST':
-    phone = request.form.get('phone')
-    if not phone:
-        flash("Veuillez saisir un numéro de téléphone valide.", "warning")
-        return redirect(url_for('paiement'))
+        phone = request.form.get('phone')
 
-    transaction_id = str(uuid.uuid4())
-    session['transaction_id'] = transaction_id
-
-    try:
-        # Auth SEMOA
-        auth_resp = requests.post(
-            f"{SEMOA_BASE}/auth",
-            json=OAUTH2_CREDENTIALS,
-            headers={"Content-Type": "application/json"},
-            timeout=10
-        )
-        auth_resp.raise_for_status()
-        access_token = auth_resp.json().get('access_token')
-        if not access_token:
-            flash("Impossible d'obtenir le token SEMOA.", "danger")
+        if not phone:
+            flash("Veuillez saisir un numéro de téléphone valide.", "warning")
             return redirect(url_for('paiement'))
 
-        headers = {
-            "Authorization": f"Bearer {access_token}",
-            "Content-Type": "application/json"
-        }
+        transaction_id = str(uuid.uuid4())
+        session['transaction_id'] = transaction_id
 
-        # Récupération des gateways
-        gateways_resp = requests.get(f"{SEMOA_BASE}/gateways", headers=headers, timeout=10)
-        gateways_resp.raise_for_status()
-        gateways = gateways_resp.json()
-        if not gateways:
-            flash("Aucune gateway disponible.", "danger")
+        try:
+            # Authentification SEMOA
+            auth_resp = requests.post(
+                f"{SEMOA_BASE}/auth",
+                json=OAUTH2_CREDENTIALS,
+                headers={"Content-Type": "application/json"},
+                timeout=10
+            )
+            auth_resp.raise_for_status()
+            access_token = auth_resp.json().get('access_token')
+
+            if not access_token:
+                flash("Impossible d'obtenir le token SEMOA.", "danger")
+                return redirect(url_for('paiement'))
+
+            headers = {
+                "Authorization": f"Bearer {access_token}",
+                "Content-Type": "application/json"
+            }
+
+            # Récupération des gateways
+            gateways_resp = requests.get(f"{SEMOA_BASE}/gateways", headers=headers, timeout=10)
+            gateways_resp.raise_for_status()
+            gateways = gateways_resp.json()
+
+            if not gateways:
+                flash("Aucune gateway disponible.", "danger")
+                return redirect(url_for('paiement'))
+
+            gateway_id = gateways[0]['id']
+
+            # Création de l'ordre de paiement
+            payment_data = {
+                "amount": int(montant),  # Attention : ajuster selon le format attendu (centimes ?)
+                "currency": "XOF",
+                "description": "Paiement FAFA",
+                "client": {
+                    "name": "Client FAFA",
+                    "phone": phone,
+                    "email": "test@fafa.tg"
+                },
+                "gateway": {
+                    "id": gateway_id
+                },
+                "callback_url": url_for('confirmation_paiement', transaction_id=transaction_id, _external=True)
+            }
+
+            order_resp = requests.post(
+                f"{SEMOA_BASE}/orders",
+                json=payment_data,
+                headers=headers,
+                timeout=10
+            )
+            order_resp.raise_for_status()
+            order_data = order_resp.json()
+
+            # Enregistrement dans la base de données
+            paiement = Paiement(
+                questionnaire_fafa_id=questionnaire_id,
+                transaction_id=transaction_id,
+                amount=montant,
+                currency="XOF",
+                phone=phone,
+                status=order_data.get('status', 'pending'),
+                response=order_data
+            )
+            db.session.add(paiement)
+            db.session.commit()
+
+            # Redirection vers l'URL de paiement
+            session['gateway_url'] = order_data.get('bill_url') or order_data.get('gateway', {}).get('url')
+            if not session['gateway_url']:
+                flash("Impossible de récupérer l'URL de paiement.", "danger")
+                return redirect(url_for('paiement'))
+
+            flash(f"Paiement de {montant} XOF initié !", "success")
+            return redirect(session['gateway_url'])
+
+        except requests.exceptions.RequestException as e:
+            flash(f"Erreur SEMOA : {str(e)}", "danger")
             return redirect(url_for('paiement'))
 
-        gateway_id = gateways[0]['id']
-
-        # Préparation des données de paiement
-        payment_data = {
-            "amount": int(montant),  # ou int(montant * 100) si SEMOA attend des centimes
-            "currency": "XOF",
-            "description": "Paiement FAFA",
-            "client": {
-                "name": "Client FAFA",
-                "phone": phone,
-                "email": "test@fafa.tg"  # Tu peux personnaliser si disponible
-            },
-            "gateway": {
-                "id": gateway_id
-            },
-            "callback_url": url_for('confirmation_paiement', transaction_id=transaction_id, _external=True)
-        }
-
-        order_resp = requests.post(f"{SEMOA_BASE}/orders", json=payment_data, headers=headers, timeout=10)
-        order_resp.raise_for_status()
-        order_data = order_resp.json()
-
-        # Enregistrement du paiement
-        paiement = Paiement(
-            questionnaire_fafa_id=questionnaire_id,
-            transaction_id=transaction_id,
-            amount=montant,
-            currency="XOF",
-            phone=phone,
-            status=order_data.get('status', 'pending'),
-            response=order_data
-        )
-        db.session.add(paiement)
-        db.session.commit()
-
-        # Redirection vers SEMOA
-        session['gateway_url'] = order_data.get('bill_url') or order_data.get('gateway', {}).get('url')
-        if not session['gateway_url']:
-            flash("Impossible de récupérer l'URL de paiement.", "danger")
+        except Exception as e:
+            flash(f"Erreur serveur : {str(e)}", "danger")
             return redirect(url_for('paiement'))
 
-        flash(f"Paiement de {montant} XOF initié !", "success")
-        return redirect(session['gateway_url'])
+    return render_template('paiement.html', montant=montant)
 
-    except requests.exceptions.RequestException as e:
-        flash(f"Erreur SEMOA : {str(e)}", "danger")
-        return redirect(url_for('paiement'))
-
-    except Exception as e:
-        flash(f"Erreur serveur : {str(e)}", "danger")
-        return redirect(url_for('paiement'))
 
 
 
@@ -332,6 +348,7 @@ def conditions():
 # -----------------------------
 if __name__ == '__main__':
     app.run(debug=True)
+
 
 
 
