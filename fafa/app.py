@@ -13,6 +13,8 @@ import os
 from io import BytesIO
 from datetime import datetime
 from weasyprint import HTML
+import json
+
 
 # -----------------------------
 # 1️⃣ Création de l'application
@@ -357,6 +359,7 @@ def conditions():
 # -----------------------------
 if __name__ == '__main__':
     app.run(debug=True)
+
 
 
 
