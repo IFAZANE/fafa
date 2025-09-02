@@ -437,6 +437,15 @@ footer {
             <div class="card mb-4 shadow-sm">
                 <div class="card-header">Durée du contrat (par an)</div>
                 <div class="card-body">
+                    {{ form.duree_contrat.label(class="form-label") }}
+                    {{ form.duree_contrat(class="form-control") }}
+                </div>
+            </div>
+
+            <!-- Période -->
+            <div class="card mb-4 shadow-sm">
+                <div class="card-header">Période et périodicité</div>
+                <div class="card-body">
                     {{ form.periode_debut.label(class="form-label") }}
                     {{ form.periode_debut(class="form-control") }}
 
@@ -445,17 +454,42 @@ footer {
 
                     {{ form.periodicite.label(class="form-label mt-3") }}
                     {{ form.periodicite(class="form-select") }}
-
-                  
-                {{ form.type_produit.label(class="form-label") }}
-                {{ form.type_produit(class="form-select") }}
-
-
                 </div>
             </div>
 
-           
-           
+            <!-- Prime -->
+            <div class="card mb-4 shadow-sm">
+                <div class="card-header">Prime</div>
+                <div class="card-body">
+                    {{ form.prime_nette.label(class="form-label") }}
+                    {{ form.prime_nette(class="form-control") }}
+
+                    {{ form.accessoires.label(class="form-label mt-3") }}
+                    {{ form.accessoires(class="form-control") }}
+
+                    {{ form.taxes.label(class="form-label mt-3") }}
+                    {{ form.taxes(class="form-control") }}
+
+                    {{ form.prime_totale.label(class="form-label mt-3") }}
+                    {{ form.prime_totale(class="form-control", readonly=True) }}
+                </div>
+            </div>
+
+            <!-- Risques -->
+            <div class="card mb-4 shadow-sm">
+                <div class="card-header">Risques et capitaux garantis</div>
+                <div class="card-body">
+                    {{ form.deces_accident.label(class="form-label") }}
+                    {{ form.deces_accident(class="form-control") }}
+
+                    {{ form.deces_toutes_causes.label(class="form-label mt-3") }}
+                    {{ form.deces_toutes_causes(class="form-control") }}
+
+                    {{ form.invalidite.label(class="form-label mt-3") }}
+                    {{ form.invalidite(class="form-control") }}
+                </div>
+            </div>
+
             <!-- Bouton -->
             <div class="text-end">
                 <button type="submit" class="btn btn-primary">Suivant</button>
