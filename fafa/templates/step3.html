@@ -438,7 +438,10 @@ footer {
             <div class="card mb-4 shadow-sm">
                 <div class="card-header">Conditions Générales</div>
                 <div class="card-body">
-                    <p>Veuillez lire et accepter les conditions générales.</p>
+                <p>
+              Veuillez lire et accepter les
+              <a href="{{ url_for('conditions') }}" target="_blank">conditions générales</a>.
+             </p>
                     <div class="form-check">
                         {{ form.ack_conditions(class="form-check-input") }}
                         {{ form.ack_conditions.label(class="form-check-label") }}
