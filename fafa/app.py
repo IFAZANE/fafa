@@ -175,32 +175,25 @@ def paiement():
         session['transaction_id'] = transaction_id
 
         # -----------------------------
-        # Étape 1 : Auth SEMOA
+        # Étape 1 : Auth SEMOA Sandbox
         # -----------------------------
         try:
             auth_resp = requests.post(
-    "https://api.semoa-payments.ovh/oauth/token",
-    data={
-        "grant_type": "password",
-        "username": OAUTH2_CREDENTIALS['username'],
-        "password": OAUTH2_CREDENTIALS['password'],
-        "client_id": OAUTH2_CREDENTIALS['client_id'],
-        "client_reference": OAUTH2_CREDENTIALS['client_reference']
-    },
-    headers={"Content-Type": "application/x-www-form-urlencoded"},
-    timeout=10
-)
+                f"{SEMOA_BASE}/oauth/token",
+                data={
+                    "grant_type": "password",
+                    "username": OAUTH2_CREDENTIALS['username'],
+                    "password": OAUTH2_CREDENTIALS['password'],
+                    "client_id": OAUTH2_CREDENTIALS['client_id'],
+                    "client_secret": OAUTH2_CREDENTIALS['client_reference']  # Correct ici
+                },
+                headers={"Content-Type": "application/x-www-form-urlencoded"},
+                timeout=10
+            )
 
-
-            # Pas de raise_for_status direct → on inspecte la réponse
             print("🔍 Réponse brute SEMOA Auth:", auth_resp.text)
-
-            try:
-                auth_data = auth_resp.json()
-            except ValueError:
-                flash(f"Réponse non-JSON de SEMOA : {auth_resp.text}", "danger")
-                return redirect(url_for('paiement'))
-
+            auth_resp.raise_for_status()  # lève une erreur si HTTP != 2xx
+            auth_data = auth_resp.json()
             access_token = auth_data.get('access_token')
             if not access_token:
                 flash(f"Échec authentification SEMOA : {auth_data}", "danger")
@@ -221,31 +214,28 @@ def paiement():
             "callback_url": url_for('confirmation_paiement', transaction_id=transaction_id, _external=True)
         }
 
-        headers = {"Authorization": f"Bearer {access_token}", "Content-Type": "application/json"}
+        headers = {
+            "Authorization": f"Bearer {access_token}",
+            "Content-Type": "application/json"
+        }
 
         try:
             resp = requests.post(f"{SEMOA_BASE}/orders", json=payment_data, headers=headers, timeout=10)
             print("🔍 Réponse brute SEMOA Order:", resp.text)
-
-            try:
-                order_data = resp.json()
-            except ValueError:
-                flash(f"Réponse non-JSON lors de la commande : {resp.text}", "danger")
-                return redirect(url_for('paiement'))
-
-            if resp.status_code != 200:
-                flash(f"Erreur SEMOA Order : {order_data}", "danger")
-                return redirect(url_for('paiement'))
+            resp.raise_for_status()  # vérifie que HTTP 2xx
+            order_data = resp.json()
 
             gateway_info = order_data.get('gateway', {})
             session['gateway_url'] = gateway_info.get('url')
             flash(f"Paiement de {montant} XOF initié avec succès !", "success")
-            return redirect(url_for('confirmation_paiement', transaction_id=transaction_id))
+            return redirect(gateway_info.get('url', url_for('confirmation_paiement', transaction_id=transaction_id)))
 
         except requests.exceptions.RequestException as e:
             flash(f"Erreur lors de la création du paiement : {str(e)}", "danger")
+            return redirect(url_for('paiement'))
 
     return render_template('paiement.html', montant=montant)
+
 
 
 
@@ -293,6 +283,7 @@ def manuel():
 # -----------------------------
 if __name__ == '__main__':
     app.run(debug=True)
+
 
 
 
