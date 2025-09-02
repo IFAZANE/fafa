@@ -265,8 +265,15 @@ def route_export_csv():
 def route_export_excel():
     return export_excel()
 
+
+@app.route('/manuel')
+def manuel():
+    return render_template('manuel.html')
+
+
 # -----------------------------
 # Exécution
 # -----------------------------
 if __name__ == '__main__':
     app.run(debug=True)
+
