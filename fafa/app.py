@@ -143,13 +143,6 @@ def questionnaire_step3():
             periode_debut=parse_date(session.get('periode_debut')),
             periode_fin=parse_date(session.get('periode_fin')),
             periodicite=session.get('periodicite'),
-            prime_nette=session.get('prime_nette'),
-            accessoires=session.get('accessoires'),
-            taxes=session.get('taxes'),
-            prime_totale=session.get('prime_totale'),
-            deces_accident=session.get('deces_accident'),
-            deces_toutes_causes=session.get('deces_toutes_causes'),
-            invalidite=session.get('invalidite'),
             ack_conditions=session.get('ack_conditions'),
             lieu_signature=session.get('lieu_signature'),
             date_signature=parse_date(session.get('date_signature'))
@@ -354,6 +347,7 @@ def conditions():
 # -----------------------------
 if __name__ == '__main__':
     app.run(debug=True)
+
 
 
 
