@@ -190,7 +190,7 @@ def paiement():
                 headers={"Content-Type": "application/x-www-form-urlencoded"},
                 timeout=10
             )
-            print("🔍 Réponse brute SEMOA Auth:", auth_resp.text)
+            #print("🔍 Réponse brute SEMOA Auth:", auth_resp.text)
 
             if auth_resp.status_code != 200:
                 flash(f"Échec authentification SEMOA : {auth_resp.text}", "danger")
@@ -288,6 +288,7 @@ def manuel():
 # -----------------------------
 if __name__ == '__main__':
     app.run(debug=True)
+
 
 
 
