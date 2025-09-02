@@ -178,9 +178,12 @@ def questionnaire_step3():
     if form.validate_on_submit():
         session['ack_conditions'] = form.ack_conditions.data
         session['lieu_signature'] = form.lieu_signature.data
-        session['date_signature'] = form.date_signature.data.strftime('%Y-%m-%d') if form.date_signature.data else datetime.utcnow().strftime('%Y-%m-%d')
+        session['date_signature'] = (
+            form.date_signature.data.strftime('%Y-%m-%d')
+            if form.date_signature.data else datetime.utcnow().strftime('%Y-%m-%d')
+        )
 
-        # Enregistrer en base (exemple) puis GENERER le PDF AVANT de clear la session
+        # Enregistrement en base + génération PDF
         try:
             souscription = QuestionnaireFafa(
                 duree_contrat=session.get('duree_contrat'),
@@ -216,13 +219,12 @@ def questionnaire_step3():
             db.session.add(souscription)
             db.session.commit()
 
-            # Génération du PDF AVANT de clear la session
+            # Génération du PDF
             rendered = render_template('questionnaire_pdf.html', data=session)
             pdf_file = BytesIO()
             HTML(string=rendered).write_pdf(pdf_file)
             pdf_file.seek(0)
 
-            # Maintenant tu peux vider la session si tu veux
             session.clear()
             flash("Souscription enregistrée en base et PDF généré.", "success")
 
@@ -237,7 +239,7 @@ def questionnaire_step3():
             db.session.rollback()
             app.logger.exception("Erreur enregistrement souscription")
             flash(f"Erreur lors de l'enregistrement en base : {str(e)}", "danger")
-            # Ne pas rediriger aveuglément — laisse l'utilisateur corriger
+            # ✅ Correction : toujours renvoyer form=form
             return render_template('step3.html', form=form)
 
     if request.method == 'POST' and not form.validate_on_submit():
@@ -248,8 +250,12 @@ def questionnaire_step3():
     if session.get('lieu_signature'):
         form.ack_conditions.data = session.get('ack_conditions', False)
         form.lieu_signature.data = session.get('lieu_signature')
-        form.date_signature.data = datetime.strptime(session['date_signature'], '%Y-%m-%d') if session.get('date_signature') else None
+        form.date_signature.data = (
+            datetime.strptime(session['date_signature'], '%Y-%m-%d')
+            if session.get('date_signature') else None
+        )
 
+    # ✅ Correction : toujours renvoyer form=form
     return render_template('step3.html', form=form)
 
 
@@ -421,6 +427,7 @@ def debug_form():
 # 1️⃣2️⃣ Exécution de l'application
 if __name__ == '__main__':
     app.run(debug=True)
+
 
 
 
