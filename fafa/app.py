@@ -77,7 +77,7 @@ OAUTH2_CREDENTIALS = {
     "username": "api_cashpay.nsia",
     "password": "btCZkiiluA",
     "client_id": "api_cashpay.nsia",
-    "client_reference": "tgIeTQpShnfewy33opbigMmhrtNqvTsj"
+    "client_secret": "tgIeTQpShnfewy33opbigMmhrtNqvTsj"
 }
 
 # -----------------------------
@@ -185,7 +185,7 @@ def paiement():
                     "username": OAUTH2_CREDENTIALS['username'],
                     "password": OAUTH2_CREDENTIALS['password'],
                     "client_id": OAUTH2_CREDENTIALS['client_id'],
-                    "client_secret": OAUTH2_CREDENTIALS['client_reference']  # Correct ici
+                    "client_secret": OAUTH2_CREDENTIALS['client_secret']  # Correct ici
                 },
                 headers={"Content-Type": "application/x-www-form-urlencoded"},
                 timeout=10
@@ -283,6 +283,7 @@ def manuel():
 # -----------------------------
 if __name__ == '__main__':
     app.run(debug=True)
+
 
 
 
