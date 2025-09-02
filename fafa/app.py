@@ -91,8 +91,7 @@ def questionnaire_step1():
         session['periodicite'] = form.periodicite.data
         session['type_contrat'] = int(form.type_contrat.data)  # ex: 15000 ou 20000
 
-        # Prime totale = type de contrat choisi
-        session['prime_totale'] = session['type_contrat']
+    
 
         flash("Étape 1 enregistrée !", "success")
         return redirect(url_for('questionnaire_step2'))
@@ -153,7 +152,6 @@ def questionnaire_step3():
             periode_fin=parse_date(session.get('periode_fin')),
             periodicite=session.get('periodicite'),
             type_contrat=session.get('type_contrat'),
-            prime_totale=session.get('prime_totale'),
             beneficiaire_nom=session.get('beneficiaire_nom'),
             beneficiaire_prenoms=session.get('beneficiaire_prenoms'),
             beneficiaire_tel=session.get('beneficiaire_tel'),
@@ -368,6 +366,7 @@ def conditions():
 # -----------------------------
 if __name__ == '__main__':
     app.run(debug=True)
+
 
 
 
