@@ -11,7 +11,7 @@ from wtforms.validators import DataRequired, NumberRange, Optional
 from wtforms import SelectField
 
 class Etape1Form(FlaskForm):
-    duree_contrat = StringField("Durée du contrat", validators=[DataRequired()])
+    #duree_contrat = StringField("Durée du contrat", validators=[DataRequired()])
     periode_debut = DateField("Période de début", format='%Y-%m-%d', validators=[Optional()])
     periode_fin = DateField("Période de fin", format='%Y-%m-%d', validators=[Optional()])
     periodicite = SelectField("Périodicité", choices=[("mensuelle", "Mensuelle"), ("annuelle", "Annuelle")])
@@ -148,6 +148,7 @@ class SouscriptionForm(FlaskForm):
 )
 
     recaptcha = RecaptchaField()
+
 
 
 
