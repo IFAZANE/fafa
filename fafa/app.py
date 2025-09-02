@@ -315,11 +315,18 @@ def route_export_excel():
 def manuel():
     return render_template('manuel.html')
 
+
+@app.route("/conditions")
+def conditions():
+    return render_template("conditions.html")
+
+
 # -----------------------------
 # Exécution
 # -----------------------------
 if __name__ == '__main__':
     app.run(debug=True)
+
 
 
 
