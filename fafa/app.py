@@ -45,6 +45,121 @@ with app.app_context():
 app.register_blueprint(admin_bp)
 
 
+
+##################################################################################
+
+from flask import Flask, render_template, request, redirect, url_for, session, flash
+import requests
+import uuid
+from datetime import datetime
+
+app = Flask(__name__)
+app.secret_key = "ton_secret_key"
+
+# -------------------
+# Configuration SEMOA
+# -------------------
+SEMOA_BASE = "https://api.semoa-payments.ovh/sandbox"
+OAUTH2_CREDENTIALS = {
+    "username": "api_cashpay.nsia",
+    "password": "btCZkiiluA",
+    "client_id": "api_cashpay.nsia",
+    "client_reference": "tgIeTQpShnfewy33opbigMmhrtNqvTsj"
+}
+
+WORDPRESS_AUTH = {
+    "login": "api_cashpay.nsia",
+    "api_key": "oOhI7xxF3S66mHjzTifKsuJoDpH7AeH3rXMj",
+    "reference": "116"
+}
+
+# -------------------
+# Page de paiement
+# -------------------
+@app.route('/paiement', methods=['GET', 'POST'])
+def paiement():
+    if request.method == 'POST':
+        montant = request.form['montant']
+        phone = request.form['phone']
+        
+        # Générer un identifiant unique de transaction
+        transaction_id = str(uuid.uuid4())
+        session['transaction_id'] = transaction_id
+        
+        # Authentification OAuth 2.0 pour SEMOA
+        auth_response = requests.post(
+            f"{SEMOA_BASE}/oauth/token",
+            data={
+                "grant_type": "password",
+                "username": OAUTH2_CREDENTIALS['username'],
+                "password": OAUTH2_CREDENTIALS['password'],
+                "client_id": OAUTH2_CREDENTIALS['client_id']
+            }
+        )
+        
+        if auth_response.status_code != 200:
+            flash("Erreur OAuth SEMOA : " + auth_response.text, "danger")
+            return redirect(url_for('paiement'))
+        
+        access_token = auth_response.json().get('access_token')
+        
+        # Création du paiement
+        payment_data = {
+            "amount": montant,
+            "currency": "XOF",
+            "payment_method": "mobilemoney",
+            "phone": phone,
+            "client_reference": OAUTH2_CREDENTIALS['client_reference'],
+            "transaction_id": transaction_id
+        }
+        
+        headers = {
+            "Authorization": f"Bearer {access_token}",
+            "Content-Type": "application/json"
+        }
+        
+        payment_response = requests.post(
+            f"{SEMOA_BASE}/payments",
+            json=payment_data,
+            headers=headers
+        )
+        
+        if payment_response.status_code == 201:
+            flash("Paiement initié avec succès !", "success")
+            # Ici, tu peux sauvegarder la transaction en base de données
+            # Exemple : sauvegarder transaction_id, montant, phone, status='pending'
+            return redirect(url_for('paiement_status', transaction_id=transaction_id))
+        else:
+            flash("Erreur lors de la création du paiement : " + payment_response.text, "danger")
+    
+    return render_template('paiement.html')
+
+
+# -------------------
+# Page de statut paiement
+# -------------------
+@app.route('/paiement/status/<transaction_id>')
+def paiement_status(transaction_id):
+    # Ici, tu peux interroger SEMOA ou ta DB pour récupérer le status
+    # Exemple minimal : on simule un statut
+    status = "pending"
+    return render_template('paiement_status.html', transaction_id=transaction_id, status=status)
+
+
+# -------------------
+# Page d'accueil
+# -------------------
+@app.route('/')
+def index():
+    return redirect(url_for('paiement'))
+#######################################################################
+
+
+
+
+
+
+
 def to_float(x):
     """Convertit proprement '10,50' ou Decimal ou int/float en float."""
     if x in (None, ''):
@@ -442,6 +557,7 @@ def debug_form():
 # 1️⃣2️⃣ Exécution de l'application
 if __name__ == '__main__':
     app.run(debug=True)
+
 
 
 
