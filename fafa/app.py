@@ -159,24 +159,22 @@ def paiement():
         session['transaction_id'] = transaction_id
 
         # ✅ Auth OAuth SEMOA corrigé
-        headers = {"Content-Type": "application/json"}
         auth_resp = requests.post(
-    f"{SEMOA_BASE}/oauth/token",
-    data={
-        "grant_type": "password",
-        "username": OAUTH2_CREDENTIALS['username'],
-        "password": OAUTH2_CREDENTIALS['password'],
-        "client_id": OAUTH2_CREDENTIALS['client_id']
-    },
-    headers={"Content-Type": "application/x-www-form-urlencoded"}
-)
-
+            f"{SEMOA_BASE}/oauth/token",
+            data={
+                "grant_type": "password",
+                "username": OAUTH2_CREDENTIALS['username'],
+                "password": OAUTH2_CREDENTIALS['password'],
+                "client_id": OAUTH2_CREDENTIALS['client_id']
+            }
+        )
 
         if auth_resp.status_code != 200:
             flash("Erreur OAuth SEMOA : " + auth_resp.text, "danger")
             return redirect(url_for('paiement'))
 
         access_token = auth_resp.json().get('access_token')
+
         payment_data = {
             "amount": montant,
             "currency": "XOF",
@@ -185,7 +183,11 @@ def paiement():
             "client_reference": OAUTH2_CREDENTIALS['client_reference'],
             "transaction_id": transaction_id
         }
-        headers = {"Authorization": f"Bearer {access_token}", "Content-Type": "application/json"}
+
+        headers = {
+            "Authorization": f"Bearer {access_token}",
+            "Content-Type": "application/json"
+        }
         pay_resp = requests.post(f"{SEMOA_BASE}/payments", json=payment_data, headers=headers)
 
         if pay_resp.status_code in (200, 201):
@@ -195,6 +197,7 @@ def paiement():
             flash("Erreur lors de la création du paiement : " + pay_resp.text, "danger")
 
     return render_template('paiement.html', montant=session.get('prime_totale', 15000))
+
 
 
 def confirmation_paiement(transaction_id):
@@ -295,5 +298,6 @@ def export_pdf():
 # -----------------------------
 if __name__ == '__main__':
     app.run(debug=True)
+
 
 
