@@ -188,7 +188,7 @@ def questionnaire_step3():
 # -----------------------------
 @app.route('/paiement', methods=['GET', 'POST'])
 def paiement():
-    montant = session.get('prime_totale')
+    montant = session.get('type_contrat')
     questionnaire_id = session.get('questionnaire_id')
 
     if montant is None or questionnaire_id is None:
@@ -366,6 +366,7 @@ def conditions():
 # -----------------------------
 if __name__ == '__main__':
     app.run(debug=True)
+
 
 
 
