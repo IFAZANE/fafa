@@ -77,7 +77,7 @@ OAUTH2_CREDENTIALS = {
     "username": "api_cashpay.nsia",
     "password": "btCZkiiluA",
     "client_id": "api_cashpay.nsia",
-    "client_secret": "tgIeTQpShnfewy33opbigMmhrtNqvTsj"
+    "client_reference": "tgIeTQpShnfewy33opbigMmhrtNqvTsj"
 }
 
 # -----------------------------
@@ -185,11 +185,12 @@ def paiement():
         "username": OAUTH2_CREDENTIALS['username'],
         "password": OAUTH2_CREDENTIALS['password'],
         "client_id": OAUTH2_CREDENTIALS['client_id'],
-        "client_secret": OAUTH2_CREDENTIALS['client_secret']
+        "client_reference": OAUTH2_CREDENTIALS['client_reference']
     },
     headers={"Content-Type": "application/x-www-form-urlencoded"},
     timeout=10
 )
+
 
             # Pas de raise_for_status direct → on inspecte la réponse
             print("🔍 Réponse brute SEMOA Auth:", auth_resp.text)
@@ -292,6 +293,7 @@ def manuel():
 # -----------------------------
 if __name__ == '__main__':
     app.run(debug=True)
+
 
 
 
