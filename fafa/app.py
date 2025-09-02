@@ -85,7 +85,7 @@ OAUTH2_CREDENTIALS = {
 def questionnaire_step1():
     form = Etape1Form()
     if form.validate_on_submit():
-        session['duree_contrat'] = form.duree_contrat.data
+        #session['duree_contrat'] = form.duree_contrat.data
         session['periode_debut'] = form.periode_debut.data.strftime('%Y-%m-%d') if form.periode_debut.data else None
         session['periode_fin'] = form.periode_fin.data.strftime('%Y-%m-%d') if form.periode_fin.data else None
         session['periodicite'] = form.periodicite.data
@@ -351,6 +351,7 @@ def conditions():
 # -----------------------------
 if __name__ == '__main__':
     app.run(debug=True)
+
 
 
 
