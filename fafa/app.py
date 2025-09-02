@@ -179,7 +179,7 @@ def paiement():
         # -----------------------------
         try:
             auth_resp = requests.post(
-                "https://api.semoa-payments.ovh/sandbox/oauth/token",
+                "https://api.semoa-payments.ovh/sandbox/oauth2/token",
                 data={
                     "grant_type": "password",
                     "username": OAUTH2_CREDENTIALS['username'],
@@ -288,6 +288,7 @@ def manuel():
 # -----------------------------
 if __name__ == '__main__':
     app.run(debug=True)
+
 
 
 
