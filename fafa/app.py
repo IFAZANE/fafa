@@ -351,6 +351,10 @@ def accueil():
     session.clear()
     return render_template('home.html')
 
+@app.route('/questionnaire_pdf')
+def questionnaire_pdf():
+    return render_template('questionnaire_pdf.html')
+
 @app.route('/export/pdf')
 def export_pdf():
     buffer = BytesIO()
@@ -382,6 +386,7 @@ def conditions():
 # -----------------------------
 if __name__ == '__main__':
     app.run(debug=True)
+
 
 
 
