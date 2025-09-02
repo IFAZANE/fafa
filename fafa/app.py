@@ -318,7 +318,8 @@ def confirmation_paiement(transaction_id):
     else:
         flash(f"Transaction {transaction_id} était déjà confirmée.", "info")
 
-    return redirect(url_for('questionnaire_step1'))
+    return redirect(url_for('questionnaire_pdf'))
+
 
 # -----------------------------
 # Routes génériques et export
@@ -359,6 +360,7 @@ def conditions():
 # -----------------------------
 if __name__ == '__main__':
     app.run(debug=True)
+
 
 
 
