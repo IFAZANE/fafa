@@ -13,7 +13,6 @@ import os
 from io import BytesIO
 from datetime import datetime
 from weasyprint import HTML
-from dateutil import parser  # ✅ pour parser toutes les dates
 
 # -----------------------------
 # 1️⃣ Création de l'application
@@ -55,13 +54,20 @@ def to_float(x):
             return 0.0
 
 def parse_date(value):
-    """Parse toutes les dates possibles depuis session."""
+    """
+    Convertit différentes formes de date en objet datetime.date
+    """
     if not value:
         return None
-    try:
-        return parser.parse(value)
-    except Exception:
-        return None
+    if isinstance(value, datetime):
+        return value
+    # Formats possibles
+    for fmt in ('%Y-%m-%d', '%a, %d %b %Y %H:%M:%S GMT'):
+        try:
+            return datetime.strptime(value, fmt)
+        except ValueError:
+            continue
+    return None
 
 # -----------------------------
 # 5️⃣ Configuration SEMOA OAuth 2.0
@@ -82,8 +88,8 @@ def questionnaire_step1():
     form = Etape1Form()
     if form.validate_on_submit():
         session['duree_contrat'] = form.duree_contrat.data
-        session['periode_debut'] = form.periode_debut.data.isoformat() if form.periode_debut.data else None
-        session['periode_fin'] = form.periode_fin.data.isoformat() if form.periode_fin.data else None
+        session['periode_debut'] = form.periode_debut.data.strftime('%Y-%m-%d') if form.periode_debut.data else None
+        session['periode_fin'] = form.periode_fin.data.strftime('%Y-%m-%d') if form.periode_fin.data else None
         session['periodicite'] = form.periodicite.data
         session['prime_nette'] = to_float(form.prime_nette.data)
         session['accessoires'] = to_float(form.accessoires.data)
@@ -95,7 +101,7 @@ def questionnaire_step1():
         flash("Étape 1 enregistrée !", "success")
         return redirect(url_for('questionnaire_step2'))
 
-    # Pré-remplissage
+    # Pré-remplissage si données en session
     if session.get('duree_contrat'):
         form.duree_contrat.data = session.get('duree_contrat')
         form.periode_debut.data = parse_date(session.get('periode_debut'))
@@ -122,13 +128,13 @@ def questionnaire_step2():
         flash("Étape 2 enregistrée !", "success")
         return redirect(url_for('questionnaire_step3'))
 
-    # Pré-remplissage
+    # Pré-remplissage correct
     for field_name, field in form._fields.items():
         if field_name in session:
             value = session[field_name]
             if 'date' in field_name:
                 value = parse_date(value)
-            setattr(form, field_name, type(field)(data=value))
+            field.data = value  # ✅ ici, on met juste .data
 
     return render_template('step2.html', form=form)
 
@@ -138,8 +144,7 @@ def questionnaire_step3():
     if form.validate_on_submit():
         session['ack_conditions'] = form.ack_conditions.data
         session['lieu_signature'] = form.lieu_signature.data
-        session['date_signature'] = (form.date_signature.data.isoformat()
-                                     if form.date_signature.data else datetime.utcnow().isoformat())
+        session['date_signature'] = form.date_signature.data.strftime('%Y-%m-%d') if form.date_signature.data else datetime.utcnow().strftime('%Y-%m-%d')
         flash("Étape 3 enregistrée ! Vous allez être redirigé vers le paiement.", "success")
         return redirect(url_for('paiement'))
 
@@ -221,37 +226,10 @@ def paiement():
 # -----------------------------
 @app.route('/confirmation/<transaction_id>')
 def confirmation_paiement(transaction_id):
-    status = "success"  # pour sandbox
-    if status != "success":
-        flash("Paiement non encore validé.", "warning")
-        return redirect(url_for('paiement'))
+    # Ici, récupérer le status depuis SEMOA ou la base
+    flash(f"Transaction {transaction_id} confirmée !", "success")
+    return redirect(url_for('questionnaire_step1'))
 
-    try:
-        def get_date(key):
-            return parse_date(session.get(key))
-
-        def get_float(key):
-            return to_float(session.get(key))
-
-        souscription = Subscription(
-            uuid=session.get('transaction_id'),
-            nom=session.get('assure_nom'),
-            prenom=session.get('assure_prenom'),
-            telephone=session.get('assure_telephone'),
-            produit=session.get('produit', 'Montant variable'),
-            duree_contrat=session.get('duree_contrat'),
-            date_debut=get_date('periode_debut'),
-            date_fin=get_date('periode_fin'),
-            periodicite=session.get('periodicite'),
-            prime_totale=get_float('prime_totale')
-        )
-        db.session.add(souscription)
-        db.session.commit()
-    except Exception as e:
-        flash(f"Erreur sauvegarde : {e}", "danger")
-
-    flash("Paiement confirmé et souscription enregistrée !", "success")
-    return render_template('confirmation.html', subscription=souscription)
 
 # -----------------------------
 # Routes génériques et export
@@ -285,3 +263,4 @@ def manuel():
 # -----------------------------
 if __name__ == '__main__':
     app.run(debug=True)
+
