@@ -53,22 +53,37 @@ class QuestionnaireFafa(db.Model):
 
 
 
+#class Paiement(db.Model):
+#   __tablename__ = 'paiements'
+
+#    id = db.Column(db.Integer, primary_key=True)
+#    questionnaire_fafa_id = db.Column(db.Integer, db.ForeignKey('questionnaire_fafa.id'), nullable=False)
+#    transaction_id = db.Column(db.String(255), unique=True, nullable=False)
+#    amount = db.Column(db.Numeric, nullable=False)
+#    currency = db.Column(db.String(3), default='XOF')
+#    payment_method = db.Column(db.String(50), default='mobilemoney')
+#    phone = db.Column(db.String(20))
+#    status = db.Column(db.String(20), default='pending')
+#    response = db.Column(db.JSON)
+#    created_at = db.Column(db.DateTime, default=db.func.current_timestamp())
+#    updated_at = db.Column(db.DateTime, default=db.func.current_timestamp(), onupdate=db.func.current_timestamp())
+
+#    questionnaire_fafa = db.relationship('QuestionnaireFafa', backref=db.backref('paiements', lazy=True))
+
+from sqlalchemy.dialects.postgresql import JSON
+
 class Paiement(db.Model):
-    __tablename__ = 'paiements'
-
     id = db.Column(db.Integer, primary_key=True)
-    questionnaire_fafa_id = db.Column(db.Integer, db.ForeignKey('questionnaire_fafa.id'), nullable=False)
-    transaction_id = db.Column(db.String(255), unique=True, nullable=False)
-    amount = db.Column(db.Numeric, nullable=False)
-    currency = db.Column(db.String(3), default='XOF')
-    payment_method = db.Column(db.String(50), default='mobilemoney')
+    questionnaire_fafa_id = db.Column(db.Integer, db.ForeignKey('questionnaire_fafa.id'))
+    transaction_id = db.Column(db.String(64), unique=True, nullable=False)
+    amount = db.Column(db.Integer)
+    currency = db.Column(db.String(8))
     phone = db.Column(db.String(20))
-    status = db.Column(db.String(20), default='pending')
-    response = db.Column(db.JSON)
-    created_at = db.Column(db.DateTime, default=db.func.current_timestamp())
-    updated_at = db.Column(db.DateTime, default=db.func.current_timestamp(), onupdate=db.func.current_timestamp())
+    status = db.Column(db.String(32))
+    response = db.Column(JSON)  # ou db.Text si tu fais json.dumps()
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
 
-    questionnaire_fafa = db.relationship('QuestionnaireFafa', backref=db.backref('paiements', lazy=True))
     
 #class QuestionnaireFafa(db.Model):
 #    __tablename__ = 'questionnaire_fafa'
@@ -133,6 +148,7 @@ class Subscription(db.Model):
     telephone = db.Column(db.String(15), unique=True)
     ville = db.Column(db.String(50))
     produit = db.Column(db.String(50), nullable=False)
+
 
 
 
