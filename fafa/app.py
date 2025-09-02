@@ -182,23 +182,27 @@ def paiement():
     montant = session.get('prime_totale')
     questionnaire_id = session.get('questionnaire_id')
 
-    # Vérifie que les données essentielles sont présentes
     if montant is None or questionnaire_id is None:
         flash("Questionnaire ou montant introuvable. Veuillez compléter le questionnaire avant de payer.", "danger")
         return redirect(url_for('questionnaire_step1'))
 
     if request.method == 'POST':
         phone = request.form.get('phone')
-
         if not phone:
             flash("Veuillez saisir un numéro de téléphone valide.", "warning")
+            return redirect(url_for('paiement'))
+
+        try:
+            montant_int = int(montant)
+        except ValueError:
+            flash("Montant invalide.", "danger")
             return redirect(url_for('paiement'))
 
         transaction_id = str(uuid.uuid4())
         session['transaction_id'] = transaction_id
 
         try:
-            # Étape 1 : Authentification
+            # 1. Authentification SEMOA
             auth_resp = requests.post(
                 f"{SEMOA_BASE}/auth",
                 json=OAUTH2_CREDENTIALS,
@@ -207,7 +211,6 @@ def paiement():
             )
             auth_resp.raise_for_status()
             access_token = auth_resp.json().get('access_token')
-
             if not access_token:
                 flash("Impossible d'obtenir le token SEMOA.", "danger")
                 return redirect(url_for('paiement'))
@@ -217,48 +220,50 @@ def paiement():
                 "Content-Type": "application/json"
             }
 
-            # Étape 2 : Récupération des gateways
+            # 2. Récupération des gateways
             gateways_resp = requests.get(f"{SEMOA_BASE}/gateways", headers=headers, timeout=10)
             gateways_resp.raise_for_status()
             gateways = gateways_resp.json()
-
-            if not gateways or not isinstance(gateways, list):
+            if not isinstance(gateways, list) or not gateways:
                 flash("Aucune gateway disponible.", "danger")
                 return redirect(url_for('paiement'))
 
             gateway_reference = gateways[0].get('reference')
-
             if not gateway_reference:
                 flash("Référence de gateway introuvable.", "danger")
                 return redirect(url_for('paiement'))
 
-            # Étape 3 : Création de la commande
+            # 3. Création de la commande de paiement
             payment_data = {
-                "amount": int(montant),
+                "amount": montant_int,
                 "currency": "XOF",
-                "client": {
-                    "phone": phone
-                },
-                "gateway": {
-                    "reference": gateway_reference
-                },
+                "client": {"phone": phone},
+                "gateway": {"reference": gateway_reference},
                 "callback_url": url_for('confirmation_paiement', transaction_id=transaction_id, _external=True)
             }
 
+            # 4. Appel à l'API SEMOA
             order_resp = requests.post(
                 f"{SEMOA_BASE}/orders",
                 json=payment_data,
                 headers=headers,
                 timeout=10
             )
+
+            # Log pour débogage
+            print("=== PAYLOAD ENVOYÉ ===")
+            print(json.dumps(payment_data, ensure_ascii=False, indent=2))
+            print("=== RÉPONSE SEMOA ===", order_resp.status_code)
+            print(order_resp.text)
+
             order_resp.raise_for_status()
             order_data = order_resp.json()
 
-            # Étape 4 : Enregistrement en base
+            # 5. Enregistrement en base de données
             paiement = Paiement(
                 questionnaire_fafa_id=questionnaire_id,
                 transaction_id=transaction_id,
-                amount=montant,
+                amount=montant_int,
                 currency="XOF",
                 phone=phone,
                 status=order_data.get('status', 'pending'),
@@ -267,14 +272,15 @@ def paiement():
             db.session.add(paiement)
             db.session.commit()
 
-            # Étape 5 : Redirection vers l’URL de paiement
-            session['gateway_url'] = order_data.get('bill_url') or order_data.get('gateway', {}).get('url')
-            if not session['gateway_url']:
+            # 6. Redirection vers l'URL de paiement
+            gateway_url = order_data.get('bill_url') or order_data.get('gateway', {}).get('url')
+            if not gateway_url:
                 flash("Impossible de récupérer l'URL de paiement.", "danger")
                 return redirect(url_for('paiement'))
 
-            flash(f"Paiement de {montant} XOF initié !", "success")
-            return redirect(session['gateway_url'])
+            session['gateway_url'] = gateway_url
+            flash(f"Paiement de {montant_int} XOF initié !", "success")
+            return redirect(gateway_url)
 
         except requests.exceptions.RequestException as e:
             flash(f"Erreur SEMOA : {str(e)}", "danger")
@@ -351,6 +357,7 @@ def conditions():
 # -----------------------------
 if __name__ == '__main__':
     app.run(debug=True)
+
 
 
 
