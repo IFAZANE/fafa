@@ -184,13 +184,11 @@ def paiement():
                     "username": OAUTH2_CREDENTIALS['username'],
                     "password": OAUTH2_CREDENTIALS['password'],
                     "client_id": OAUTH2_CREDENTIALS['client_id'],
-                    "client_secret": OAUTH2_CREDENTIALS.get('client_secret', '')
+                    "client_secret": OAUTH2_CREDENTIALS['client_secret']
                 },
                 timeout=10
             )
-            auth_resp.raise_for_status()
-
-            # DEBUG : afficher la réponse brute
+            # Pas de raise_for_status direct → on inspecte la réponse
             print("🔍 Réponse brute SEMOA Auth:", auth_resp.text)
 
             try:
@@ -201,7 +199,7 @@ def paiement():
 
             access_token = auth_data.get('access_token')
             if not access_token:
-                flash(f"Token manquant dans la réponse SEMOA : {auth_resp.text}", "danger")
+                flash(f"Échec authentification SEMOA : {auth_data}", "danger")
                 return redirect(url_for('paiement'))
 
         except requests.exceptions.RequestException as e:
@@ -223,13 +221,16 @@ def paiement():
 
         try:
             resp = requests.post(f"{SEMOA_BASE}/orders", json=payment_data, headers=headers, timeout=10)
-            resp.raise_for_status()
             print("🔍 Réponse brute SEMOA Order:", resp.text)
 
             try:
                 order_data = resp.json()
             except ValueError:
                 flash(f"Réponse non-JSON lors de la commande : {resp.text}", "danger")
+                return redirect(url_for('paiement'))
+
+            if resp.status_code != 200:
+                flash(f"Erreur SEMOA Order : {order_data}", "danger")
                 return redirect(url_for('paiement'))
 
             gateway_info = order_data.get('gateway', {})
@@ -241,7 +242,6 @@ def paiement():
             flash(f"Erreur lors de la création du paiement : {str(e)}", "danger")
 
     return render_template('paiement.html', montant=montant)
-
 
 
 
@@ -289,6 +289,7 @@ def manuel():
 # -----------------------------
 if __name__ == '__main__':
     app.run(debug=True)
+
 
 
 
