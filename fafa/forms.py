@@ -25,7 +25,7 @@ class Etape1Form(FlaskForm):
 
     # Prime
     prime_nette = DecimalField('Prime nette', places=2, validators=[DataRequired(), NumberRange(min=0)])
-    accessoires = DecimalField('Accessoires', places=2, validators=[Optional(), NumberRange(min=0)])
+    accessoires = DecimalField('Accessoires', places=2, validators=[NumberRange(min=0)])
     taxes = DecimalField('Taxes', places=2, validators=[Optional(), NumberRange(min=0)])
     prime_totale = DecimalField('Prime totale', places=2, validators=[Optional()])
 
@@ -113,7 +113,7 @@ class QuestionnaireForm(FlaskForm):
     beneficiaire_tel = StringField("Téléphone bénéficiaire", validators=[Optional()])
     beneficiaire_profession = StringField("Profession bénéficiaire", validators=[Optional()])
     beneficiaire_adresse = StringField("Adresse bénéficiaire", validators=[Optional()])
-    beneficiaire_lateralite = SelectField("Latéralité", choices=[('Droit','Droit'),('Gauche','Gauche')], validators=[Optional()])
+    #beneficiaire_lateralite = SelectField("Latéralité", choices=[('Droit','Droit'),('Gauche','Gauche')], validators=[Optional()])
     
     souscripteur_nom = StringField("Nom souscripteur", validators=[DataRequired()])
     souscripteur_prenoms = StringField("Prénoms souscripteur", validators=[DataRequired()])
@@ -155,6 +155,7 @@ class SouscriptionForm(FlaskForm):
 )
 
     recaptcha = RecaptchaField()
+
 
 
 
