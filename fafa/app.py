@@ -161,15 +161,16 @@ def paiement():
         # ✅ Auth OAuth SEMOA corrigé
         headers = {"Content-Type": "application/json"}
         auth_resp = requests.post(
-            f"{SEMOA_BASE}/oauth/token",
-            json={
-                "grant_type": "password",
-                "username": OAUTH2_CREDENTIALS['username'],
-                "password": OAUTH2_CREDENTIALS['password'],
-                "client_id": OAUTH2_CREDENTIALS['client_id']
-            },
-            headers=headers
-        )
+    f"{SEMOA_BASE}/oauth/token",
+    data={
+        "grant_type": "password",
+        "username": OAUTH2_CREDENTIALS['username'],
+        "password": OAUTH2_CREDENTIALS['password'],
+        "client_id": OAUTH2_CREDENTIALS['client_id']
+    },
+    headers={"Content-Type": "application/x-www-form-urlencoded"}
+)
+
 
         if auth_resp.status_code != 200:
             flash("Erreur OAuth SEMOA : " + auth_resp.text, "danger")
@@ -294,4 +295,5 @@ def export_pdf():
 # -----------------------------
 if __name__ == '__main__':
     app.run(debug=True)
+
 
