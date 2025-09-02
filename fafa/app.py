@@ -85,20 +85,19 @@ OAUTH2_CREDENTIALS = {
 def questionnaire_step1():
     form = Etape1Form()
     if form.validate_on_submit():
-        # On stocke les champs vraiment présents dans Etape1Form
         session['duree_contrat'] = form.duree_contrat.data
         session['periode_debut'] = form.periode_debut.data.strftime('%Y-%m-%d') if form.periode_debut.data else None
         session['periode_fin'] = form.periode_fin.data.strftime('%Y-%m-%d') if form.periode_fin.data else None
         session['periodicite'] = form.periodicite.data
         session['type_contrat'] = int(form.type_contrat.data)  # ex: 15000 ou 20000
 
-        # On définit directement la prime_totale à partir du type_contrat choisi
+        # Prime totale = type de contrat choisi
         session['prime_totale'] = session['type_contrat']
 
         flash("Étape 1 enregistrée !", "success")
         return redirect(url_for('questionnaire_step2'))
 
-    # Préremplissage si l'utilisateur revient sur la page
+    # Préremplissage si retour sur la page
     if session.get('duree_contrat'):
         form.duree_contrat.data = session.get('duree_contrat')
         form.periode_debut.data = parse_date(session.get('periode_debut'))
@@ -113,21 +112,27 @@ def questionnaire_step1():
 def questionnaire_step2():
     form = Etape2Form()
     if form.validate_on_submit():
-        for prefix in ['assure', 'beneficiaire', 'souscripteur']:
-            for field_name, field in form._fields.items():
-                if field_name.startswith(prefix):
-                    session[field_name] = getattr(form, field_name).data
+        # On stocke uniquement les champs bénéficiaire et souscripteur
+        for field_name in [
+            "beneficiaire_nom", "beneficiaire_prenoms", "beneficiaire_tel",
+            "beneficiaire_profession", "beneficiaire_adresse",
+            "souscripteur_nom", "souscripteur_prenoms", "souscripteur_tel",
+            "souscripteur_date_naissance", "souscripteur_adresse"
+        ]:
+            session[field_name] = getattr(form, field_name).data
         flash("Étape 2 enregistrée !", "success")
         return redirect(url_for('questionnaire_step3'))
 
-    for field_name, field in form._fields.items():
+    # Préremplissage si retour sur la page
+    for field_name in form._fields.keys():
         if field_name in session:
             value = session[field_name]
             if 'date' in field_name:
                 value = parse_date(value)
-            field.data = value
+            form._fields[field_name].data = value
 
     return render_template('step2.html', form=form)
+
 
 @app.route('/step3', methods=['GET', 'POST'])
 def questionnaire_step3():
@@ -135,14 +140,30 @@ def questionnaire_step3():
     if form.validate_on_submit():
         session['ack_conditions'] = form.ack_conditions.data
         session['lieu_signature'] = form.lieu_signature.data
-        session['date_signature'] = form.date_signature.data.strftime('%Y-%m-%d') if form.date_signature.data else datetime.utcnow().strftime('%Y-%m-%d')
+        session['date_signature'] = (
+            form.date_signature.data.strftime('%Y-%m-%d')
+            if form.date_signature.data
+            else datetime.utcnow().strftime('%Y-%m-%d')
+        )
 
-        # Création du questionnaire Fafa en base
+        # Création en base
         questionnaire = QuestionnaireFafa(
             duree_contrat=session.get('duree_contrat'),
             periode_debut=parse_date(session.get('periode_debut')),
             periode_fin=parse_date(session.get('periode_fin')),
             periodicite=session.get('periodicite'),
+            type_contrat=session.get('type_contrat'),
+            prime_totale=session.get('prime_totale'),
+            beneficiaire_nom=session.get('beneficiaire_nom'),
+            beneficiaire_prenoms=session.get('beneficiaire_prenoms'),
+            beneficiaire_tel=session.get('beneficiaire_tel'),
+            beneficiaire_profession=session.get('beneficiaire_profession'),
+            beneficiaire_adresse=session.get('beneficiaire_adresse'),
+            souscripteur_nom=session.get('souscripteur_nom'),
+            souscripteur_prenoms=session.get('souscripteur_prenoms'),
+            souscripteur_tel=session.get('souscripteur_tel'),
+            souscripteur_date_naissance=parse_date(session.get('souscripteur_date_naissance')),
+            souscripteur_adresse=session.get('souscripteur_adresse'),
             ack_conditions=session.get('ack_conditions'),
             lieu_signature=session.get('lieu_signature'),
             date_signature=parse_date(session.get('date_signature'))
@@ -154,13 +175,13 @@ def questionnaire_step3():
         flash("Étape 3 enregistrée ! Vous allez être redirigé vers le paiement.", "success")
         return redirect(url_for('paiement'))
 
+    # Préremplissage
     if session.get('lieu_signature'):
         form.ack_conditions.data = session.get('ack_conditions', False)
         form.lieu_signature.data = session.get('lieu_signature')
         form.date_signature.data = parse_date(session.get('date_signature'))
 
     return render_template('step3.html', form=form)
-
 # -----------------------------
 # 7️⃣ Route paiement et insertion
 # -----------------------------
@@ -347,6 +368,7 @@ def conditions():
 # -----------------------------
 if __name__ == '__main__':
     app.run(debug=True)
+
 
 
 
