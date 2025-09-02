@@ -153,12 +153,21 @@ def questionnaire_step3():
 @app.route('/paiement', methods=['GET', 'POST'])
 def paiement():
     if request.method == 'POST':
-        montant = session.get('prime_totale', 15000)
+        # ✅ Prendre le montant réel de la session
+        montant = session.get('prime_totale')
+        if montant is None:
+            flash("Montant introuvable. Veuillez recommencer la souscription.", "danger")
+            return redirect(url_for('questionnaire_step1'))
+
         phone = request.form.get('phone')
+        if not phone:
+            flash("Veuillez saisir un numéro de téléphone valide.", "warning")
+            return redirect(url_for('paiement'))
+
         transaction_id = str(uuid.uuid4())
         session['transaction_id'] = transaction_id
 
-        # ✅ Auth OAuth SEMOA corrigé
+        # Auth OAuth SEMOA
         auth_resp = requests.post(
             f"{SEMOA_BASE}/oauth/token",
             data={
@@ -191,12 +200,15 @@ def paiement():
         pay_resp = requests.post(f"{SEMOA_BASE}/payments", json=payment_data, headers=headers)
 
         if pay_resp.status_code in (200, 201):
-            flash("Paiement initié avec succès !", "success")
+            flash(f"Paiement de {montant} XOF initié avec succès !", "success")
             return redirect(url_for('confirmation_paiement', transaction_id=transaction_id))
         else:
             flash("Erreur lors de la création du paiement : " + pay_resp.text, "danger")
 
-    return render_template('paiement.html', montant=session.get('prime_totale', 15000))
+    # ✅ Afficher le montant réel dans le formulaire
+    montant = session.get('prime_totale', 0)
+    return render_template('paiement.html', montant=montant)
+
 
 
 
@@ -298,6 +310,7 @@ def export_pdf():
 # -----------------------------
 if __name__ == '__main__':
     app.run(debug=True)
+
 
 
 
