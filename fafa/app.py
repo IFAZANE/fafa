@@ -158,6 +158,9 @@ def questionnaire_step3():
 # -----------------------------
 # 7️⃣ Route paiement avec SEMOA OAuth 2.0
 # -----------------------------
+# -----------------------------
+# 7️⃣ Route paiement avec SEMOA OAuth 2.0 corrigée
+# -----------------------------
 @app.route('/paiement', methods=['GET', 'POST'])
 def paiement():
     montant = session.get('prime_totale')
@@ -175,22 +178,20 @@ def paiement():
         session['transaction_id'] = transaction_id
 
         # -----------------------------
-        # 1️⃣ Auth SEMOA
+        # 1️⃣ Auth SEMOA via /auth
         # -----------------------------
         try:
             auth_resp = requests.post(
-                "https://api.semoa-payments.ovh/sandbox/oauth2/token",
-                data={
-                    "grant_type": "password",
+                f"{SEMOA_BASE}/auth",
+                json={
                     "username": OAUTH2_CREDENTIALS['username'],
                     "password": OAUTH2_CREDENTIALS['password'],
                     "client_id": OAUTH2_CREDENTIALS['client_id'],
-                    "client_secret": OAUTH2_CREDENTIALS['client_secret']  # ✅ client_secret correct
+                    "client_secret": OAUTH2_CREDENTIALS['client_secret']
                 },
-                headers={"Content-Type": "application/x-www-form-urlencoded"},
+                headers={"Content-Type": "application/json"},
                 timeout=10
             )
-            #print("🔍 Réponse brute SEMOA Auth:", auth_resp.text)
 
             if auth_resp.status_code != 200:
                 flash(f"Échec authentification SEMOA : {auth_resp.text}", "danger")
@@ -207,7 +208,7 @@ def paiement():
             return redirect(url_for('paiement'))
 
         # -----------------------------
-        # 2️⃣ Création de la commande
+        # 2️⃣ Création de la commande via /orders
         # -----------------------------
         payment_data = {
             "amount": int(montant),
@@ -223,8 +224,6 @@ def paiement():
 
         try:
             resp = requests.post(f"{SEMOA_BASE}/orders", json=payment_data, headers=headers, timeout=10)
-            print("🔍 Réponse brute SEMOA Order:", resp.text)
-
             if resp.status_code != 200:
                 flash(f"Erreur SEMOA Order : {resp.text}", "danger")
                 return redirect(url_for('paiement'))
@@ -239,6 +238,7 @@ def paiement():
             flash(f"Erreur lors de la création du paiement : {str(e)}", "danger")
 
     return render_template('paiement.html', montant=montant)
+
 
 
 
@@ -288,6 +288,7 @@ def manuel():
 # -----------------------------
 if __name__ == '__main__':
     app.run(debug=True)
+
 
 
 
