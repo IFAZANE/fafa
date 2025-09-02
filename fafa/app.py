@@ -146,12 +146,7 @@ def paiement_status(transaction_id):
     return render_template('paiement_status.html', transaction_id=transaction_id, status=status)
 
 
-# -------------------
-# Page d'accueil
-# -------------------
-@app.route('/')
-def index():
-    return redirect(url_for('paiement'))
+
 #######################################################################
 
 
@@ -557,6 +552,7 @@ def debug_form():
 # 1️⃣2️⃣ Exécution de l'application
 if __name__ == '__main__':
     app.run(debug=True)
+
 
 
 
