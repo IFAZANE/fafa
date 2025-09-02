@@ -73,13 +73,13 @@ def parse_date(value):
 # 5️⃣ Configuration SEMOA OAuth 2.0
 # -----------------------------
 SEMOA_BASE = "https://api.semoa-payments.ovh/sandbox"
+
 OAUTH2_CREDENTIALS = {
     "username": "api_cashpay.nsia",
     "password": "btCZkiiluA",
     "client_id": "api_cashpay.nsia",
-    "client_secret": "tgIeTQpShnfewy33opbigMmhrtNqvTsj"
+    "client_secret": "tgIeTQpShnfewy33opbigMmhrtNqvTsj"  # ✅ correct pour OAuth2
 }
-
 # -----------------------------
 # 6️⃣ Routes questionnaire multi-étapes
 # -----------------------------
@@ -288,6 +288,7 @@ def manuel():
 # -----------------------------
 if __name__ == '__main__':
     app.run(debug=True)
+
 
 
 
