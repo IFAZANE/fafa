@@ -177,11 +177,16 @@ def questionnaire_step3():
 # -----------------------------
 # 7️⃣ Route paiement et insertion
 # -----------------------------
+# -----------------------------
+# Route paiement
+# -----------------------------
 @app.route('/paiement', methods=['GET', 'POST'])
 def paiement():
     montant = session.get('prime_totale')
-    if montant is None:
-        flash("Montant introuvable. Veuillez recommencer la souscription.", "danger")
+    questionnaire_id = session.get('questionnaire_id')
+
+    if montant is None or questionnaire_id is None:
+        flash("Questionnaire ou montant introuvable. Veuillez compléter le questionnaire avant de payer.", "danger")
         return redirect(url_for('questionnaire_step1'))
 
     if request.method == 'POST':
@@ -209,6 +214,7 @@ def paiement():
 
             headers = {"Authorization": f"Bearer {access_token}"}
 
+            # Récupération des gateways
             gateways_resp = requests.get(f"{SEMOA_BASE}/gateways", headers=headers, timeout=10)
             gateways_resp.raise_for_status()
             gateways = gateways_resp.json()
@@ -218,6 +224,7 @@ def paiement():
 
             gateway_id = gateways[0]['id']
 
+            # Création de l'ordre de paiement
             payment_data = {
                 "amount": int(montant),
                 "currency": "XOF",
@@ -230,9 +237,9 @@ def paiement():
             order_resp.raise_for_status()
             order_data = order_resp.json()
 
-            # ✅ Enregistrement paiement
+            # ✅ Enregistrement du paiement dans la base
             paiement = Paiement(
-                questionnaire_fafa_id=session.get('questionnaire_id'),
+                questionnaire_fafa_id=questionnaire_id,
                 transaction_id=transaction_id,
                 amount=montant,
                 currency="XOF",
@@ -243,28 +250,44 @@ def paiement():
             db.session.add(paiement)
             db.session.commit()
 
+            # Redirection vers la page de paiement SEMOA
             session['gateway_url'] = order_data.get('bill_url') or order_data.get('gateway', {}).get('url')
+            if not session['gateway_url']:
+                flash("Impossible de récupérer l'URL de paiement.", "danger")
+                return redirect(url_for('paiement'))
+
             flash(f"Paiement de {montant} XOF initié !", "success")
             return redirect(session['gateway_url'])
 
         except requests.exceptions.RequestException as e:
             flash(f"Erreur SEMOA : {str(e)}", "danger")
             return redirect(url_for('paiement'))
+        except Exception as e:
+            flash(f"Erreur serveur : {str(e)}", "danger")
+            return redirect(url_for('paiement'))
 
     return render_template('paiement.html', montant=montant)
 
+
 # -----------------------------
-# 8️⃣ Confirmation paiement
+# Route confirmation paiement
 # -----------------------------
 @app.route('/confirmation/<transaction_id>')
 def confirmation_paiement(transaction_id):
     paiement = Paiement.query.filter_by(transaction_id=transaction_id).first()
-    if paiement:
+    if not paiement:
+        flash(f"Transaction {transaction_id} introuvable.", "warning")
+        return redirect(url_for('questionnaire_step1'))
+
+    # Vérifie si déjà confirmé
+    if paiement.status != "confirmed":
         paiement.status = "confirmed"
+        paiement.updated_at = datetime.utcnow()
         db.session.commit()
         flash(f"Transaction {transaction_id} confirmée !", "success")
     else:
-        flash(f"Transaction {transaction_id} introuvable.", "warning")
+        flash(f"Transaction {transaction_id} était déjà confirmée.", "info")
+
     return redirect(url_for('questionnaire_step1'))
 
 # -----------------------------
@@ -300,3 +323,4 @@ def manuel():
 # -----------------------------
 if __name__ == '__main__':
     app.run(debug=True)
+
