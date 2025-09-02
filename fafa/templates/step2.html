@@ -433,27 +433,6 @@ footer {
         <form method="POST">
             {{ form.hidden_tag() }}
 
-            <!-- Assuré -->
-            <div class="card mb-4 shadow-sm">
-                <div class="card-header">Assuré</div>
-                <div class="card-body">
-                    {{ form.assure_nom.label(class="form-label") }}
-                    {{ form.assure_nom(class="form-control") }}
-
-                    {{ form.assure_prenoms.label(class="form-label mt-3") }}
-                    {{ form.assure_prenoms(class="form-control") }}
-
-                    {{ form.assure_tel.label(class="form-label mt-3") }}
-                    {{ form.assure_tel(class="form-control") }}
-
-                    {{ form.assure_date_naissance.label(class="form-label mt-3") }}
-                    {{ form.assure_date_naissance(class="form-control") }}
-
-                    {{ form.assure_adresse.label(class="form-label mt-3") }}
-                    {{ form.assure_adresse(class="form-control") }}
-                </div>
-            </div>
-
             <!-- Bénéficiaire -->
             <div class="card mb-4 shadow-sm">
                 <div class="card-header">Bénéficiaire</div>
