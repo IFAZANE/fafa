@@ -68,7 +68,7 @@ def parse_date(value):
 # -----------------------------
 # 5️⃣ Configuration SEMOA OAuth 2.0
 # -----------------------------
-SEMOA_BASE = "https://api.semoa-payments.ovh/sandbox/"
+SEMOA_BASE = "https://api.semoa-payments.ovh/sandbox"
 OAUTH2_CREDENTIALS = {
     "username": "api_cashpay.nsia",
     "password": "btCZkiiluA",
@@ -326,6 +326,7 @@ def conditions():
 # -----------------------------
 if __name__ == '__main__':
     app.run(debug=True)
+
 
 
 
