@@ -176,7 +176,7 @@ def questionnaire_step3():
     form = Etape3Form()
 
     if form.validate_on_submit():
-        # Sauvegarde en session
+        # 🔹 Sauvegarde en session
         session['ack_conditions'] = form.ack_conditions.data
         session['lieu_signature'] = form.lieu_signature.data
         session['date_signature'] = (
@@ -185,49 +185,63 @@ def questionnaire_step3():
         )
 
         try:
-            # Enregistrement en base
+            # 🔹 Préparer toutes les valeurs sécurisées
+            def get_date(key):
+                val = session.get(key)
+                return datetime.strptime(val, '%Y-%m-%d') if val else None
+
+            def get_float(key):
+                return to_float(session.get(key))
+
+            # 🔹 Créer l'objet
             souscription = QuestionnaireFafa(
                 duree_contrat=session.get('duree_contrat'),
-                periode_debut=datetime.strptime(session.get('periode_debut'), '%Y-%m-%d') if session.get('periode_debut') else None,
-                periode_fin=datetime.strptime(session.get('periode_fin'), '%Y-%m-%d') if session.get('periode_fin') else None,
+                periode_debut=get_date('periode_debut'),
+                periode_fin=get_date('periode_fin'),
                 periodicite=session.get('periodicite'),
-                prime_nette=session.get('prime_nette'),
-                accessoires=session.get('accessoires'),
-                taxes=session.get('taxes'),
-                prime_totale=session.get('prime_totale'),
-                deces_accident=session.get('deces_accident'),
-                deces_toutes_causes=session.get('deces_toutes_causes'),
-                invalidite=session.get('invalidite'),
+                prime_nette=get_float('prime_nette'),
+                accessoires=get_float('accessoires'),
+                taxes=get_float('taxes'),
+                prime_totale=get_float('prime_totale'),
+                deces_accident=get_float('deces_accident'),
+                deces_toutes_causes=get_float('deces_toutes_causes'),
+                invalidite=get_float('invalidite'),
+                hospitalisation=get_float('hospitalisation'),
+                traitement_medical=get_float('traitement_medical'),
+                indemnite_journaliere=get_float('indemnite_journaliere'),
                 assure_nom=session.get('assure_nom'),
                 assure_prenoms=session.get('assure_prenoms'),
                 assure_tel=session.get('assure_tel'),
-                assure_date_naissance=datetime.strptime(session.get('assure_date_naissance'), '%Y-%m-%d') if session.get('assure_date_naissance') else None,
+                assure_date_naissance=get_date('assure_date_naissance'),
                 assure_adresse=session.get('assure_adresse'),
                 beneficiaire_nom=session.get('beneficiaire_nom'),
                 beneficiaire_prenoms=session.get('beneficiaire_prenoms'),
                 beneficiaire_tel=session.get('beneficiaire_tel'),
                 beneficiaire_adresse=session.get('beneficiaire_adresse'),
                 beneficiaire_profession=session.get('beneficiaire_profession'),
+                beneficiaire_lateralite=session.get('beneficiaire_lateralite'),
                 souscripteur_nom=session.get('souscripteur_nom'),
                 souscripteur_prenoms=session.get('souscripteur_prenoms'),
                 souscripteur_tel=session.get('souscripteur_tel'),
-                souscripteur_date_naissance=datetime.strptime(session.get('souscripteur_date_naissance'), '%Y-%m-%d') if session.get('souscripteur_date_naissance') else None,
+                souscripteur_date_naissance=get_date('souscripteur_date_naissance'),
                 souscripteur_adresse=session.get('souscripteur_adresse'),
                 ack_conditions=session.get('ack_conditions', False),
                 lieu_signature=session.get('lieu_signature'),
-                date_signature=datetime.strptime(session.get('date_signature'), '%Y-%m-%d') if session.get('date_signature') else datetime.utcnow()
+                date_signature=get_date('date_signature') or datetime.utcnow()
             )
+
             db.session.add(souscription)
             db.session.commit()
 
-            # Génération du PDF
+            # 🔹 Génération du PDF
             rendered = render_template('questionnaire_pdf.html', data=session)
             pdf_file = BytesIO()
             HTML(string=rendered).write_pdf(pdf_file)
             pdf_file.seek(0)
 
+            # 🔹 Nettoyer session
             session.clear()
-            flash("Souscription enregistrée en base et PDF généré.", "success")
+            flash("Souscription enregistrée et PDF généré avec succès.", "success")
 
             return send_file(
                 pdf_file,
@@ -240,14 +254,14 @@ def questionnaire_step3():
             db.session.rollback()
             app.logger.exception("Erreur enregistrement souscription")
             flash(f"Erreur lors de l'enregistrement en base : {str(e)}", "danger")
-            return render_template('step3.html', form=form)  # ✅ garanti
+            return render_template('step3.html', form=form)
 
     elif request.method == 'POST':
         # Formulaire envoyé mais non valide
         app.logger.debug("Step3 validation failed: %s", form.errors)
         flash(f"Erreur sur le formulaire (étape 3) : {form.errors}", "danger")
 
-    # Pré-remplissage si existant
+    # 🔹 Pré-remplissage si existant
     if session.get('lieu_signature'):
         form.ack_conditions.data = session.get('ack_conditions', False)
         form.lieu_signature.data = session.get('lieu_signature')
@@ -256,7 +270,6 @@ def questionnaire_step3():
             if session.get('date_signature') else None
         )
 
-    # ✅ garanti à 100% que form est passé au template
     return render_template('step3.html', form=form)
 
 
@@ -429,6 +442,7 @@ def debug_form():
 # 1️⃣2️⃣ Exécution de l'application
 if __name__ == '__main__':
     app.run(debug=True)
+
 
 
 
