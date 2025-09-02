@@ -13,6 +13,7 @@ import os
 from io import BytesIO
 from datetime import datetime
 from weasyprint import HTML
+from dateutil import parser  # ✅ pour parser toutes les dates
 
 # -----------------------------
 # 1️⃣ Création de l'application
@@ -53,6 +54,15 @@ def to_float(x):
         except:
             return 0.0
 
+def parse_date(value):
+    """Parse toutes les dates possibles depuis session."""
+    if not value:
+        return None
+    try:
+        return parser.parse(value)
+    except Exception:
+        return None
+
 # -----------------------------
 # 5️⃣ Configuration SEMOA OAuth 2.0
 # -----------------------------
@@ -72,8 +82,8 @@ def questionnaire_step1():
     form = Etape1Form()
     if form.validate_on_submit():
         session['duree_contrat'] = form.duree_contrat.data
-        session['periode_debut'] = form.periode_debut.data.strftime('%Y-%m-%d') if form.periode_debut.data else None
-        session['periode_fin'] = form.periode_fin.data.strftime('%Y-%m-%d') if form.periode_fin.data else None
+        session['periode_debut'] = form.periode_debut.data.isoformat() if form.periode_debut.data else None
+        session['periode_fin'] = form.periode_fin.data.isoformat() if form.periode_fin.data else None
         session['periodicite'] = form.periodicite.data
         session['prime_nette'] = to_float(form.prime_nette.data)
         session['accessoires'] = to_float(form.accessoires.data)
@@ -85,10 +95,11 @@ def questionnaire_step1():
         flash("Étape 1 enregistrée !", "success")
         return redirect(url_for('questionnaire_step2'))
 
+    # Pré-remplissage
     if session.get('duree_contrat'):
         form.duree_contrat.data = session.get('duree_contrat')
-        form.periode_debut.data = datetime.strptime(session['periode_debut'], '%Y-%m-%d') if session.get('periode_debut') else None
-        form.periode_fin.data = datetime.strptime(session['periode_fin'], '%Y-%m-%d') if session.get('periode_fin') else None
+        form.periode_debut.data = parse_date(session.get('periode_debut'))
+        form.periode_fin.data = parse_date(session.get('periode_fin'))
         form.periodicite.data = session.get('periodicite')
         form.prime_nette.data = session.get('prime_nette')
         form.accessoires.data = session.get('accessoires')
@@ -111,11 +122,12 @@ def questionnaire_step2():
         flash("Étape 2 enregistrée !", "success")
         return redirect(url_for('questionnaire_step3'))
 
+    # Pré-remplissage
     for field_name, field in form._fields.items():
         if field_name in session:
             value = session[field_name]
             if 'date' in field_name:
-                value = datetime.strptime(value, '%Y-%m-%d') if value else None
+                value = parse_date(value)
             setattr(form, field_name, type(field)(data=value))
 
     return render_template('step2.html', form=form)
@@ -126,14 +138,15 @@ def questionnaire_step3():
     if form.validate_on_submit():
         session['ack_conditions'] = form.ack_conditions.data
         session['lieu_signature'] = form.lieu_signature.data
-        session['date_signature'] = form.date_signature.data.strftime('%Y-%m-%d') if form.date_signature.data else datetime.utcnow().strftime('%Y-%m-%d')
+        session['date_signature'] = (form.date_signature.data.isoformat()
+                                     if form.date_signature.data else datetime.utcnow().isoformat())
         flash("Étape 3 enregistrée ! Vous allez être redirigé vers le paiement.", "success")
         return redirect(url_for('paiement'))
 
     if session.get('lieu_signature'):
         form.ack_conditions.data = session.get('ack_conditions', False)
         form.lieu_signature.data = session.get('lieu_signature')
-        form.date_signature.data = datetime.strptime(session['date_signature'], '%Y-%m-%d') if session.get('date_signature') else None
+        form.date_signature.data = parse_date(session.get('date_signature'))
 
     return render_template('step3.html', form=form)
 
@@ -208,16 +221,14 @@ def paiement():
 # -----------------------------
 @app.route('/confirmation/<transaction_id>')
 def confirmation_paiement(transaction_id):
-    # Ici, pour la sandbox, on simule le succès
-    status = "success"
+    status = "success"  # pour sandbox
     if status != "success":
         flash("Paiement non encore validé.", "warning")
         return redirect(url_for('paiement'))
 
     try:
         def get_date(key):
-            val = session.get(key)
-            return datetime.strptime(val, '%Y-%m-%d') if val else None
+            return parse_date(session.get(key))
 
         def get_float(key):
             return to_float(session.get(key))
@@ -265,15 +276,12 @@ def route_export_csv():
 def route_export_excel():
     return export_excel()
 
-
 @app.route('/manuel')
 def manuel():
     return render_template('manuel.html')
-
 
 # -----------------------------
 # Exécution
 # -----------------------------
 if __name__ == '__main__':
     app.run(debug=True)
-
