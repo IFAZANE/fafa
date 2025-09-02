@@ -325,7 +325,22 @@ def confirmation_paiement(transaction_id):
     else:
         flash(f"Transaction {transaction_id} était déjà confirmée.", "info")
 
-    return redirect(url_for('questionnaire_step1'))
+    html = render_template('questionnaire_pdf.html', questionnaire=questionnaire)
+    buffer = BytesIO()
+    HTML(string=html).write_pdf(buffer)
+    buffer.seek(0)
+    
+    # Envoi en téléchargement automatique
+    return send_file(
+        buffer,
+        as_attachment=True,
+        download_name=f"souscription_{questionnaire.id}.pdf",
+        mimetype='application/pdf'
+    )
+    
+
+
+
 
 # -----------------------------
 # Routes génériques et export
@@ -366,6 +381,7 @@ def conditions():
 # -----------------------------
 if __name__ == '__main__':
     app.run(debug=True)
+
 
 
 
