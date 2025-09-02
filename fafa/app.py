@@ -140,24 +140,23 @@ def questionnaire_step3():
         session['lieu_signature'] = form.lieu_signature.data
         session['date_signature'] = form.date_signature.data.strftime('%Y-%m-%d') if form.date_signature.data else datetime.utcnow().strftime('%Y-%m-%d')
 
-        # ✅ Création du questionnaire Fafa en base
-       questionnaire = QuestionnaireFafa(
-        duree_contrat=session.get('duree_contrat'),
-        periode_debut=parse_date(session.get('periode_debut')),
-        periode_fin=parse_date(session.get('periode_fin')),
-        periodicite=session.get('periodicite'),
-        prime_nette=session.get('prime_nette'),
-        accessoires=session.get('accessoires'),
-        taxes=session.get('taxes'),
-        prime_totale=session.get('prime_totale'),
-        deces_accident=session.get('deces_accident'),
-        deces_toutes_causes=session.get('deces_toutes_causes'),
-        invalidite=session.get('invalidite'),
-        ack_conditions=session.get('ack_conditions'),
-        lieu_signature=session.get('lieu_signature'),
-        date_signature=parse_date(session.get('date_signature'))
+        # Création du questionnaire Fafa en base
+        questionnaire = QuestionnaireFafa(
+            duree_contrat=session.get('duree_contrat'),
+            periode_debut=parse_date(session.get('periode_debut')),
+            periode_fin=parse_date(session.get('periode_fin')),
+            periodicite=session.get('periodicite'),
+            prime_nette=session.get('prime_nette'),
+            accessoires=session.get('accessoires'),
+            taxes=session.get('taxes'),
+            prime_totale=session.get('prime_totale'),
+            deces_accident=session.get('deces_accident'),
+            deces_toutes_causes=session.get('deces_toutes_causes'),
+            invalidite=session.get('invalidite'),
+            ack_conditions=session.get('ack_conditions'),
+            lieu_signature=session.get('lieu_signature'),
+            date_signature=parse_date(session.get('date_signature'))
         )
-
         db.session.add(questionnaire)
         db.session.commit()
         session['questionnaire_id'] = questionnaire.id
@@ -321,5 +320,6 @@ def manuel():
 # -----------------------------
 if __name__ == '__main__':
     app.run(debug=True)
+
 
 
