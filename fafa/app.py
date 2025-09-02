@@ -85,25 +85,34 @@ OAUTH2_CREDENTIALS = {
 def questionnaire_step1():
     form = Etape1Form()
     if form.validate_on_submit():
-        #session['duree_contrat'] = form.duree_contrat.data
+        session['duree_contrat'] = form.duree_contrat.data
         session['periode_debut'] = form.periode_debut.data.strftime('%Y-%m-%d') if form.periode_debut.data else None
         session['periode_fin'] = form.periode_fin.data.strftime('%Y-%m-%d') if form.periode_fin.data else None
         session['periodicite'] = form.periodicite.data
-        session['type_produit'] = form.type_produit.data  # 15000 ou 20000
-
+        session['prime_nette'] = to_float(form.prime_nette.data)
+        session['accessoires'] = to_float(form.accessoires.data)
+        session['taxes'] = to_float(form.taxes.data)
+        session['prime_totale'] = round(session['prime_nette'] + session['accessoires'] + session['taxes'], 2)
+        session['deces_accident'] = to_float(form.deces_accident.data)
+        session['deces_toutes_causes'] = to_float(form.deces_toutes_causes.data)
+        session['invalidite'] = to_float(form.invalidite.data)
         flash("Étape 1 enregistrée !", "success")
         return redirect(url_for('questionnaire_step2'))
 
-    # Pré-remplissage si données en session
     if session.get('duree_contrat'):
         form.duree_contrat.data = session.get('duree_contrat')
         form.periode_debut.data = parse_date(session.get('periode_debut'))
         form.periode_fin.data = parse_date(session.get('periode_fin'))
         form.periodicite.data = session.get('periodicite')
-        form.type_produit.data = session.get('type_produit')
+        form.prime_nette.data = session.get('prime_nette')
+        form.accessoires.data = session.get('accessoires')
+        form.taxes.data = session.get('taxes')
+        form.prime_totale.data = session.get('prime_totale')
+        form.deces_accident.data = session.get('deces_accident')
+        form.deces_toutes_causes.data = session.get('deces_toutes_causes')
+        form.invalidite.data = session.get('invalidite')
 
     return render_template('step1.html', form=form)
-
 
 @app.route('/step2', methods=['GET', 'POST'])
 def questionnaire_step2():
@@ -309,8 +318,7 @@ def confirmation_paiement(transaction_id):
     else:
         flash(f"Transaction {transaction_id} était déjà confirmée.", "info")
 
-    return redirect(url_for('questionnaire_pdf'))
-
+    return redirect(url_for('questionnaire_step1'))
 
 # -----------------------------
 # Routes génériques et export
@@ -351,10 +359,6 @@ def conditions():
 # -----------------------------
 if __name__ == '__main__':
     app.run(debug=True)
-
-
-
-
 
 
 
