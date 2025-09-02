@@ -208,29 +208,13 @@ def paiement():
             return redirect(url_for('paiement'))
 
         # -----------------------------
-        # 2️⃣ Récupération des gateways
-        # -----------------------------
-        try:
-            resp_gateways = requests.get(f"{SEMOA_BASE}/gateways", headers={"Authorization": f"Bearer {access_token}"}, timeout=10)
-            gateways = resp_gateways.json()
-            if not gateways:
-                flash("Aucune passerelle de paiement disponible.", "danger")
-                return redirect(url_for('paiement'))
-
-            gateway_id = gateways[0]['id']  # prendre la première gateway disponible
-
-        except requests.exceptions.RequestException as e:
-            flash(f"Erreur récupération gateways : {str(e)}", "danger")
-            return redirect(url_for('paiement'))
-
-        # -----------------------------
-        # 3️⃣ Création de la commande via /orders
+        # 2️⃣ Création de la commande via /orders
         # -----------------------------
         payment_data = {
             "amount": int(montant),
             "currency": "XOF",
             "client": {"phone": phone},
-            "gateway": {"id": gateway_id},  # ✅ passer l'ID d'une gateway valide
+            "gateway": {"reference": transaction_id},
             "callback_url": url_for('confirmation_paiement', transaction_id=transaction_id, _external=True)
         }
         headers = {
@@ -245,14 +229,20 @@ def paiement():
                 return redirect(url_for('paiement'))
 
             order_data = resp.json()
-            session['gateway_url'] = order_data.get('gateway', {}).get('url')
+            # 🔹 Utilisation de bill_url pour la redirection
+            session['gateway_url'] = order_data.get('bill_url')
+            if not session['gateway_url']:
+                flash("Erreur : l'URL de paiement est introuvable.", "danger")
+                return redirect(url_for('paiement'))
+
             flash(f"Paiement de {montant} XOF initié avec succès !", "success")
-            return redirect(session.get('gateway_url', url_for('confirmation_paiement', transaction_id=transaction_id)))
+            return redirect(session['gateway_url'])
 
         except requests.exceptions.RequestException as e:
             flash(f"Erreur lors de la création du paiement : {str(e)}", "danger")
 
     return render_template('paiement.html', montant=montant)
+
 
 
 
@@ -304,6 +294,7 @@ def manuel():
 # -----------------------------
 if __name__ == '__main__':
     app.run(debug=True)
+
 
 
 
