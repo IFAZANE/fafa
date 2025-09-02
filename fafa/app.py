@@ -218,16 +218,17 @@ def paiement():
             order_data = order_resp.json()
 
             # ✅ Enregistrement dans la table questionnaire_fafa
-            transaction = QuestionnaireFafa(
+            # Après avoir créé order_data et récupéré transaction_id
+            paiement = Paiement(
+                questionnaire_fafa_id=session.get('questionnaire_id'),  # id du questionnaire Fafa correspondant
                 transaction_id=transaction_id,
-                phone=phone,
                 amount=montant,
                 currency="XOF",
-                order_reference=order_data.get('order_reference'),
-                bill_url=order_data.get('bill_url'),
-                status=order_data.get('status')
+                phone=phone,
+                status=order_data.get('status'),
+                response=order_data
             )
-            db.session.add(transaction)
+            db.session.add(paiement)
             db.session.commit()
 
             # Redirection vers le lien de paiement SEMOA
@@ -287,6 +288,7 @@ def manuel():
 # -----------------------------
 if __name__ == '__main__':
     app.run(debug=True)
+
 
 
 
