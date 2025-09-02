@@ -2,23 +2,34 @@
 {% block content %}
 <div class="container mt-5">
     <div class="row justify-content-center">
-        <div class="col-md-6">
+        <!-- Sur mobile, on prend presque toute la largeur, sur desktop max 6 colonnes -->
+        <div class="col-12 col-sm-10 col-md-6">
 
             <div class="card shadow-sm">
                 <div class="card-header bg-primary text-white text-center">
-                    <h4>Paiement de votre souscription</h4>
+                    <h4 class="mb-0">Paiement de votre souscription</h4>
                 </div>
                 <div class="card-body">
-                    <p class="mb-4 text-center fs-5">Montant à payer : <strong>{{ montant }} XOF</strong></p>
+                    <p class="mb-4 text-center fs-5">
+                        Montant à payer : <strong>{{ montant }} XOF</strong>
+                    </p>
 
                     <form method="POST">
                         <div class="mb-3">
                             <label for="phone" class="form-label">Numéro de téléphone</label>
-                            <input type="text" class="form-control" name="phone" id="phone" placeholder="Ex: 22890000000" required>
+                            <input 
+                                type="tel" 
+                                class="form-control" 
+                                name="phone" 
+                                id="phone" 
+                                placeholder="Ex: 22890000000" 
+                                required
+                                pattern="[0-9]{8,12}" 
+                                title="Entrez un numéro valide">
                         </div>
 
                         <div class="d-grid mt-4">
-                            <button type="submit" class="btn btn-success btn-lg shadow-sm">
+                            <button type="submit" class="btn btn-success btn-lg shadow-sm w-100">
                                 💳 Payer maintenant
                             </button>
                         </div>
@@ -30,7 +41,7 @@
                                 {% for category, message in messages %}
                                     <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
                                         {{ message }}
-                                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                                     </div>
                                 {% endfor %}
                             </div>
