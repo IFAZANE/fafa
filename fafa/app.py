@@ -3,7 +3,7 @@ from flask import (
     flash, url_for
 )
 from config import Config
-from models import db, Subscription, QuestionnaireFafa
+from models import db, QuestionnaireFafa, Paiement
 from forms import Etape1Form, Etape2Form, Etape3Form
 from admin import admin_bp
 from export import export_csv, export_excel
@@ -54,14 +54,10 @@ def to_float(x):
             return 0.0
 
 def parse_date(value):
-    """
-    Convertit différentes formes de date en objet datetime.date
-    """
     if not value:
         return None
     if isinstance(value, datetime):
         return value
-    # Formats possibles
     for fmt in ('%Y-%m-%d', '%a, %d %b %Y %H:%M:%S GMT'):
         try:
             return datetime.strptime(value, fmt)
@@ -73,13 +69,13 @@ def parse_date(value):
 # 5️⃣ Configuration SEMOA OAuth 2.0
 # -----------------------------
 SEMOA_BASE = "https://api.semoa-payments.ovh/sandbox/"
-
 OAUTH2_CREDENTIALS = {
     "username": "api_cashpay.nsia",
     "password": "btCZkiiluA",
     "client_id": "api_cashpay.nsia",
-    "client_secret": "tgIeTQpShnfewy33opbigMmhrtNqvTsj"  # ✅ correct pour OAuth2
+    "client_secret": "tgIeTQpShnfewy33opbigMmhrtNqvTsj"
 }
+
 # -----------------------------
 # 6️⃣ Routes questionnaire multi-étapes
 # -----------------------------
@@ -101,7 +97,6 @@ def questionnaire_step1():
         flash("Étape 1 enregistrée !", "success")
         return redirect(url_for('questionnaire_step2'))
 
-    # Pré-remplissage si données en session
     if session.get('duree_contrat'):
         form.duree_contrat.data = session.get('duree_contrat')
         form.periode_debut.data = parse_date(session.get('periode_debut'))
@@ -128,13 +123,12 @@ def questionnaire_step2():
         flash("Étape 2 enregistrée !", "success")
         return redirect(url_for('questionnaire_step3'))
 
-    # Pré-remplissage correct
     for field_name, field in form._fields.items():
         if field_name in session:
             value = session[field_name]
             if 'date' in field_name:
                 value = parse_date(value)
-            field.data = value  # ✅ ici, on met juste .data
+            field.data = value
 
     return render_template('step2.html', form=form)
 
@@ -145,6 +139,31 @@ def questionnaire_step3():
         session['ack_conditions'] = form.ack_conditions.data
         session['lieu_signature'] = form.lieu_signature.data
         session['date_signature'] = form.date_signature.data.strftime('%Y-%m-%d') if form.date_signature.data else datetime.utcnow().strftime('%Y-%m-%d')
+
+        # ✅ Création du questionnaire Fafa en base
+        questionnaire = QuestionnaireFafa(
+            # exemple, adapte les champs exacts
+            nom=session.get('assure_nom'),
+            prenom=session.get('assure_prenom'),
+            duree_contrat=session.get('duree_contrat'),
+            periode_debut=parse_date(session.get('periode_debut')),
+            periode_fin=parse_date(session.get('periode_fin')),
+            periodicite=session.get('periodicite'),
+            prime_nette=session.get('prime_nette'),
+            accessoires=session.get('accessoires'),
+            taxes=session.get('taxes'),
+            prime_totale=session.get('prime_totale'),
+            deces_accident=session.get('deces_accident'),
+            deces_toutes_causes=session.get('deces_toutes_causes'),
+            invalidite=session.get('invalidite'),
+            ack_conditions=session.get('ack_conditions'),
+            lieu_signature=session.get('lieu_signature'),
+            date_signature=parse_date(session.get('date_signature'))
+        )
+        db.session.add(questionnaire)
+        db.session.commit()
+        session['questionnaire_id'] = questionnaire.id
+
         flash("Étape 3 enregistrée ! Vous allez être redirigé vers le paiement.", "success")
         return redirect(url_for('paiement'))
 
@@ -154,13 +173,9 @@ def questionnaire_step3():
         form.date_signature.data = parse_date(session.get('date_signature'))
 
     return render_template('step3.html', form=form)
-# -----------------------------
-# 6️⃣ Routes questionnaire multi-étapes
-# -----------------------------
-# ... Étapes 1, 2, 3 inchangées ...
 
 # -----------------------------
-# 7️⃣ Route paiement avec SEMOA OAuth 2.0 et insertion en base
+# 7️⃣ Route paiement et insertion
 # -----------------------------
 @app.route('/paiement', methods=['GET', 'POST'])
 def paiement():
@@ -194,7 +209,6 @@ def paiement():
 
             headers = {"Authorization": f"Bearer {access_token}"}
 
-            # Récupération des gateways disponibles
             gateways_resp = requests.get(f"{SEMOA_BASE}/gateways", headers=headers, timeout=10)
             gateways_resp.raise_for_status()
             gateways = gateways_resp.json()
@@ -204,7 +218,6 @@ def paiement():
 
             gateway_id = gateways[0]['id']
 
-            # Création de la commande
             payment_data = {
                 "amount": int(montant),
                 "currency": "XOF",
@@ -217,21 +230,19 @@ def paiement():
             order_resp.raise_for_status()
             order_data = order_resp.json()
 
-            # ✅ Enregistrement dans la table questionnaire_fafa
-            # Après avoir créé order_data et récupéré transaction_id
+            # ✅ Enregistrement paiement
             paiement = Paiement(
-                questionnaire_fafa_id=session.get('questionnaire_id'),  # id du questionnaire Fafa correspondant
+                questionnaire_fafa_id=session.get('questionnaire_id'),
                 transaction_id=transaction_id,
                 amount=montant,
                 currency="XOF",
                 phone=phone,
-                status=order_data.get('status'),
+                status=order_data.get('status', 'pending'),
                 response=order_data
             )
             db.session.add(paiement)
             db.session.commit()
 
-            # Redirection vers le lien de paiement SEMOA
             session['gateway_url'] = order_data.get('bill_url') or order_data.get('gateway', {}).get('url')
             flash(f"Paiement de {montant} XOF initié !", "success")
             return redirect(session['gateway_url'])
@@ -243,18 +254,19 @@ def paiement():
     return render_template('paiement.html', montant=montant)
 
 # -----------------------------
-# 8️⃣ Confirmation paiement et mise à jour status
+# 8️⃣ Confirmation paiement
 # -----------------------------
 @app.route('/confirmation/<transaction_id>')
 def confirmation_paiement(transaction_id):
-    transaction = QuestionnaireFafa.query.filter_by(transaction_id=transaction_id).first()
-    if transaction:
-        transaction.status = "confirmed"
+    paiement = Paiement.query.filter_by(transaction_id=transaction_id).first()
+    if paiement:
+        paiement.status = "confirmed"
         db.session.commit()
         flash(f"Transaction {transaction_id} confirmée !", "success")
     else:
         flash(f"Transaction {transaction_id} introuvable.", "warning")
     return redirect(url_for('questionnaire_step1'))
+
 # -----------------------------
 # Routes génériques et export
 # -----------------------------
@@ -288,31 +300,3 @@ def manuel():
 # -----------------------------
 if __name__ == '__main__':
     app.run(debug=True)
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
