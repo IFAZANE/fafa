@@ -176,6 +176,7 @@ def questionnaire_step3():
     form = Etape3Form()
 
     if form.validate_on_submit():
+        # Sauvegarde en session
         session['ack_conditions'] = form.ack_conditions.data
         session['lieu_signature'] = form.lieu_signature.data
         session['date_signature'] = (
@@ -183,8 +184,8 @@ def questionnaire_step3():
             if form.date_signature.data else datetime.utcnow().strftime('%Y-%m-%d')
         )
 
-        # Enregistrement en base + génération PDF
         try:
+            # Enregistrement en base
             souscription = QuestionnaireFafa(
                 duree_contrat=session.get('duree_contrat'),
                 periode_debut=datetime.strptime(session.get('periode_debut'), '%Y-%m-%d') if session.get('periode_debut') else None,
@@ -239,10 +240,10 @@ def questionnaire_step3():
             db.session.rollback()
             app.logger.exception("Erreur enregistrement souscription")
             flash(f"Erreur lors de l'enregistrement en base : {str(e)}", "danger")
-            # ✅ Correction : toujours renvoyer form=form
-            return render_template('step3.html', form=form)
+            return render_template('step3.html', form=form)  # ✅ garanti
 
-    if request.method == 'POST' and not form.validate_on_submit():
+    elif request.method == 'POST':
+        # Formulaire envoyé mais non valide
         app.logger.debug("Step3 validation failed: %s", form.errors)
         flash(f"Erreur sur le formulaire (étape 3) : {form.errors}", "danger")
 
@@ -255,8 +256,9 @@ def questionnaire_step3():
             if session.get('date_signature') else None
         )
 
-    # ✅ Correction : toujours renvoyer form=form
+    # ✅ garanti à 100% que form est passé au template
     return render_template('step3.html', form=form)
+
 
 
 @app.route('/questionnaire', methods=['GET', 'POST'])
@@ -427,6 +429,7 @@ def debug_form():
 # 1️⃣2️⃣ Exécution de l'application
 if __name__ == '__main__':
     app.run(debug=True)
+
 
 
 
