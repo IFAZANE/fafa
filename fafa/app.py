@@ -153,12 +153,13 @@ def questionnaire_step3():
 @app.route('/paiement', methods=['GET', 'POST'])
 def paiement():
     if request.method == 'POST':
-        # ✅ Prendre le montant réel de la session
+        # Montant réel de la session
         montant = session.get('prime_totale')
         if montant is None:
             flash("Montant introuvable. Veuillez recommencer la souscription.", "danger")
             return redirect(url_for('questionnaire_step1'))
 
+        # Récupération du numéro de téléphone
         phone = request.form.get('phone')
         if not phone:
             flash("Veuillez saisir un numéro de téléphone valide.", "warning")
@@ -184,11 +185,12 @@ def paiement():
 
         access_token = auth_resp.json().get('access_token')
 
+        # Préparer le paiement avec le numéro fourni
         payment_data = {
             "amount": montant,
             "currency": "XOF",
             "payment_method": "mobilemoney",
-            "phone": phone,
+            "phone": phone,  # ✅ numéro fourni par l'utilisateur
             "client_reference": OAUTH2_CREDENTIALS['client_reference'],
             "transaction_id": transaction_id
         }
@@ -205,7 +207,7 @@ def paiement():
         else:
             flash("Erreur lors de la création du paiement : " + pay_resp.text, "danger")
 
-    # ✅ Afficher le montant réel dans le formulaire
+    # Affichage du montant réel
     montant = session.get('prime_totale', 0)
     return render_template('paiement.html', montant=montant)
 
@@ -310,6 +312,7 @@ def export_pdf():
 # -----------------------------
 if __name__ == '__main__':
     app.run(debug=True)
+
 
 
 
