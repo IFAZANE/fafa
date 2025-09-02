@@ -179,15 +179,18 @@ def paiement():
         # -----------------------------
         try:
             auth_resp = requests.post(
-                f"{SEMOA_BASE}/auth",
-                json={
-                    "username": OAUTH2_CREDENTIALS['username'],
-                    "password": OAUTH2_CREDENTIALS['password'],
-                    "client_id": OAUTH2_CREDENTIALS['client_id'],
-                    "client_secret": OAUTH2_CREDENTIALS['client_secret']
-                },
-                timeout=10
-            )
+    "https://api.semoa-payments.ovh/oauth/token",
+    data={
+        "grant_type": "password",
+        "username": OAUTH2_CREDENTIALS['username'],
+        "password": OAUTH2_CREDENTIALS['password'],
+        "client_id": OAUTH2_CREDENTIALS['client_id'],
+        "client_secret": OAUTH2_CREDENTIALS['client_secret']
+    },
+    headers={"Content-Type": "application/x-www-form-urlencoded"},
+    timeout=10
+)
+
             # Pas de raise_for_status direct → on inspecte la réponse
             print("🔍 Réponse brute SEMOA Auth:", auth_resp.text)
 
@@ -289,6 +292,7 @@ def manuel():
 # -----------------------------
 if __name__ == '__main__':
     app.run(debug=True)
+
 
 
 
