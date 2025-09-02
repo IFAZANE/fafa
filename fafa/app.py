@@ -158,16 +158,19 @@ def paiement():
         transaction_id = str(uuid.uuid4())
         session['transaction_id'] = transaction_id
 
-        # Auth OAuth SEMOA
+        # ✅ Auth OAuth SEMOA corrigé
+        headers = {"Content-Type": "application/json"}
         auth_resp = requests.post(
             f"{SEMOA_BASE}/oauth/token",
-            data={
+            json={
                 "grant_type": "password",
                 "username": OAUTH2_CREDENTIALS['username'],
                 "password": OAUTH2_CREDENTIALS['password'],
                 "client_id": OAUTH2_CREDENTIALS['client_id']
-            }
+            },
+            headers=headers
         )
+
         if auth_resp.status_code != 200:
             flash("Erreur OAuth SEMOA : " + auth_resp.text, "danger")
             return redirect(url_for('paiement'))
@@ -184,7 +187,7 @@ def paiement():
         headers = {"Authorization": f"Bearer {access_token}", "Content-Type": "application/json"}
         pay_resp = requests.post(f"{SEMOA_BASE}/payments", json=payment_data, headers=headers)
 
-        if pay_resp.status_code == 201:
+        if pay_resp.status_code in (200, 201):
             flash("Paiement initié avec succès !", "success")
             return redirect(url_for('confirmation_paiement', transaction_id=transaction_id))
         else:
@@ -192,7 +195,7 @@ def paiement():
 
     return render_template('paiement.html', montant=session.get('prime_totale', 15000))
 
-@app.route('/paiement/confirmation/<transaction_id>')
+
 def confirmation_paiement(transaction_id):
     # Pour sandbox, status simulé
     status = "success"
@@ -291,3 +294,4 @@ def export_pdf():
 # -----------------------------
 if __name__ == '__main__':
     app.run(debug=True)
+
