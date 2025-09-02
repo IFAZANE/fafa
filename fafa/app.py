@@ -146,6 +146,124 @@ def paiement_status(transaction_id):
     return render_template('paiement_status.html', transaction_id=transaction_id, status=status)
 
 
+@app.route('/paiement', methods=['GET', 'POST'])
+def paiement():
+    if request.method == 'POST':
+        montant = session.get('prime_totale', 15000)  # ou 25000 selon produit
+        phone = request.form['phone']
+
+        transaction_id = str(uuid.uuid4())
+        session['transaction_id'] = transaction_id
+
+        # 🔹 Authentification OAuth 2.0 SEMOA
+        auth_resp = requests.post(
+            f"{SEMOA_BASE}/oauth/token",
+            data={
+                "grant_type": "password",
+                "username": OAUTH2_CREDENTIALS['username'],
+                "password": OAUTH2_CREDENTIALS['password'],
+                "client_id": OAUTH2_CREDENTIALS['client_id']
+            }
+        )
+        if auth_resp.status_code != 200:
+            flash("Erreur OAuth SEMOA : " + auth_resp.text, "danger")
+            return redirect(url_for('paiement'))
+
+        access_token = auth_resp.json().get('access_token')
+
+        # 🔹 Création paiement
+        payment_data = {
+            "amount": montant,
+            "currency": "XOF",
+            "payment_method": "mobilemoney",
+            "phone": phone,
+            "client_reference": OAUTH2_CREDENTIALS['client_reference'],
+            "transaction_id": transaction_id
+        }
+        headers = {"Authorization": f"Bearer {access_token}", "Content-Type": "application/json"}
+        pay_resp = requests.post(f"{SEMOA_BASE}/payments", json=payment_data, headers=headers)
+
+        if pay_resp.status_code == 201:
+            flash("Paiement initié avec succès !", "success")
+            return redirect(url_for('confirmation_paiement', transaction_id=transaction_id))
+        else:
+            flash("Erreur lors de la création du paiement : " + pay_resp.text, "danger")
+
+    return render_template('paiement.html', montant=session.get('prime_totale'))
+
+
+
+@app.route('/paiement/confirmation/<transaction_id>')
+def confirmation_paiement(transaction_id):
+    # 🔹 Vérifier statut paiement SEMOA ici (sandbox peut renvoyer directement validé)
+    status = "success"  # simuler succès dans sandbox
+    if status != "success":
+        flash("Paiement non encore validé.", "warning")
+        return redirect(url_for('paiement'))
+
+    try:
+        # 🔹 Enregistrer la souscription en base
+        def get_date(key):
+            val = session.get(key)
+            return datetime.strptime(val, '%Y-%m-%d') if val else None
+
+        def get_float(key):
+            return to_float(session.get(key))
+
+        souscription = QuestionnaireFafa(
+            duree_contrat=session.get('duree_contrat'),
+            periode_debut=get_date('periode_debut'),
+            periode_fin=get_date('periode_fin'),
+            periodicite=session.get('periodicite'),
+            prime_nette=get_float('prime_nette'),
+            accessoires=get_float('accessoires'),
+            taxes=get_float('taxes'),
+            prime_totale=get_float('prime_totale'),
+            deces_accident=get_float('deces_accident'),
+            deces_toutes_causes=get_float('deces_toutes_causes'),
+            invalidite=get_float('invalidite'),
+            hospitalisation=get_float('hospitalisation'),
+            traitement_medical=get_float('traitement_medical'),
+            indemnite_journaliere=get_float('indemnite_journaliere'),
+            assure_nom=session.get('assure_nom'),
+            assure_prenoms=session.get('assure_prenoms'),
+            assure_tel=session.get('assure_tel'),
+            assure_date_naissance=get_date('assure_date_naissance'),
+            assure_adresse=session.get('assure_adresse'),
+            beneficiaire_nom=session.get('beneficiaire_nom'),
+            beneficiaire_prenoms=session.get('beneficiaire_prenoms'),
+            beneficiaire_tel=session.get('beneficiaire_tel'),
+            beneficiaire_adresse=session.get('beneficiaire_adresse'),
+            beneficiaire_profession=session.get('beneficiaire_profession'),
+            beneficiaire_lateralite=session.get('beneficiaire_lateralite'),
+            souscripteur_nom=session.get('souscripteur_nom'),
+            souscripteur_prenoms=session.get('souscripteur_prenoms'),
+            souscripteur_tel=session.get('souscripteur_tel'),
+            souscripteur_date_naissance=get_date('souscripteur_date_naissance'),
+            souscripteur_adresse=session.get('souscripteur_adresse'),
+            ack_conditions=session.get('ack_conditions', False),
+            lieu_signature=session.get('lieu_signature'),
+            date_signature=get_date('date_signature') or datetime.utcnow()
+        )
+
+        db.session.add(souscription)
+        db.session.commit()
+
+        # 🔹 Générer PDF
+        rendered = render_template('questionnaire_pdf.html', data=session)
+        pdf_file = BytesIO()
+        HTML(string=rendered).write_pdf(pdf_file)
+        pdf_file.seek(0)
+
+        # 🔹 Nettoyer session
+        session.clear()
+
+        return send_file(pdf_file, download_name="formulaire_FAFA.pdf", as_attachment=True, mimetype='application/pdf')
+
+    except Exception as e:
+        db.session.rollback()
+        flash(f"Erreur lors de la génération du PDF : {str(e)}", "danger")
+        return redirect(url_for('step3'))
 
 #######################################################################
 
@@ -294,84 +412,10 @@ def questionnaire_step3():
             if form.date_signature.data else datetime.utcnow().strftime('%Y-%m-%d')
         )
 
-        try:
-            # 🔹 Préparer toutes les valeurs sécurisées
-            def get_date(key):
-                val = session.get(key)
-                return datetime.strptime(val, '%Y-%m-%d') if val else None
+        flash("Étape 3 enregistrée avec succès ! Vous allez être redirigé vers le paiement.", "success")
+        return redirect(url_for('paiement'))
 
-            def get_float(key):
-                return to_float(session.get(key))
-
-            # 🔹 Créer l'objet
-            souscription = QuestionnaireFafa(
-                duree_contrat=session.get('duree_contrat'),
-                periode_debut=get_date('periode_debut'),
-                periode_fin=get_date('periode_fin'),
-                periodicite=session.get('periodicite'),
-                prime_nette=get_float('prime_nette'),
-                accessoires=get_float('accessoires'),
-                taxes=get_float('taxes'),
-                prime_totale=get_float('prime_totale'),
-                deces_accident=get_float('deces_accident'),
-                deces_toutes_causes=get_float('deces_toutes_causes'),
-                invalidite=get_float('invalidite'),
-                hospitalisation=get_float('hospitalisation'),
-                traitement_medical=get_float('traitement_medical'),
-                indemnite_journaliere=get_float('indemnite_journaliere'),
-                assure_nom=session.get('assure_nom'),
-                assure_prenoms=session.get('assure_prenoms'),
-                assure_tel=session.get('assure_tel'),
-                assure_date_naissance=get_date('assure_date_naissance'),
-                assure_adresse=session.get('assure_adresse'),
-                beneficiaire_nom=session.get('beneficiaire_nom'),
-                beneficiaire_prenoms=session.get('beneficiaire_prenoms'),
-                beneficiaire_tel=session.get('beneficiaire_tel'),
-                beneficiaire_adresse=session.get('beneficiaire_adresse'),
-                beneficiaire_profession=session.get('beneficiaire_profession'),
-                beneficiaire_lateralite=session.get('beneficiaire_lateralite'),
-                souscripteur_nom=session.get('souscripteur_nom'),
-                souscripteur_prenoms=session.get('souscripteur_prenoms'),
-                souscripteur_tel=session.get('souscripteur_tel'),
-                souscripteur_date_naissance=get_date('souscripteur_date_naissance'),
-                souscripteur_adresse=session.get('souscripteur_adresse'),
-                ack_conditions=session.get('ack_conditions', False),
-                lieu_signature=session.get('lieu_signature'),
-                date_signature=get_date('date_signature') or datetime.utcnow()
-            )
-
-            db.session.add(souscription)
-            db.session.commit()
-
-            # 🔹 Génération du PDF
-            rendered = render_template('questionnaire_pdf.html', data=session)
-            pdf_file = BytesIO()
-            HTML(string=rendered).write_pdf(pdf_file)
-            pdf_file.seek(0)
-
-            # 🔹 Nettoyer session
-            session.clear()
-            flash("Souscription enregistrée et PDF généré avec succès.", "success")
-
-            return send_file(
-                pdf_file,
-                download_name="formulaire_FAFA.pdf",
-                as_attachment=True,
-                mimetype='application/pdf'
-            )
-
-        except Exception as e:
-            db.session.rollback()
-            app.logger.exception("Erreur enregistrement souscription")
-            flash(f"Erreur lors de l'enregistrement en base : {str(e)}", "danger")
-            return render_template('step3.html', form=form)
-
-    elif request.method == 'POST':
-        # Formulaire envoyé mais non valide
-        app.logger.debug("Step3 validation failed: %s", form.errors)
-        flash(f"Erreur sur le formulaire (étape 3) : {form.errors}", "danger")
-
-    # 🔹 Pré-remplissage si existant
+    # Pré-remplissage si existant
     if session.get('lieu_signature'):
         form.ack_conditions.data = session.get('ack_conditions', False)
         form.lieu_signature.data = session.get('lieu_signature')
@@ -381,6 +425,7 @@ def questionnaire_step3():
         )
 
     return render_template('step3.html', form=form)
+
 
 
 
@@ -552,6 +597,7 @@ def debug_form():
 # 1️⃣2️⃣ Exécution de l'application
 if __name__ == '__main__':
     app.run(debug=True)
+
 
 
 
