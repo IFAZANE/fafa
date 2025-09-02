@@ -176,14 +176,17 @@ def paiement():
 
         # Auth OAuth 2.0 SEMOA
         auth_resp = requests.post(
-            f"{SEMOA_BASE}/oauth/token",
-            data={
-                "grant_type": "password",
-                "username": OAUTH2_CREDENTIALS['username'],
-                "password": OAUTH2_CREDENTIALS['password'],
-                "client_id": OAUTH2_CREDENTIALS['client_id']
-            }
-        )
+    f"{SEMOA_BASE}/oauth/token",
+    headers={"Content-Type": "application/x-www-form-urlencoded"},
+    data={
+        "grant_type": "password",
+        "username": OAUTH2_CREDENTIALS['username'],
+        "password": OAUTH2_CREDENTIALS['password'],
+        "client_id": OAUTH2_CREDENTIALS['client_id'],
+        "client_secret": OAUTH2_CREDENTIALS.get('client_secret', '')
+    }
+)
+
 
         if auth_resp.status_code != 200:
             flash("Erreur OAuth SEMOA : " + auth_resp.text, "danger")
@@ -263,4 +266,5 @@ def manuel():
 # -----------------------------
 if __name__ == '__main__':
     app.run(debug=True)
+
 
