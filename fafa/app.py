@@ -1,6 +1,6 @@
 from flask import (
     Flask, render_template, request, session, send_file, redirect,
-    flash, url_for, Response, make_response
+    flash, url_for, make_response
 )
 from config import Config
 from models import db, Subscription, QuestionnaireFafa
@@ -13,10 +13,8 @@ from export import export_csv, export_excel
 import requests
 import uuid
 import os
-import io
 from io import BytesIO
 from datetime import datetime, date
-from openpyxl import Workbook
 from weasyprint import HTML
 from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer
 from reportlab.lib.styles import getSampleStyleSheet
@@ -73,7 +71,7 @@ OAUTH2_CREDENTIALS = {
 }
 
 # -----------------------------
-# 6️⃣ Routes questionnaire multi-étapes (sans doublons)
+# 6️⃣ Routes questionnaire multi-étapes
 # -----------------------------
 @app.route('/step1', methods=['GET', 'POST'])
 def questionnaire_step1():
@@ -90,23 +88,24 @@ def questionnaire_step1():
         session['deces_accident'] = to_float(form.deces_accident.data)
         session['deces_toutes_causes'] = to_float(form.deces_toutes_causes.data)
         session['invalidite'] = to_float(form.invalidite.data)
-
         flash("Étape 1 enregistrée !", "success")
         return redirect(url_for('questionnaire_step2'))
 
     # Pré-remplissage depuis session
     if session.get('duree_contrat'):
-        for field in ['duree_contrat', 'periode_debut', 'periode_fin', 'periodicite',
-                      'prime_nette', 'accessoires', 'taxes', 'prime_totale',
-                      'deces_accident', 'deces_toutes_causes', 'invalidite']:
-            if field in session:
-                value = session[field]
-                if 'periode' in field or 'date' in field:
-                    value = datetime.strptime(value, '%Y-%m-%d') if value else None
-                setattr(form, field, type(getattr(form, field))(data=value))
+        form.duree_contrat.data = session.get('duree_contrat')
+        form.periode_debut.data = datetime.strptime(session['periode_debut'], '%Y-%m-%d') if session.get('periode_debut') else None
+        form.periode_fin.data = datetime.strptime(session['periode_fin'], '%Y-%m-%d') if session.get('periode_fin') else None
+        form.periodicite.data = session.get('periodicite')
+        form.prime_nette.data = session.get('prime_nette')
+        form.accessoires.data = session.get('accessoires')
+        form.taxes.data = session.get('taxes')
+        form.prime_totale.data = session.get('prime_totale')
+        form.deces_accident.data = session.get('deces_accident')
+        form.deces_toutes_causes.data = session.get('deces_toutes_causes')
+        form.invalidite.data = session.get('invalidite')
 
     return render_template('step1.html', form=form)
-
 
 @app.route('/step2', methods=['GET', 'POST'])
 def questionnaire_step2():
@@ -114,22 +113,21 @@ def questionnaire_step2():
     if form.validate_on_submit():
         # Sauvegarde en session
         for prefix in ['assure', 'beneficiaire', 'souscripteur']:
-            for field in form._fields:
-                if field.startswith(prefix):
-                    session[field] = getattr(form, field).data
+            for field_name, field in form._fields.items():
+                if field_name.startswith(prefix):
+                    session[field_name] = getattr(form, field_name).data
         flash("Étape 2 enregistrée !", "success")
         return redirect(url_for('questionnaire_step3'))
 
     # Pré-remplissage
-    for field in form._fields:
-        if field in session:
-            value = session[field]
-            if 'date' in field:
+    for field_name, field in form._fields.items():
+        if field_name in session:
+            value = session[field_name]
+            if 'date' in field_name:
                 value = datetime.strptime(value, '%Y-%m-%d') if value else None
-            setattr(form, field, type(getattr(form, field))(data=value))
+            setattr(form, field_name, type(field)(data=value))
 
     return render_template('step2.html', form=form)
-
 
 @app.route('/step3', methods=['GET', 'POST'])
 def questionnaire_step3():
@@ -142,12 +140,10 @@ def questionnaire_step3():
         return redirect(url_for('paiement'))
 
     # Pré-remplissage
-    for field in ['ack_conditions', 'lieu_signature', 'date_signature']:
-        if field in session:
-            value = session[field]
-            if field == 'date_signature':
-                value = datetime.strptime(value, '%Y-%m-%d') if value else None
-            setattr(form, field, type(getattr(form, field))(data=value))
+    if session.get('lieu_signature'):
+        form.ack_conditions.data = session.get('ack_conditions', False)
+        form.lieu_signature.data = session.get('lieu_signature')
+        form.date_signature.data = datetime.strptime(session['date_signature'], '%Y-%m-%d') if session.get('date_signature') else None
 
     return render_template('step3.html', form=form)
 
@@ -156,8 +152,81 @@ def questionnaire_step3():
 # -----------------------------
 @app.route('/paiement', methods=['GET', 'POST'])
 def paiement():
-    # ... ta logique SEMOA ici (inchangée)
+    if request.method == 'POST':
+        montant = session.get('prime_totale', 15000)
+        phone = request.form.get('phone')
+        transaction_id = str(uuid.uuid4())
+        session['transaction_id'] = transaction_id
+
+        # Auth OAuth SEMOA
+        auth_resp = requests.post(
+            f"{SEMOA_BASE}/oauth/token",
+            data={
+                "grant_type": "password",
+                "username": OAUTH2_CREDENTIALS['username'],
+                "password": OAUTH2_CREDENTIALS['password'],
+                "client_id": OAUTH2_CREDENTIALS['client_id']
+            }
+        )
+        if auth_resp.status_code != 200:
+            flash("Erreur OAuth SEMOA : " + auth_resp.text, "danger")
+            return redirect(url_for('paiement'))
+
+        access_token = auth_resp.json().get('access_token')
+        payment_data = {
+            "amount": montant,
+            "currency": "XOF",
+            "payment_method": "mobilemoney",
+            "phone": phone,
+            "client_reference": OAUTH2_CREDENTIALS['client_reference'],
+            "transaction_id": transaction_id
+        }
+        headers = {"Authorization": f"Bearer {access_token}", "Content-Type": "application/json"}
+        pay_resp = requests.post(f"{SEMOA_BASE}/payments", json=payment_data, headers=headers)
+
+        if pay_resp.status_code == 201:
+            flash("Paiement initié avec succès !", "success")
+            return redirect(url_for('confirmation_paiement', transaction_id=transaction_id))
+        else:
+            flash("Erreur lors de la création du paiement : " + pay_resp.text, "danger")
+
     return render_template('paiement.html', montant=session.get('prime_totale', 15000))
+
+@app.route('/paiement/confirmation/<transaction_id>')
+def confirmation_paiement(transaction_id):
+    # Pour sandbox, status simulé
+    status = "success"
+    if status != "success":
+        flash("Paiement non encore validé.", "warning")
+        return redirect(url_for('paiement'))
+
+    try:
+        def get_date(key):
+            val = session.get(key)
+            return datetime.strptime(val, '%Y-%m-%d') if val else None
+
+        def get_float(key):
+            return to_float(session.get(key))
+
+        souscription = Subscription(
+            uuid=session.get('transaction_id'),
+            nom=session.get('assure_nom'),
+            prenom=session.get('assure_prenom'),
+            telephone=session.get('assure_telephone'),
+            produit=session.get('produit', '15 000 FCFA/an'),
+            duree_contrat=session.get('duree_contrat'),
+            date_debut=get_date('periode_debut'),
+            date_fin=get_date('periode_fin'),
+            periodicite=session.get('periodicite'),
+            prime_totale=get_float('prime_totale')
+        )
+        db.session.add(souscription)
+        db.session.commit()
+    except Exception as e:
+        flash(f"Erreur sauvegarde : {e}", "danger")
+
+    flash("Paiement confirmé et souscription enregistrée !", "success")
+    return render_template('confirmation.html', subscription=souscription)
 
 # -----------------------------
 # 8️⃣ Routes génériques et export
@@ -207,7 +276,18 @@ def manuel():
     return render_template('manuel.html')
 
 # -----------------------------
-# 9️⃣ Exécution
+# 9️⃣ Génération PDF depuis questionnaire
+# -----------------------------
+@app.route('/export/pdf')
+def export_pdf():
+    buffer = BytesIO()
+    html = render_template('pdf_template.html', session=session)
+    HTML(string=html).write_pdf(buffer)
+    buffer.seek(0)
+    return send_file(buffer, as_attachment=True, download_name="souscription.pdf", mimetype='application/pdf')
+
+# -----------------------------
+# 10️⃣ Exécution
 # -----------------------------
 if __name__ == '__main__':
     app.run(debug=True)
