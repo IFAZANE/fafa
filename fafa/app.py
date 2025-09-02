@@ -196,13 +196,15 @@ def paiement():
         return redirect(url_for('questionnaire_step1'))
 
     if request.method == 'POST':
-        phone = request.form.get('phone')
-        if not phone:
+        phone = request.form.get('phone', '').strip()
+        if not phone.isdigit() or len(phone) < 8:
             flash("Veuillez saisir un numéro de téléphone valide.", "warning")
             return redirect(url_for('paiement'))
 
         try:
             montant_int = int(montant)
+            if montant_int <= 0:
+                raise ValueError("Montant non valide")
         except ValueError:
             flash("Montant invalide.", "danger")
             return redirect(url_for('paiement'))
@@ -211,7 +213,7 @@ def paiement():
         session['transaction_id'] = transaction_id
 
         try:
-            # 1. Authentification SEMOA
+            # 1️⃣ Authentification SEMOA
             auth_resp = requests.post(
                 f"{SEMOA_BASE}/auth",
                 json=OAUTH2_CREDENTIALS,
@@ -224,16 +226,14 @@ def paiement():
                 flash("Impossible d'obtenir le token SEMOA.", "danger")
                 return redirect(url_for('paiement'))
 
-            headers = {
-                "Authorization": f"Bearer {access_token}",
-                "Content-Type": "application/json"
-            }
+            headers = {"Authorization": f"Bearer {access_token}", "Content-Type": "application/json"}
 
-            # 2. Récupération des gateways
+            # 2️⃣ Récupération des gateways
             gateways_resp = requests.get(f"{SEMOA_BASE}/gateways", headers=headers, timeout=10)
             gateways_resp.raise_for_status()
             gateways = gateways_resp.json()
-            if not isinstance(gateways, list) or not gateways:
+
+            if not isinstance(gateways, list) or len(gateways) == 0:
                 flash("Aucune gateway disponible.", "danger")
                 return redirect(url_for('paiement'))
 
@@ -242,7 +242,7 @@ def paiement():
                 flash("Référence de gateway introuvable.", "danger")
                 return redirect(url_for('paiement'))
 
-            # 3. Création de la commande de paiement
+            # 3️⃣ Préparer le payload pour le paiement
             payment_data = {
                 "amount": montant_int,
                 "currency": "XOF",
@@ -251,7 +251,11 @@ def paiement():
                 "callback_url": url_for('confirmation_paiement', transaction_id=transaction_id, _external=True)
             }
 
-            # 4. Appel à l'API SEMOA
+            # 4️⃣ Logs pour debug
+            print("=== PAYLOAD SEMOA ENVOYÉ ===")
+            print(json.dumps(payment_data, ensure_ascii=False, indent=2))
+
+            # 5️⃣ Création de la commande
             order_resp = requests.post(
                 f"{SEMOA_BASE}/orders",
                 json=payment_data,
@@ -259,16 +263,13 @@ def paiement():
                 timeout=10
             )
 
-            # Log pour débogage
-            print("=== PAYLOAD ENVOYÉ ===")
-            print(json.dumps(payment_data, ensure_ascii=False, indent=2))
             print("=== RÉPONSE SEMOA ===", order_resp.status_code)
             print(order_resp.text)
 
             order_resp.raise_for_status()
             order_data = order_resp.json()
 
-            # 5. Enregistrement en base de données
+            # 6️⃣ Enregistrement en base
             paiement = Paiement(
                 questionnaire_fafa_id=questionnaire_id,
                 transaction_id=transaction_id,
@@ -281,7 +282,7 @@ def paiement():
             db.session.add(paiement)
             db.session.commit()
 
-            # 6. Redirection vers l'URL de paiement
+            # 7️⃣ Vérification de l’URL de paiement
             gateway_url = order_data.get('bill_url') or order_data.get('gateway', {}).get('url')
             if not gateway_url:
                 flash("Impossible de récupérer l'URL de paiement.", "danger")
@@ -381,6 +382,7 @@ def conditions():
 # -----------------------------
 if __name__ == '__main__':
     app.run(debug=True)
+
 
 
 
