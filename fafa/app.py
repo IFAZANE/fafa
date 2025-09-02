@@ -235,22 +235,17 @@ def paiement():
 
             # Données de paiement
             payment_data = {
-                "amount": montant_int,
-                "currency": "XOF",
-                "description": "Paiement FAFA",
-                "client": {
-                    "name": "Client FAFA",
-                    "phone": phone,
-                    "email": "client@fafa.tg"
-                },
-                "gateway": {
-                    "id": gateway_id
-                },
-                "callback_url": url_for('confirmation_paiement', transaction_id=transaction_id, _external=True),
-                "success_url": url_for('confirmation_paiement', transaction_id=transaction_id, _external=True),
-                "cancel_url": url_for('paiement', _external=True),
-                "fail_url": url_for('paiement', _external=True)
+            "amount": int(montant),  # ou *100 selon leur doc
+            "currency": "XOF",
+            "client": {
+                "phone": phone
+            },
+            "gateway": {
+                "reference": gateway_reference
+            },
+            "callback_url": url_for('confirmation_paiement', transaction_id=transaction_id, _external=True)
             }
+
 
             # Création de l'ordre de paiement
             order_resp = requests.post(
@@ -367,6 +362,7 @@ def conditions():
 # -----------------------------
 if __name__ == '__main__':
     app.run(debug=True)
+
 
 
 
