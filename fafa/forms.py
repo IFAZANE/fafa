@@ -8,30 +8,30 @@ from flask_wtf import FlaskForm
 from wtforms import StringField, DecimalField, DateField, SelectField
 from wtforms.validators import DataRequired, NumberRange, Optional
 
-class Etape1Form(FlaskForm):
+#class Etape1Form(FlaskForm):
     # Durée du contrat
-    duree_contrat = StringField('Durée du contrat', validators=[DataRequired()])
+#    duree_contrat = StringField('Durée du contrat', validators=[DataRequired()])
 
     # Période et périodicité
-    periode_debut = DateField('Date de début', format='%Y-%m-%d', validators=[DataRequired()])
-    periode_fin = DateField('Date de fin', format='%Y-%m-%d', validators=[DataRequired()])
-    periodicite = SelectField(
-        'Périodicité',
-        choices=[
-            ('annuelle', 'Annuelle')
-        ],
-        validators=[DataRequired()]
-    )
+ #   periode_debut = DateField('Date de début', format='%Y-%m-%d', validators=[DataRequired()])
+ #   periode_fin = DateField('Date de fin', format='%Y-%m-%d', validators=[DataRequired()])
+ #   periodicite = SelectField(
+ #       'Périodicité',
+ #      choices=[
+ #           ('annuelle', 'Annuelle')
+ #       ],
+ #       validators=[DataRequired()]
+ #   )
 
     # Prime
-    type_contrat = SelectField(
-    "Type de contrat",
-    choices=[
-        ("15000", "15 000 FCFA / an"),
-        ("20000", "20 000 FCFA / an")
-    ],
-    validators=[DataRequired()]
-)
+ #   type_contrat = SelectField(
+ #   "Type de contrat",
+ #   choices=[
+ #       ("15000", "15 000 FCFA / an"),
+ #       ("20000", "20 000 FCFA / an")
+ #   ],
+ #   validators=[DataRequired()]
+#)
 
     ## Risques et capitaux garantis
     #deces_accident = DecimalField('Décès accident', places=2, validators=[DataRequired(), NumberRange(min=0)])
@@ -183,6 +183,7 @@ class SouscriptionForm(FlaskForm):
 )
 
     recaptcha = RecaptchaField()
+
 
 
 
