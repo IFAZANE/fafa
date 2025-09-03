@@ -2,9 +2,7 @@
 {% block content %}
 <div class="container mt-5">
     <div class="row justify-content-center">
-        <!-- Sur mobile, on prend presque toute la largeur, sur desktop max 6 colonnes -->
         <div class="col-12 col-sm-10 col-md-6">
-
             <div class="card shadow-sm">
                 <div class="card-header bg-primary text-white text-center">
                     <h4 class="mb-0">Paiement de votre souscription</h4>
@@ -24,8 +22,8 @@
                                 id="phone" 
                                 placeholder="Ex: +22890000000" 
                                 required
-                                pattern="+[0-9]{8,12}" 
-                                title="Entrez un numéro valide">
+                                pattern="^\+228\d{8}$"
+                                title="Entrez un numéro valide au format +228XXXXXXXX">
                         </div>
 
                         <div class="d-grid mt-4">
@@ -49,7 +47,6 @@
                     {% endwith %}
                 </div>
             </div>
-
         </div>
     </div>
 </div>
