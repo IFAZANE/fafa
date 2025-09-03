@@ -14,7 +14,7 @@ from io import BytesIO
 from datetime import datetime
 from weasyprint import HTML
 import json
-
+import re
 
 # -----------------------------
 # 1️⃣ Création de l'application
@@ -195,11 +195,13 @@ def paiement():
         flash("Questionnaire ou montant introuvable. Veuillez compléter le questionnaire avant de payer.", "danger")
         return redirect(url_for('questionnaire_step1'))
 
-    if request.method == 'POST':
-        phone = request.form.get('phone', '').strip()
-        if not phone.isdigit() or len(phone) < 8:
-            flash("Veuillez saisir un numéro de téléphone valide.", "warning")
-            return redirect(url_for('paiement'))
+    phone = request.form.get('phone', '').strip()
+
+    # Vérifie que le numéro est au format : +228XXXXXXXX
+    if not re.fullmatch(r"\+228\d{8}", phone):
+        flash("Numéro invalide. Utilisez le format +228XXXXXXXX.", "warning")
+        return redirect(url_for('paiement'))
+
 
         try:
             montant_int = int(montant)
@@ -389,6 +391,7 @@ def conditions():
 # -----------------------------
 if __name__ == '__main__':
     app.run(debug=True)
+
 
 
 
