@@ -244,12 +244,15 @@ def paiement():
 
             # 3️⃣ Préparer le payload pour le paiement
             payment_data = {
-                "amount": montant_int,
-                "currency": "XOF",
-                "client": {"phone": phone},
-                "gateway": {"reference": gateway_reference},
-                "callback_url": url_for('confirmation_paiement', transaction_id=transaction_id, _external=True)
+            "amount": montant_int,
+            "currency": "XOF",
+            "client": {"phone": phone},
+            "gateway": {"reference": gateway_reference},
+            "callback_url": url_for('confirmation_paiement', transaction_id=transaction_id, _external=True),
+            "merchant_reference": transaction_id,  # Ajouté pour identifier la transaction
+            "description": "Souscription FAFA"     # Champ descriptif optionnel
             }
+
 
             # 4️⃣ Logs pour debug
             print("=== PAYLOAD SEMOA ENVOYÉ ===")
@@ -386,6 +389,7 @@ def conditions():
 # -----------------------------
 if __name__ == '__main__':
     app.run(debug=True)
+
 
 
 
