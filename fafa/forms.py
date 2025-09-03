@@ -51,6 +51,13 @@ class Etape2Form(FlaskForm):
     #assure_date_naissance = DateField('Date de naissance', format='%Y-%m-%d', validators=[DataRequired()])
     #assure_adresse = StringField('Adresse', validators=[DataRequired(), Length(max=200)])
 
+     # Souscripteur
+    souscripteur_nom = StringField('Nom', validators=[DataRequired(), Length(max=100)])
+    souscripteur_prenoms = StringField('Prénoms', validators=[DataRequired(), Length(max=100)])
+    souscripteur_tel = StringField('Téléphone', validators=[DataRequired(), Regexp(r'^\+?\d{8,15}$', message="Numéro de téléphone invalide")])
+    souscripteur_date_naissance = DateField('Date de naissance', format='%Y-%m-%d', validators=[DataRequired()])
+    souscripteur_adresse = StringField('Adresse', validators=[DataRequired(), Length(max=200)])
+
     # Bénéficiaire
     beneficiaire_nom = StringField('Nom', validators=[DataRequired(), Length(max=100)])
     beneficiaire_prenoms = StringField('Prénoms', validators=[DataRequired(), Length(max=100)])
@@ -58,12 +65,16 @@ class Etape2Form(FlaskForm):
     beneficiaire_profession = StringField('Profession', validators=[DataRequired(), Length(max=100)])
     beneficiaire_adresse = StringField('Adresse', validators=[DataRequired(), Length(max=200)])
 
-    # Souscripteur
-    souscripteur_nom = StringField('Nom', validators=[DataRequired(), Length(max=100)])
-    souscripteur_prenoms = StringField('Prénoms', validators=[DataRequired(), Length(max=100)])
-    souscripteur_tel = StringField('Téléphone', validators=[DataRequired(), Regexp(r'^\+?\d{8,15}$', message="Numéro de téléphone invalide")])
-    souscripteur_date_naissance = DateField('Date de naissance', format='%Y-%m-%d', validators=[DataRequired()])
-    souscripteur_adresse = StringField('Adresse', validators=[DataRequired(), Length(max=200)])
+
+     # Prime
+    type_contrat = SelectField(
+    "Type de contrat",
+    choices=[
+        ("15000", "15 000 FCFA / an"),
+        ("20000", "20 000 FCFA / an")
+    ],
+    validators=[DataRequired()]
+)
 
     submit = SubmitField('Suivant')
 
@@ -172,6 +183,7 @@ class SouscriptionForm(FlaskForm):
 )
 
     recaptcha = RecaptchaField()
+
 
 
 
