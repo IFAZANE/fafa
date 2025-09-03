@@ -81,30 +81,30 @@ OAUTH2_CREDENTIALS = {
 # -----------------------------
 # 6️⃣ Routes questionnaire multi-étapes
 # -----------------------------
-@app.route('/step1', methods=['GET', 'POST'])
-def questionnaire_step1():
-    form = Etape1Form()
-    if form.validate_on_submit():
-        session['duree_contrat'] = form.duree_contrat.data
-        session['periode_debut'] = form.periode_debut.data.strftime('%Y-%m-%d') if form.periode_debut.data else None
-        session['periode_fin'] = form.periode_fin.data.strftime('%Y-%m-%d') if form.periode_fin.data else None
-        session['periodicite'] = form.periodicite.data
-        session['type_contrat'] = int(form.type_contrat.data)  # ex: 15000 ou 20000
+#@app.route('/step1', methods=['GET', 'POST'])
+#def questionnaire_step1():
+#    form = Etape1Form()
+#    if form.validate_on_submit():
+#        session['duree_contrat'] = form.duree_contrat.data
+#        session['periode_debut'] = form.periode_debut.data.strftime('%Y-%m-%d') if form.periode_debut.data else None
+#        session['periode_fin'] = form.periode_fin.data.strftime('%Y-%m-%d') if form.periode_fin.data else None
+#        session['periodicite'] = form.periodicite.data
+#        session['type_contrat'] = int(form.type_contrat.data)  # ex: 15000 ou 20000
 
     
 
-        flash("Étape 1 enregistrée !", "success")
-        return redirect(url_for('questionnaire_step2'))
+ #       flash("Étape 1 enregistrée !", "success")
+ #       return redirect(url_for('questionnaire_step2'))
 
     # Préremplissage si retour sur la page
-    if session.get('duree_contrat'):
-        form.duree_contrat.data = session.get('duree_contrat')
-        form.periode_debut.data = parse_date(session.get('periode_debut'))
-        form.periode_fin.data = parse_date(session.get('periode_fin'))
-        form.periodicite.data = session.get('periodicite')
-        form.type_contrat.data = str(session.get('type_contrat'))
+ #   if session.get('duree_contrat'):
+ #       form.duree_contrat.data = session.get('duree_contrat')
+ #       form.periode_debut.data = parse_date(session.get('periode_debut'))
+ #       form.periode_fin.data = parse_date(session.get('periode_fin'))
+ #       form.periodicite.data = session.get('periodicite')
+ #       form.type_contrat.data = str(session.get('type_contrat'))
 
-    return render_template('step1.html', form=form)
+ #   return render_template('step1.html', form=form)
 
 
 @app.route('/step2', methods=['GET', 'POST'])
@@ -382,6 +382,7 @@ def conditions():
 # -----------------------------
 if __name__ == '__main__':
     app.run(debug=True)
+
 
 
 
