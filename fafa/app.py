@@ -195,13 +195,13 @@ def paiement():
         flash("Questionnaire ou montant introuvable. Veuillez compléter le questionnaire avant de payer.", "danger")
         return redirect(url_for('questionnaire_step1'))
 
-    phone = request.form.get('phone', '').strip()
+    if request.method == 'POST':
+        phone = request.form.get('phone', '').strip()
 
-    # Vérifie que le numéro est au format : +228XXXXXXXX
-    if not re.fullmatch(r"\+228\d{8}", phone):
-        flash("Numéro invalide. Utilisez le format +228XXXXXXXX.", "warning")
-        return redirect(url_for('paiement'))
-
+        # Vérifie que le numéro est au format : +228XXXXXXXX
+        if not re.fullmatch(r"\+228\d{8}", phone):
+            flash("Numéro invalide. Utilisez le format +228XXXXXXXX.", "warning")
+            return redirect(url_for('paiement'))
 
         try:
             montant_int = int(montant)
@@ -215,7 +215,7 @@ def paiement():
         session['transaction_id'] = transaction_id
 
         try:
-            # 1️⃣ Authentification SEMOA
+            # Auth SEMOA
             auth_resp = requests.post(
                 f"{SEMOA_BASE}/auth",
                 json=OAUTH2_CREDENTIALS,
@@ -230,37 +230,26 @@ def paiement():
 
             headers = {"Authorization": f"Bearer {access_token}", "Content-Type": "application/json"}
 
-            # 2️⃣ Récupération des gateways
+            # Gateways
             gateways_resp = requests.get(f"{SEMOA_BASE}/gateways", headers=headers, timeout=10)
             gateways_resp.raise_for_status()
             gateways = gateways_resp.json()
-
-            if not isinstance(gateways, list) or len(gateways) == 0:
-                flash("Aucune gateway disponible.", "danger")
-                return redirect(url_for('paiement'))
-
             gateway_reference = gateways[0].get('reference')
-            if not gateway_reference:
-                flash("Référence de gateway introuvable.", "danger")
-                return redirect(url_for('paiement'))
 
-            # 3️⃣ Préparer le payload pour le paiement
+            # Payload paiement
             payment_data = {
-            "amount": montant_int,
-            "currency": "XOF",
-            "client": {"phone": phone},
-            "gateway": {"reference": gateway_reference},
-            "callback_url": url_for('confirmation_paiement', transaction_id=transaction_id, _external=True),
-            "merchant_reference": transaction_id,  # Ajouté pour identifier la transaction
-            "description": "Souscription FAFA"     # Champ descriptif optionnel
+                "amount": montant_int,
+                "currency": "XOF",
+                "client": {"phone": phone},
+                "gateway": {"reference": gateway_reference},
+                "callback_url": url_for('confirmation_paiement', transaction_id=transaction_id, _external=True),
+                "merchant_reference": transaction_id,
+                "description": "Souscription FAFA"
             }
 
-
-            # 4️⃣ Logs pour debug
             print("=== PAYLOAD SEMOA ENVOYÉ ===")
             print(json.dumps(payment_data, ensure_ascii=False, indent=2))
 
-            # 5️⃣ Création de la commande
             order_resp = requests.post(
                 f"{SEMOA_BASE}/orders",
                 json=payment_data,
@@ -274,7 +263,7 @@ def paiement():
             order_resp.raise_for_status()
             order_data = order_resp.json()
 
-            # 6️⃣ Enregistrement en base
+            # Enregistrement
             paiement = Paiement(
                 questionnaire_fafa_id=questionnaire_id,
                 transaction_id=transaction_id,
@@ -287,7 +276,7 @@ def paiement():
             db.session.add(paiement)
             db.session.commit()
 
-            # 7️⃣ Vérification de l’URL de paiement
+            # Redirection vers page SEMOA
             gateway_url = order_data.get('bill_url') or order_data.get('gateway', {}).get('url')
             if not gateway_url:
                 flash("Impossible de récupérer l'URL de paiement.", "danger")
@@ -305,7 +294,9 @@ def paiement():
             flash(f"Erreur serveur : {str(e)}", "danger")
             return redirect(url_for('paiement'))
 
+    # Si GET → afficher la page avec formulaire
     return render_template('paiement.html', montant=montant)
+
 
 
 
@@ -391,6 +382,7 @@ def conditions():
 # -----------------------------
 if __name__ == '__main__':
     app.run(debug=True)
+
 
 
 
