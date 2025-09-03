@@ -4,7 +4,7 @@ from flask import (
 )
 from config import Config
 from models import db, QuestionnaireFafa, Paiement
-from forms import Etape1Form, Etape2Form, Etape3Form
+from forms import Etape2Form, Etape3Form
 from admin import admin_bp
 from export import export_csv, export_excel
 import requests
@@ -382,6 +382,7 @@ def conditions():
 # -----------------------------
 if __name__ == '__main__':
     app.run(debug=True)
+
 
 
 
