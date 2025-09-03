@@ -116,7 +116,7 @@ def questionnaire_step2():
             "beneficiaire_nom", "beneficiaire_prenoms", "beneficiaire_tel",
             "beneficiaire_profession", "beneficiaire_adresse",
             "souscripteur_nom", "souscripteur_prenoms", "souscripteur_tel",
-            "souscripteur_date_naissance", "souscripteur_adresse"
+            "souscripteur_date_naissance", "souscripteur_adresse", "type_contrat"  
         ]:
             session[field_name] = getattr(form, field_name).data
         flash("Étape 2 enregistrée !", "success")
@@ -382,6 +382,7 @@ def conditions():
 # -----------------------------
 if __name__ == '__main__':
     app.run(debug=True)
+
 
 
 
