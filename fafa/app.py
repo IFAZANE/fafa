@@ -311,7 +311,7 @@ def confirmation_paiement(transaction_id):
     paiement = Paiement.query.filter_by(transaction_id=transaction_id).first()
     if not paiement:
         flash(f"Transaction {transaction_id} introuvable.", "warning")
-        return redirect(url_for('questionnaire_step1'))
+        return redirect(url_for('questionnaire_step2'))
 
     # Vérifie si déjà confirmé
     if paiement.status != "confirmed":
@@ -382,6 +382,7 @@ def conditions():
 # -----------------------------
 if __name__ == '__main__':
     app.run(debug=True)
+
 
 
 
