@@ -15,15 +15,17 @@
                     <form method="POST">
                         <div class="mb-3">
                             <label for="phone" class="form-label">Numéro de téléphone</label>
-                            <input 
-                                type="tel" 
-                                class="form-control" 
-                                name="phone" 
-                                id="phone" 
-                                placeholder="Ex: +22890000000" 
-                                required
-                                pattern="^\+228\d{8}$"
-                                title="Entrez un numéro valide au format +228XXXXXXXX">
+                            <input
+                              type="tel"
+                              name="phone"
+                              id="phone"
+                              class="form-control"
+                              placeholder="Ex: +22890000000"
+                              required
+                              pattern="\+228\d{8}"
+                              title="Entrez un numéro au format +228XXXXXXXX"
+                            />
+
                         </div>
 
                         <div class="d-grid mt-4">
