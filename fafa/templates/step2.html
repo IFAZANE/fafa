@@ -434,6 +434,27 @@ footer {
         <form method="POST">
             {{ form.hidden_tag() }}
 
+            <!-- Souscripteur -->
+            <div class="card mb-4 shadow-sm">
+                <div class="card-header">Souscripteur</div>
+                <div class="card-body">
+                    {{ form.souscripteur_nom.label(class="form-label") }}
+                    {{ form.souscripteur_nom(class="form-control") }}
+
+                    {{ form.souscripteur_prenoms.label(class="form-label mt-3") }}
+                    {{ form.souscripteur_prenoms(class="form-control") }}
+
+                    {{ form.souscripteur_tel.label(class="form-label mt-3") }}
+                    {{ form.souscripteur_tel(class="form-control") }}
+
+                    {{ form.souscripteur_date_naissance.label(class="form-label mt-3") }}
+                    {{ form.souscripteur_date_naissance(class="form-control") }}
+
+                    {{ form.souscripteur_adresse.label(class="form-label mt-3") }}
+                    {{ form.souscripteur_adresse(class="form-control") }}
+                </div>
+            </div>
+
             <!-- Bénéficiaire -->
             <div class="card mb-4 shadow-sm">
                 <div class="card-header">Bénéficiaire</div>
@@ -455,26 +476,7 @@ footer {
                 </div>
             </div>
 
-            <!-- Souscripteur -->
-            <div class="card mb-4 shadow-sm">
-                <div class="card-header">Souscripteur</div>
-                <div class="card-body">
-                    {{ form.souscripteur_nom.label(class="form-label") }}
-                    {{ form.souscripteur_nom(class="form-control") }}
-
-                    {{ form.souscripteur_prenoms.label(class="form-label mt-3") }}
-                    {{ form.souscripteur_prenoms(class="form-control") }}
-
-                    {{ form.souscripteur_tel.label(class="form-label mt-3") }}
-                    {{ form.souscripteur_tel(class="form-control") }}
-
-                    {{ form.souscripteur_date_naissance.label(class="form-label mt-3") }}
-                    {{ form.souscripteur_date_naissance(class="form-control") }}
-
-                    {{ form.souscripteur_adresse.label(class="form-label mt-3") }}
-                    {{ form.souscripteur_adresse(class="form-control") }}
-                </div>
-            </div>
+            
 
             <!-- Boutons -->
             <div class="d-flex justify-content-between">
