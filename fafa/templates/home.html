@@ -1,633 +1,255 @@
 <!doctype html>
 <html lang="fr">
 <head>
-    <meta charset="utf-8">
-    <title>FAFA Assurance</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="utf-8">
+  <title>FAFA Assurance</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;600&display=swap" rel="stylesheet">
 
-    <!-- CSS -->
-    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
-    <!-- Font / Icons -->
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;600&display=swap" rel="stylesheet">
-    <script src="https://kit.fontawesome.com/yourkitid.js" crossorigin="anonymous"></script>
-
-    <style>
-       body {
-    margin: 0;
-    font-family: 'Poppins', sans-serif;
-    background: linear-gradient(to right, #f7f9fc, #e2ecf9);
-    color: #333;
-}
-
-.main-header {
-    background-color: #ffffff;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-}
-
-.navbar {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 1rem 2rem;
-}
-
-.logo {
-    display: flex;
-    align-items: center;
-}
-
-.logo img {
-    height: 40px;
-    margin-right: 10px;
-}
-
-.logo span {
-    font-weight: 600;
-    font-size: 1.2rem;
-    color: #0056b3;
-}
-
-.nav-links a {
-    margin: 0 15px;
-    text-decoration: none;
-    color: #333;
-}
-
-.nav-links a:hover {
-    color: #0056b3;
-}
-
-.hero {
-    background: url('/static/hero-background.jpg') no-repeat center center/cover;
-    color: white;
-    text-align: center;
-    padding: 100px 20px;
-}
-
-.hero-content h1 {
-    font-size: 2.5rem;
-}
-
-.hero-content p {
-    font-size: 1.2rem;
-}
-
-.btn-primary {
-    margin-top: 20px;
-    padding: 10px 20px;
-    background-color: #0056b3;
-    color: white;
-    border: none;
-    border-radius: 5px;
-    text-decoration: none;
-}
-
-.btn-primary:hover {
-    background-color: #003f88;
-}
-
-.services {
-    padding: 50px 20px;
-    text-align: center;
-}
-
-.card-container {
-    display: flex;
-    justify-content: space-around;
-    flex-wrap: wrap;
-    margin-top: 30px;
-}
-
-.card {
-    background: white;
-    padding: 20px;
-    width: 300px;
-    margin: 10px;
-    border-radius: 8px;
-    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-}
-
-.card i {
-    font-size: 2rem;
-    margin-bottom: 10px;
-    color: #0056b3;
-}
-
-.card h3 {
-    margin-top: 0;
-}
-
-.about, .testimonials, .cta {
-    padding: 50px 20px;
-    text-align: center;
-}
-
-.about p {
-    max-width: 700px;
-    margin: 20px auto;
-    font-size: 1.1rem;
-}
-
-.testimonials .card-container {
-    justify-content: center;
-}
-
-.testimonials .card p {
-    font-style: italic;
-}
-
-.testimonials .card strong {
-    display: block;
-    margin-top: 10px;
-    font-style: normal;
-    color: #0056b3;
-}
-
-footer {
-    background-color: #f1f1f1;
-    padding: 20px;
-    text-align: center;
-}
-
-.footer-content .socials a {
-    margin: 0 10px;
-    color: #555;
-    font-size: 1.2rem;
-}
-
-.footer-content .socials a:hover {
-    color: #0056b3;
-}
-
-/* Flash messages (facultatif) */
-.flash-messages {
-    text-align: center;
-    margin-top: 10px;
-}
-
-.flash.success {
-    background-color: #d4edda;
-    color: #155724;
-    padding: 10px;
-    margin: 10px auto;
-    max-width: 600px;
-    border-radius: 5px;
-}
-
-.flash.error {
-    background-color: #f8d7da;
-    color: #721c24;
-    padding: 10px;
-    margin: 10px auto;
-    max-width: 600px;
-    border-radius: 5px;
-}
-
-.nav-links a.nav-button {
-    display: inline-block;
-    padding: 10px 20px;
-    margin: 0 8px;
-    background-color: #0056b3; /* bleu FAFA */
-    color: white;
-    border-radius: 5px;
-    font-weight: 600;
-    text-decoration: none;
-    transition: background-color 0.3s ease, box-shadow 0.3s ease;
-    box-shadow: 0 2px 6px rgba(0, 86, 179, 0.4);
-}
-
-.nav-links a.nav-button:hover,
-.nav-links a.nav-button:focus {
-    background-color: #003f88; /* bleu plus foncé au hover */
-    box-shadow: 0 4px 10px rgba(0, 63, 136, 0.6);
-    outline: none;
-}
-
-/* --- Carrousel container --- */
-.carousel-container {
-        position: fixed;  /* fixé par rapport à la fenêtre */
-    top: 0;
-    left: 0;
-    width: 100vw;     /* pleine largeur */
-    height: 100vh;    /* pleine hauteur */
-    background: white;
-    overflow: hidden;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 0;       /* plus de padding sinon ça crée de l’espace */
-    z-index: 9999;    /* au-dessus du reste */
-}
-
-.carousel {
-    display: flex;
-    width: 100%;
-    height: 100%;          /* remplit la hauteur du container */
-    position: relative;
-    overflow: hidden;
-}
-
-.slide {
-    display: none;
-    flex-shrink: 0;
-    width: 100%;
-    height: 100%;
-    opacity: 0;
-    transition: opacity 0.8s ease;
-    padding: 20px;
-    box-sizing: border-box;
-    display: flex;
-    align-items: center;
-    gap: 30px;
-}
-
-.slide.active {
-    display: flex;
-    opacity: 1;
-}
-
-.slide-text {
-    flex: 1;
-    color: #003f88;
-    overflow-y: auto; /* permet scroll si contenu trop grand */
-}
-
-.slide-text h2 {
-    margin-top: 0;
-    font-size: 2.2rem;
-    font-weight: 700;
-    margin-bottom: 15px;
-}
-
-.slide-text p, .slide-text ul, .slide-text ol {
-    font-size: 1.2rem;
-    line-height: 1.5;
-    margin-bottom: 15px;
-}
-
-.slide-text ul, .slide-text ol {
-    padding-left: 20px;
-}
-
-.slide-image {
-    flex: 1;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
-
-.slide-image img {
-    max-height: 100%;
-    height: 100%;
-    width: auto;
-    border-radius: 12px;
-    object-fit: contain;
-    box-shadow: 0 5px 15px rgba(0,0,0,0.2);
-    max-width: 100%;
-}
-
-/* Navigation buttons */
-.carousel-btn {
-    position: absolute;
-    top: 50%;
-    transform: translateY(-50%);
-    background: rgba(0, 86, 179, 0.7);
-    border: none;
-    color: white;
-    font-size: 2.5rem;
-    padding: 5px 12px;
-    cursor: pointer;
-    border-radius: 50%;
-    user-select: none;
-    transition: background 0.3s ease;
-    z-index: 10;
-}
-
-.carousel-btn:hover {
-    background: #003f88;
-}
-
-.carousel-btn.prev {
-    left: 10px;
-}
-
-.carousel-btn.next {
-    right: 10px;
-}
-
-/* Responsive */
-@media (max-width: 768px) {
-    navbar {
-        flex-direction: column;
-        padding: 1rem;
-        gap: 10px;
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Poppins', sans-serif;
+      background: #f6f9fc;
+      color: #333;
     }
 
-    .nav-links {
-        display: flex;
-        flex-direction: column;
-        align-items: stretch;
-        width: 100%;
-    }
-
-    .nav-links a.nav-button {
-        width: 100%;
-        margin: 5px 0;
-        text-align: center;
+    /* HEADER */
+    .main-header {
+      background-color: white;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+      padding: 1rem 2rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
     }
 
     .main-header .logo img {
-        height: 30px;
+      height: 45px;
     }
-    .carousel-container {
-        width: 100vw;
-        height: auto;
-        padding: 10px;
+
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 20px;
     }
-    .slide {
+
+    .nav-links a {
+      text-decoration: none;
+      color: #333;
+      font-weight: 600;
+      padding: 8px 16px;
+      border-radius: 5px;
+      transition: all 0.3s ease;
+    }
+
+    .nav-links a:hover {
+      background-color: #0056b3;
+      color: white;
+    }
+
+    .nav-links .nav-button {
+      background-color: #d32f2f;
+      color: white;
+    }
+
+    /* HERO SECTION */
+    .hero {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 60px 5%;
+      background-color: white;
+      flex-wrap: wrap;
+    }
+
+    .hero-text {
+      flex: 1;
+      max-width: 550px;
+    }
+
+    .hero-text h1 {
+      font-size: 2.2rem;
+      color: #002f6c;
+      margin-bottom: 20px;
+    }
+
+    .hero-text p {
+      font-size: 1.1rem;
+      margin-bottom: 30px;
+      line-height: 1.5;
+    }
+
+    .hero-buttons {
+      display: flex;
+      gap: 15px;
+      flex-wrap: wrap;
+    }
+
+    .btn-red {
+      background-color: #d32f2f;
+      color: white;
+      border: none;
+      padding: 12px 24px;
+      border-radius: 6px;
+      font-weight: bold;
+      font-size: 1rem;
+      cursor: pointer;
+      text-decoration: none;
+    }
+
+    .btn-red:hover {
+      background-color: #a52828;
+    }
+
+    .btn-outline {
+      background-color: transparent;
+      border: 2px solid #0056b3;
+      color: #0056b3;
+      padding: 12px 20px;
+      border-radius: 6px;
+      font-weight: bold;
+      font-size: 1rem;
+      cursor: pointer;
+      text-decoration: none;
+    }
+
+    .btn-outline:hover {
+      background-color: #0056b3;
+      color: white;
+    }
+
+    .hero-image {
+      flex: 1;
+      text-align: center;
+    }
+
+    .hero-image img {
+      width: 300px;
+      height: 300px;
+      object-fit: cover;
+      border-radius: 50%;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+    }
+
+    /* PROMO BLOC */
+    .promo {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+      margin-top: 40px;
+    }
+
+    .promo-icon {
+      font-size: 2.5rem;
+      color: #d32f2f;
+    }
+
+    .promo-text {
+      font-size: 1.1rem;
+    }
+
+    .promo-text strong {
+      font-size: 2rem;
+      color: #d32f2f;
+      display: block;
+    }
+
+    /* FOOTER */
+    footer {
+      background-color: #f1f1f1;
+      text-align: center;
+      padding: 20px;
+      margin-top: 60px;
+    }
+
+    footer .socials a {
+      margin: 0 10px;
+      color: #555;
+      font-size: 1.2rem;
+      text-decoration: none;
+    }
+
+    footer .socials a:hover {
+      color: #0056b3;
+    }
+
+    /* RESPONSIVE */
+    @media (max-width: 768px) {
+      .hero {
         flex-direction: column;
-        height: auto;
-        padding: 10px;
-    }
-    .slide-text {
-        margin-bottom: 20px;
-    }
-    .slide-image {
-        margin-top: 0;
-    }
-    .slide-image img {
-        max-height: 200px;
-        height: auto;
-        width: 100%;
-    }
-}
+        text-align: center;
+      }
 
+      .hero-text, .hero-image {
+        max-width: 100%;
+      }
 
-    </style>
+      .hero-image img {
+        width: 200px;
+        height: 200px;
+        margin-top: 20px;
+      }
+
+      .promo {
+        flex-direction: column;
+        align-items: center;
+      }
+
+      .promo-text {
+        text-align: center;
+      }
+    }
+  </style>
 </head>
+
 <body>
 
-    {% with messages = get_flashed_messages(with_categories=true) %}
-        {% if messages %}
-            <div class="flash-messages">
-                {% for category, message in messages %}
-                    <div class="flash {{ category }}">{{ message }}</div>
-                {% endfor %}
-            </div>
-        {% endif %}
-    {% endwith %}
-
-    <!-- Header -->
-   <!-- Header commun FAFA -->
-<header class="main-header">
-    <div class="navbar">
-        <div class="logo">
-            <img src="{{ url_for('static', filename='logo_FAFA.png') }}" alt="FAFA Logo">
-        </div>
-        <nav class="nav-links">
-            <a href="{{ url_for('questionnaire_step2') }}" class="nav-button">Souscription</a>
-            <a href="{{ url_for('manuel') }}" class="nav-button">Aide</a>
-            <a href="https://www.boad.org" target="_blank" class="nav-button">BOAD</a>
-            <a href="https://nsiadirect.tg/" target="_blank" class="nav-button">NSIA Assurance</a>
-            
-        </nav>
+  <!-- Header -->
+  <header class="main-header">
+    <div class="logo">
+      <img src="{{ url_for('static', filename='logo_FAFA.png') }}" alt="FAFA Logo">
     </div>
-</header>
+    <nav class="nav-links">
+      <a href="{{ url_for('questionnaire_step2') }}" class="nav-button">Souscrire</a>
+      <a href="{{ url_for('manuel') }}">Guide</a>
+      <a href="#">Contact</a>
+    </nav>
+  </header>
 
-    <!-- Carousel principal -->
-    <main class="carousel-container">
-        <div class="carousel">
+  <!-- Hero Section -->
+  <section class="hero">
+    <div class="hero-text">
+      <h1>L’assurance solidaire pour les plus vulnérables du secteur informel</h1>
+      <p>Avec FAFA, bénéficiez d’une couverture complète contre les accidents, les maladies et le décès.</p>
+      <div class="hero-buttons">
+        <a href="{{ url_for('questionnaire_step2') }}" class="btn-red">SOUSCRIRE</a>
+        <a href="#" class="btn-outline">VISIONNER LA VIDÉO</a>
+      </div>
 
-            <!-- Slide 1 -->
-            <section class="slide active">
-                <div class="slide-text">
-                    <h2>QU’EST CE QUE FAFA ?</h2>
-                    <p>
-                        FAFA est une assurance solidaire créée par la Banque Ouest Africaine de Développement (BOAD) et NSIA Assurances Togo.
-                        Elle aide les personnes vulnérables en rendant l’assurance accessible à ceux qui ont de faibles revenus.
-                    </p>
-                    <p>
-                        FAFA, qui signifie paix et sérénité, mise sur l'innovation. Elle contribue à améliorer les conditions de vie, réduire la pauvreté et renforcer la cohésion sociale et économique dans la sous-région.
-                    </p>
-                </div>
-                <div class="slide-image">
-                   <img src="https://tse4.mm.bing.net/th/id/OIP.1etJsEFYvQ4lHOTih4iT7AAAAA?w=450&h=300&rs=1&pid=ImgDetMain&o=7&rm=3" alt="Femme souriante" />
-
-                </div>
-            </section>
-
-            <!-- Slide 2 -->
-            <section class="slide">
-                <div class="slide-text">
-                    <h2>QUI EST CONCERNÉ ?</h2>
-                    <p>Toute personne issue du secteur informel.</p>
-
-                    <h2>QUELLES SONT LES GARANTIES ?</h2>
-                    <ul>
-                        <li><strong>Individuelle Accidents :</strong> Couverture des frais médicaux en cas d’accident, capital en cas d’invalidité, capital aux ayants droits en cas de décès suite à un accident.</li>
-                        <li><strong>Décès Toutes Causes :</strong> Capital versé à la famille pour assistance aux frais funéraires.</li>
-                        <li><strong>Hospitalisation :</strong> Forfait journalier pour soulager les frais médicaux.</li>
-                        <li><strong>Indemnité Journalière :</strong> Indemnité en cas d’immobilisation prolongée suite à un accident.</li>
-                    </ul>
-                </div>
-                <div class="slide-image">
-                    <img src="https://tse2.mm.bing.net/th/id/OIP.EcJosQIuLD3aW_-ahJnnagHaFM?pid=ImgDet&w=184&h=128&c=7&dpr=1.3&o=7&rm=3" alt="Femme souriante" />
-                    
-                </div>
-            </section>
-
-            <!-- Slide 3 -->
-            <section class="slide">
-                <div class="slide-text">
-                    <h2>QUELLES SONT LES OFFRES ?</h2>
-                    <p>Deux options sont offertes, permettant aux clientes de choisir celle qui correspond le mieux à leurs besoins et préférences.</p>
-                    <ol>
-                        <li>Rendez-vous dans une agence NSIA pour remplir une fiche de souscription.</li>
-                        <li>Après paiement, un code QR vous sera transmis avec votre numéro d’identification FAFA.</li>
-                        <li>En cas de sinistre, contactez le .... pour une prise en charge rapide.</li>
-                    </ol>
-                </div>
-                <div class="slide-image">
-                     <img src="https://img.freepik.com/premium-photo/smiling-african-woman-market-holding-her-phone_801882-58.jpg" alt="Femme souriante" />
-                </div>
-            </section>
-
+      <div class="promo">
+        <div class="promo-icon">🎁</div>
+        <div class="promo-text">
+          <strong>50%</strong>
+          de la prime financée par la BOAD pour les 500 premières souscriptions
         </div>
+      </div>
+    </div>
 
-        <!-- Flèches de navigation -->
-        <button class="carousel-btn prev" aria-label="Slide précédente">&#10094;</button>
-        <button class="carousel-btn next" aria-label="Slide suivante">&#10095;</button>
-    </main>
+    <div class="hero-image">
+      <img src="{{ url_for('static', filename='femmes-souriantes.jpg') }}" alt="Photo femmes souriantes">
+    </div>
+  </section>
 
-    <!-- Footer -->
-    <footer>
-        <div class="footer-content">
-            <p>&copy; {{ current_year }} FAFA Assurance. Tous droits réservés.</p>
-            <div class="socials">
-                <a href="#"><i class="fab fa-facebook"></i></a>
-                <a href="#"><i class="fab fa-twitter"></i></a>
-                <a href="#"><i class="fab fa-linkedin"></i></a>
-            </div>
-        </div>
-    </footer>
-
-    <!-- JS Carousel -->
-    <script>
-        const slides = document.querySelectorAll('.slide');
-        const prevBtn = document.querySelector('.carousel-btn.prev');
-        const nextBtn = document.querySelector('.carousel-btn.next');
-        let current = 0;
-
-        function showSlide(index) {
-            slides.forEach((slide, i) => {
-                slide.classList.toggle('active', i === index);
-            });
-        }
-
-        prevBtn.addEventListener('click', () => {
-            current = (current === 0) ? slides.length -1 : current -1;
-            showSlide(current);
-        });
-
-        nextBtn.addEventListener('click', () => {
-            current = (current === slides.length -1) ? 0 : current +1;
-            showSlide(current);
-        });
-
-        // Optionnel: auto slide toutes les 8 secondes
-        setInterval(() => {
-            nextBtn.click();
-        }, 8000);
-    </script>
-
-    <style>
-        /* --- Carrousel container --- */
-        .carousel-container {
-            position: relative;
-            max-width: 900px;
-            margin: 50px auto 80px;
-            background: white;
-            border-radius: 12px;
-            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
-            overflow: hidden;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 20px;
-        }
-
-        .carousel {
-            display: flex;
-            width: 100%;
-            position: relative;
-            overflow: hidden;
-            height: 350px;
-        }
-
-        .slide {
-            display: none;
-            flex-shrink: 0;
-            width: 100%;
-            opacity: 0;
-            transition: opacity 0.8s ease;
-            padding: 20px;
-            box-sizing: border-box;
-            display: flex;
-            align-items: center;
-            gap: 30px;
-        }
-
-        .slide.active {
-            display: flex;
-            opacity: 1;
-        }
-
-        .slide-text {
-            flex: 1;
-            color: #003f88;
-        }
-
-        .slide-text h2 {
-            margin-top: 0;
-            font-size: 1.8rem;
-            font-weight: 700;
-            margin-bottom: 15px;
-        }
-
-        .slide-text p, .slide-text ul, .slide-text ol {
-            font-size: 1.1rem;
-            line-height: 1.5;
-            margin-bottom: 15px;
-        }
-
-        .slide-text ul, .slide-text ol {
-            padding-left: 20px;
-        }
-
-        .slide-image {
-            flex: 1;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
-
-        .slide-image img {
-            max-height: 300px;
-            border-radius: 12px;
-            object-fit: cover;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
-            max-width: 100%;
-        }
-
-        /* Navigation buttons */
-        .carousel-btn {
-            position: absolute;
-            top: 50%;
-            transform: translateY(-50%);
-            background: rgba(0, 86, 179, 0.7);
-            border: none;
-            color: white;
-            font-size: 2.5rem;
-            padding: 5px 12px;
-            cursor: pointer;
-            border-radius: 50%;
-            user-select: none;
-            transition: background 0.3s ease;
-            z-index: 10;
-        }
-
-        .carousel-btn:hover {
-            background: #003f88;
-        }
-
-        .carousel-btn.prev {
-            left: 10px;
-        }
-
-        .carousel-btn.next {
-            right: 10px;
-        }
-
-        /* Responsive */
-        @media (max-width: 768px) {
-            .carousel-container {
-                max-width: 95%;
-                height: auto;
-            }
-            .slide {
-                flex-direction: column;
-                height: auto;
-            }
-            .slide-image {
-                margin-top: 20px;
-            }
-            .slide-image img {
-                max-height: 200px;
-            }
-        }
-    </style>
+  <!-- Footer -->
+  <footer>
+    <p>&copy; {{ current_year }} FAFA Assurance. Tous droits réservés.</p>
+    <div class="socials">
+      <a href="#"><i class="fab fa-facebook"></i></a>
+      <a href="#"><i class="fab fa-twitter"></i></a>
+      <a href="#"><i class="fab fa-linkedin"></i></a>
+    </div>
+  </footer>
 
 </body>
-
-
 </html>
