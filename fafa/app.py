@@ -147,10 +147,10 @@ def questionnaire_step3():
 
         # Création en base
         questionnaire = QuestionnaireFafa(
-            duree_contrat=session.get('duree_contrat'),
-            periode_debut=parse_date(session.get('periode_debut')),
-            periode_fin=parse_date(session.get('periode_fin')),
-            periodicite=session.get('periodicite'),
+            #duree_contrat=session.get('duree_contrat'),
+            #periode_debut=parse_date(session.get('periode_debut')),
+            #periode_fin=parse_date(session.get('periode_fin')),
+            #periodicite=session.get('periodicite'),
             type_contrat=session.get('type_contrat'),
             beneficiaire_nom=session.get('beneficiaire_nom'),
             beneficiaire_prenoms=session.get('beneficiaire_prenoms'),
@@ -382,6 +382,7 @@ def conditions():
 # -----------------------------
 if __name__ == '__main__':
     app.run(debug=True)
+
 
 
 
