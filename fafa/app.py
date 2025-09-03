@@ -193,7 +193,7 @@ def paiement():
 
     if montant is None or questionnaire_id is None:
         flash("Questionnaire ou montant introuvable. Veuillez compléter le questionnaire avant de payer.", "danger")
-        return redirect(url_for('questionnaire_step1'))
+        return redirect(url_for('questionnaire_step2'))
 
     if request.method == 'POST':
         phone = request.form.get('phone', '').strip()
@@ -382,6 +382,7 @@ def conditions():
 # -----------------------------
 if __name__ == '__main__':
     app.run(debug=True)
+
 
 
 
