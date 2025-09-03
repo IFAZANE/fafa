@@ -10,7 +10,7 @@ from wtforms.validators import DataRequired, NumberRange, Optional
 
 class Etape1Form(FlaskForm):
     # Durée du contrat
-    duree_contrat = StringField('Durée du contrat', validators=[DataRequired()])
+    duree_contrat = StringField('Durée du contrat', validators=[DataRequired()], placeholder="ex: 1 an")
 
     # Période et périodicité
     periode_debut = DateField('Date de début', format='%Y-%m-%d', validators=[DataRequired()])
@@ -52,16 +52,16 @@ class Etape2Form(FlaskForm):
     #assure_adresse = StringField('Adresse', validators=[DataRequired(), Length(max=200)])
 
     # Bénéficiaire
-    beneficiaire_nom = StringField('Nom', validators=[DataRequired(), Length(max=100)])
-    beneficiaire_prenoms = StringField('Prénoms', validators=[DataRequired(), Length(max=100)])
-    beneficiaire_tel = StringField('Téléphone', validators=[DataRequired(), Regexp(r'^\+?\d{8,15}$', message="Numéro de téléphone invalide")])
-    beneficiaire_profession = StringField('Profession', validators=[DataRequired(), Length(max=100)])
-    beneficiaire_adresse = StringField('Adresse', validators=[DataRequired(), Length(max=200)])
+    beneficiaire_nom = StringField('Nom', validators=[DataRequired(), Length(max=100)], placeholder="ex: NOM")
+    beneficiaire_prenoms = StringField('Prénoms', validators=[DataRequired(), Length(max=100)],placeholder="ex: Prénoms")
+    beneficiaire_tel = StringField('Téléphone', validators=[DataRequired(), Regexp(r'^\+?\d{8,15}$', message="Numéro de téléphone invalide")],placeholder="ex: 22899999999")
+    beneficiaire_profession = StringField('Profession', validators=[DataRequired(), Length(max=100)],placeholder="Saisir la profession du bénéficiaire")
+    beneficiaire_adresse = StringField('Adresse', validators=[DataRequired(), Length(max=200)],placeholder="ex: Lomé-TOGO")
 
     # Souscripteur
-    souscripteur_nom = StringField('Nom', validators=[DataRequired(), Length(max=100)])
-    souscripteur_prenoms = StringField('Prénoms', validators=[DataRequired(), Length(max=100)])
-    souscripteur_tel = StringField('Téléphone', validators=[DataRequired(), Regexp(r'^\+?\d{8,15}$', message="Numéro de téléphone invalide")])
+    souscripteur_nom = StringField('Nom', validators=[DataRequired(), Length(max=100)], placeholder="ex: NOM")
+    souscripteur_prenoms = StringField('Prénoms', validators=[DataRequired(), Length(max=100)],placeholder="ex: Prénoms")
+    souscripteur_tel = StringField('Téléphone', validators=[DataRequired(), Regexp(r'^\+?\d{8,15}$', message="Numéro de téléphone invalide")],placeholder="ex: 22899999999")
     souscripteur_date_naissance = DateField('Date de naissance', format='%Y-%m-%d', validators=[DataRequired()])
     souscripteur_adresse = StringField('Adresse', validators=[DataRequired(), Length(max=200)])
 
@@ -172,6 +172,7 @@ class SouscriptionForm(FlaskForm):
 )
 
     recaptcha = RecaptchaField()
+
 
 
 
