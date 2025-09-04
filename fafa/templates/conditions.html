@@ -2,44 +2,63 @@
 
 {% block content %}
 <div class="container legal-content">
-  <h5>Conditions Générales — Individuelle Accidents et Santé</h5>
 
-  <h6>Article 1 — Objet du contrat</h6>
+  <!-- Titre principal -->
+  <h2 class="mb-4">Conditions Générales — Individuelle Accidents et Santé</h2>
+
+  <!-- Article 1 -->
+  <h3>Article 1 — Objet du contrat</h3>
   <p>
     La Société garantit le paiement des indemnités définies à l’article 4 ci-dessous en cas d’accident atteignant la personne assurée.
     Par « accident », il faut entendre toute atteinte corporelle non intentionnelle de la part de l’assuré et provenant de l’action soudaine d’une cause extérieure.
-    La garantie prend effet et se termine aux dates et heures précisées aux Conditions Particulières. Toutefois, si un déplacement effectué par l’assuré
-    se termine, pour une cause de force majeure, après l’expiration de la période assurée alors qu’il aurait dû normalement achever avant l’expiration de cette période, la garantie
-    est prolongée de plein droit du nombre strictement nécessaire de périodes de 24 heures (sans que le total n’excède sept).
+  </p>
+  <p>
+    La garantie prend effet et se termine aux dates et heures précisées aux Conditions Particulières.
+    Toutefois, si un déplacement effectué par l’assuré se termine, pour une cause de force majeure, après l’expiration de la période assurée alors qu’il aurait dû normalement achever avant l’expiration de cette période,
+    la garantie est prolongée de plein droit du nombre strictement nécessaire de périodes de 24 heures (sans que le total n’excède sept).
   </p>
 
-  <h6>Article 2 — Risques exclus</h6>
+  <!-- Article 2 -->
+  <h3>Article 2 — Risques exclus</h3>
   <p>
-    Sont exclus notamment : les accidents intentionnellement causés par l’assuré ; guerre, émeute, actes de terrorisme ou sabotage ; événements nucléaires et radiations ionisantes ;
-    maladies, insolation, apoplexie, effets de température/pression (sauf s’ils résultent d’un accident garanti ou d’un dysfonctionnement de transport) ; intoxication alimentaire ;
-    lumbago, rupture de muscles, hernie (même d’origine traumatique) ; accidents résultant de traitements ou opérations (sauf s’ils découlent d’un accident garanti) ; usage de cycles à moteur de type sport
-    ou &gt; 50 cm³ ; sports à risques (hockey sur glace, bobsleigh, skeleton, ski, alpinisme par voies non frayées, spéléologie, etc.) ; participation (concurrent, commissaire, entraîneur, arbitre)
-    à courses/compétitions/exhibitions et entraînements correspondants ; travaux manuels professionnels ; transport aérien autrement que comme passager d’une compagnie agréée.
-    Est exclue toute personne ayant intentionnellement causé ou provoqué le sinistre.
+    Sont notamment exclus :
   </p>
+  <ul>
+    <li>Accidents intentionnellement causés par l’assuré</li>
+    <li>Guerre, émeute, actes de terrorisme ou sabotage</li>
+    <li>Événements nucléaires et radiations ionisantes</li>
+    <li>Maladies, insolation, apoplexie, effets de température/pression (sauf en cas d’accident garanti)</li>
+    <li>Intoxication alimentaire</li>
+    <li>Lumbago, rupture de muscles, hernie (même traumatique)</li>
+    <li>Accidents dus à des traitements/opérations (sauf s’ils résultent d’un accident garanti)</li>
+    <li>Usage de cycles à moteur sportif ou > 50 cm³</li>
+    <li>Sports à risques : hockey sur glace, bobsleigh, skeleton, ski, alpinisme hors piste, spéléologie, etc.</li>
+    <li>Participation à des compétitions sportives ou entraînements (en tant que concurrent, arbitre, etc.)</li>
+    <li>Travaux manuels professionnels</li>
+    <li>Transport aérien en dehors du rôle de passager d’une compagnie agréée</li>
+    <li>Personnes ayant intentionnellement provoqué le sinistre</li>
+  </ul>
 
-  <h6>Article 3 — Indemnités garanties</h6>
+  <!-- Article 3 -->
+  <h3>Article 3 — Indemnités garanties</h3>
+  <ul>
+    <li><strong>En cas de décès</strong> (dans les 12 mois) : capital versé au bénéficiaire ou ayants droit</li>
+    <li><strong>En cas d’infirmité permanente</strong> (totale ou partielle) : indemnité calculée selon l’article 5</li>
+    <li><strong>En cas de traitement médical</strong> : selon les Conditions Particulières</li>
+  </ul>
+
+  <!-- Article 4 -->
+  <h3>Article 4 — Infirmité permanente</h3>
   <p>
-    En cas de mort dans les douze mois des suites d’un accident garanti : capital payable au bénéficiaire désigné (ou à défaut aux ayants droit).<br>
-    En cas d’infirmité permanente (totale ou partielle) : indemnité calculée selon l’article 5.<br>
-    En cas de traitement médical : selon dispositions des Conditions Particulières.
+    <strong>a) Infirmité permanente totale :</strong> droit à la somme maximale assurée (exemples : perte des deux yeux, deux bras, deux jambes, etc.)
   </p>
-
-  <h6>Article 4 — Infirmité permanente</h6>
   <p>
-    a) <em>Infirmité permanente totale</em> : droit à la somme maxima stipulée (trouble mental incurable, perte totale/incapacité fonctionnelle absolue des deux yeux, deux bras, deux mains,
-    deux jambes, deux pieds, d’un bras et d’une jambe, d’un bras et d’un pied, d’une main et d’une jambe, d’un main et d’un pied).<br>
-    b) <em>Infirmité permanente partielle</em> : droit aux pourcentages ci-dessous de la somme assurée pour l’infirmité totale.
+    <strong>b) Infirmité permanente partielle :</strong> droit aux pourcentages suivants de la somme assurée pour l’infirmité totale :
   </p>
 
   <div class="table-responsive">
-    <table class="table barreme-table">
-      <thead>
+    <table class="table table-bordered table-striped barreme-table">
+      <thead class="table-light">
         <tr>
           <th>Lésion / Perte</th>
           <th>Droit</th>
@@ -53,9 +72,9 @@
         <tr><td>Perte totale du mouvement du poignet</td><td>20%</td><td>15%</td></tr>
         <tr><td>Perte totale du pouce et de l’index</td><td>30%</td><td>25%</td></tr>
         <tr><td>Perte totale d’une jambe ou d’un pied</td><td colspan="2">50%</td></tr>
-        <tr><td>Amputation partielle d’un pied comprenant tous les orteils</td><td colspan="2">50%</td></tr>
+        <tr><td>Amputation partielle d’un pied (avec tous les orteils)</td><td colspan="2">50%</td></tr>
         <tr><td>Ablation de la mâchoire inférieure</td><td colspan="2">30%</td></tr>
-        <tr><td>Perte totale d’un œil ou réduction à la moitié de la vision binoculaire</td><td colspan="2">~25%</td></tr>
+        <tr><td>Perte totale d’un œil ou réduction à moitié de la vision binoculaire</td><td colspan="2">~25%</td></tr>
         <tr><td>Surdité complète des deux oreilles</td><td colspan="2">40%</td></tr>
         <tr><td>Surdité complète d’une oreille</td><td colspan="2">10%</td></tr>
         <tr><td>Fracture non consolidée d’une jambe ou d’un pied</td><td colspan="2">25%</td></tr>
@@ -66,29 +85,40 @@
     </table>
   </div>
 
-  <h6>Article 5 — Aggravation</h6>
+  <!-- Article 5 -->
+  <h3>Article 5 — Aggravation</h3>
   <p>
-    Si les conséquences sont aggravées par l’état de la victime, une maladie, une négligence de soins ou un traitement empirique, l’indemnité est calculée comme chez un sujet sain soumis à un traitement rationnel.
+    Si les conséquences de l’accident sont aggravées par une condition antérieure, maladie, négligence de soins ou traitement inadapté,
+    l’indemnité est calculée comme pour une personne saine soumise à un traitement rationnel.
   </p>
 
-  <h6>Article 6 — Déclaration de sinistres</h6>
+  <!-- Article 6 -->
+  <h3>Article 6 — Déclaration de sinistres</h3>
   <p>
-    Déclaration dans les 5 jours (sauf cas fortuit/force majeure) à la Société/Agence (écrit ou verbal contre récépissé). L’assuré doit limiter les effets de l’accident et transmettre sous 10 jours les certificats médicaux et pièces probantes. Fausses déclarations : déchéance de garantie pour le sinistre.
+    Doit être faite dans les 5 jours (sauf cas de force majeure) à la Société ou à l’Agence (écrit ou verbal contre récépissé).
+    L’assuré doit minimiser les effets de l’accident et fournir, dans les 10 jours, certificats médicaux et pièces justificatives.
+    En cas de fausse déclaration : déchéance de la garantie pour le sinistre.
   </p>
 
-  <h6>Article 7 — Expertises</h6>
+  <!-- Article 7 -->
+  <h3>Article 7 — Expertises</h3>
   <p>
-    Causes de la mort, degré d’infirmité, durée d’incapacité : constatées d’un commun accord ou par deux médecins (un par partie). En cas de divergence, un troisième est désigné (ou par le Président du Tribunal compétent).
+    Le degré d’infirmité, la durée d’incapacité ou la cause du décès sont constatés d’un commun accord ou via deux médecins (un par partie).
+    En cas de désaccord, un troisième est désigné par les deux premiers ou par le Président du tribunal compétent.
   </p>
 
-  <h6>Article 8 — Règlement des indemnités</h6>
+  <!-- Article 8 -->
+  <h3>Article 8 — Règlement des indemnités</h3>
+  <ul>
+    <li><strong>Décès :</strong> paiement dans les 30 jours suivant la remise des pièces à la Société</li>
+    <li><strong>Infirmité permanente :</strong> indemnité calculée selon l’article 5</li>
+  </ul>
+
+  <!-- Article 9 -->
+  <h3>Article 9 — Prescription</h3>
   <p>
-    En cas de mort : paiement dans les 30 jours de la remise des pièces à la Société. En cas d’infirmité permanente : indemnité calculée selon l’article 5.
+    Toute action dérivant du contrat est prescrite par 2 ans (article 28 du code CIMA).
   </p>
 
-  <h6>Article 9 — Prescription</h6>
-  <p>
-    Toute action dérivant du contrat est prescrite par 2 ans (art. 28 du code CIMA).
-  </p>
 </div>
 {% endblock %}
