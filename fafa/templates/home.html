@@ -22,6 +22,7 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
+      flex-wrap: wrap;
     }
 
     .main-header .logo img {
@@ -32,6 +33,7 @@
       display: flex;
       align-items: center;
       gap: 20px;
+      flex-wrap: wrap;
     }
 
     .nav-links a {
@@ -138,6 +140,7 @@
       align-items: center;
       gap: 15px;
       margin-top: 40px;
+      flex-wrap: wrap;
     }
 
     .promo-icon {
@@ -153,6 +156,66 @@
       font-size: 2rem;
       color: #d32f2f;
       display: block;
+    }
+
+    /* SECTION POURQUOI FAFA */
+    .why-fafa {
+      background-color: #c8102e;
+      color: white;
+      padding: 60px 5%;
+    }
+
+    .why-fafa-container {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 40px;
+    }
+
+    .why-fafa-image {
+      flex: 1;
+      max-width: 48%;
+    }
+
+    .why-fafa-image img {
+      width: 100%;
+      height: auto;
+      border-radius: 8px;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+    }
+
+    .why-fafa-text {
+      flex: 1;
+      max-width: 48%;
+    }
+
+    .why-fafa-text h2 {
+      font-size: 2.2rem;
+      font-weight: bold;
+      margin-bottom: 20px;
+    }
+
+    .why-fafa-text p {
+      font-size: 1rem;
+      line-height: 1.6;
+      margin-bottom: 16px;
+    }
+
+    .btn-black {
+      display: inline-block;
+      margin-top: 20px;
+      padding: 12px 24px;
+      background-color: black;
+      color: white;
+      text-decoration: none;
+      border-radius: 6px;
+      font-weight: bold;
+      transition: background-color 0.3s ease;
+    }
+
+    .btn-black:hover {
+      background-color: #333;
     }
 
     /* FOOTER */
@@ -176,6 +239,16 @@
 
     /* RESPONSIVE */
     @media (max-width: 768px) {
+      .main-header {
+        flex-direction: column;
+        text-align: center;
+      }
+
+      .nav-links {
+        justify-content: center;
+        margin-top: 10px;
+      }
+
       .hero {
         flex-direction: column;
         text-align: center;
@@ -198,6 +271,33 @@
 
       .promo-text {
         text-align: center;
+      }
+
+      .why-fafa-container {
+        flex-direction: column;
+      }
+
+      .why-fafa-image, .why-fafa-text {
+        max-width: 100%;
+        padding: 0;
+      }
+
+      .why-fafa-image {
+        margin-bottom: 30px;
+      }
+
+      .why-fafa-text h2 {
+        text-align: center;
+      }
+
+      .why-fafa-text p {
+        text-align: justify;
+      }
+
+      .btn-black {
+        display: block;
+        width: fit-content;
+        margin: 20px auto 0;
       }
     }
   </style>
@@ -241,111 +341,22 @@
     </div>
   </section>
 
+  <!-- Section Pourquoi FAFA -->
   <section class="why-fafa">
-  <div class="why-fafa-container">
-    <div class="why-fafa-image">
-      <img src="{{ url_for('static', filename='famille-bois.jpg') }}" alt="Illustration famille FAFA">
+    <div class="why-fafa-container">
+      <div class="why-fafa-image">
+        <img src="{{ url_for('static', filename='famille-bois.jpg') }}" alt="Illustration famille FAFA">
+      </div>
+      <div class="why-fafa-text">
+        <h2>Pourquoi FAFA ?</h2>
+        <p>Le projet FAFA, fruit d'une collaboration entre la Banque Ouest Africaine de Développement (BOAD) et NSIA Assurances Togo, est une initiative de Responsabilité Sociale des Entreprises (RSE) axée sur l’innovation et les relations durables.</p>
+        <p>Conçu comme une micro-assurance solidaire, FAFA vise à protéger les plus vulnérables et à renforcer l’inclusion financière dans notre sous-région.</p>
+        <p>Dans un contexte où de nombreuses personnes à faibles revenus n'ont pas accès aux assurances traditionnelles, FAFA offre une solution accessible et responsable. Ce projet, dont le nom signifie « paix, sérénité », reflète notre engagement à combler le fossé en matière de protection sociale, renforçant ainsi la résilience économique et sociale des communautés.</p>
+        <p>En promouvant l’inclusion financière, FAFA contribue à améliorer les conditions de vie et à réduire la pauvreté, tout en renforçant la cohésion sociale et économique. Cette initiative s’inscrit parfaitement dans la politique RSE de la BOAD et de NSIA, témoignant d’une innovation continue et d’un engagement envers des relations durables avec nos parties prenantes.</p>
+        <a href="#" class="btn-black">EN SAVOIR PLUS</a>
+      </div>
     </div>
-    <div class="why-fafa-text">
-      <h2>Pourquoi FAFA ?</h2>
-      <p>Le projet FAFA, fruit d'une collaboration entre la Banque Ouest Africaine de Développement (BOAD) et NSIA Assurances Togo, est une initiative de Responsabilité Sociale des Entreprises (RSE) axée sur l’innovation et les relations durables.</p>
-      <p>Conçu comme une micro-assurance solidaire, FAFA vise à protéger les plus vulnérables et à renforcer l’inclusion financière dans notre sous-région.</p>
-      <p>Dans un contexte où de nombreuses personnes à faibles revenus n'ont pas accès aux assurances traditionnelles, FAFA offre une solution accessible et responsable. Ce projet, dont le nom signifie « paix, sérénité », reflète notre engagement à combler le fossé en matière de protection sociale, renforçant ainsi la résilience économique et sociale des communautés.</p>
-      <p>En promouvant l’inclusion financière, FAFA contribue à améliorer les conditions de vie et à réduire la pauvreté, tout en renforçant la cohésion sociale et économique. Cette initiative s’inscrit parfaitement dans la politique RSE de la BOAD et de NSIA, témoignant d’une innovation continue et d’un engagement envers des relations durables avec nos parties prenantes.</p>
-      <a href="#" class="btn-black">EN SAVOIR PLUS</a>
-    </div>
-  </div>
-</section>
-
-<style>
-  .why-fafa {
-    background-color: #c8102e; /* Rouge BOAD */
-    color: white;
-    padding: 60px 5%;
-  }
-
-  .why-fafa-container {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    flex-wrap: wrap;
-  }
-
-  .why-fafa-image {
-    flex: 1;
-    max-width: 48%;
-    padding-right: 20px;
-  }
-
-  .why-fafa-image img {
-    width: 100%;
-    height: auto;
-    border-radius: 8px;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
-  }
-
-  .why-fafa-text {
-    flex: 1;
-    max-width: 48%;
-  }
-
-  .why-fafa-text h2 {
-    font-size: 2rem;
-    font-weight: bold;
-    margin-bottom: 20px;
-  }
-
-  .why-fafa-text p {
-    font-size: 1rem;
-    line-height: 1.6;
-    margin-bottom: 16px;
-  }
-
-  .btn-black {
-    display: inline-block;
-    margin-top: 20px;
-    padding: 12px 24px;
-    background-color: black;
-    color: white;
-    text-decoration: none;
-    border-radius: 6px;
-    font-weight: bold;
-    transition: background-color 0.3s ease;
-  }
-
-  .btn-black:hover {
-    background-color: #333;
-  }
-
-  @media (max-width: 768px) {
-    .why-fafa-container {
-      flex-direction: column;
-    }
-
-    .why-fafa-image, .why-fafa-text {
-      max-width: 100%;
-      padding: 0;
-    }
-
-    .why-fafa-image {
-      margin-bottom: 30px;
-    }
-
-    .why-fafa-text h2 {
-      text-align: center;
-    }
-
-    .why-fafa-text p {
-      text-align: justify;
-    }
-
-    .btn-black {
-      display: block;
-      width: fit-content;
-      margin: 20px auto 0;
-    }
-  }
-</style>
+  </section>
 
   <!-- Footer -->
   <footer>
