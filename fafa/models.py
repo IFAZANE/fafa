@@ -23,11 +23,11 @@ class QuestionnaireFafa(db.Model):
     #periode_fin = db.Column(db.Date)
     #periodicite = db.Column(db.String(50))
     type_contrat = db.Column(db.Integer, nullable=False)  # 15000 ou 20000
-    #assure_nom = db.Column(db.String(100))
-    #assure_prenoms = db.Column(db.String(100))
-    #assure_tel = db.Column(db.String(20))
-    #assure_date_naissance = db.Column(db.Date)
-    #assure_adresse = db.Column(db.String(200))
+    assure_nom = db.Column(db.String(100))
+    assure_prenoms = db.Column(db.String(100))
+    assure_tel = db.Column(db.String(20))
+    assure_date_naissance = db.Column(db.Date)
+    assure_adresse = db.Column(db.String(200))
     beneficiaire_nom = db.Column(db.String(100))
     beneficiaire_prenoms = db.Column(db.String(100))
     beneficiaire_tel = db.Column(db.String(20))
@@ -140,6 +140,7 @@ class Subscription(db.Model):
     telephone = db.Column(db.String(15), unique=True)
     ville = db.Column(db.String(50))
     produit = db.Column(db.String(50), nullable=False)
+
 
 
 
