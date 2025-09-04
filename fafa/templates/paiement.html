@@ -1,55 +1,63 @@
 {% extends 'base.html' %}
+
+{% block title %}Paiement - Souscription{% endblock %}
+
 {% block content %}
-<div class="container mt-5">
-    <div class="row justify-content-center">
-        <div class="col-12 col-sm-10 col-md-6">
-            <div class="card shadow-sm">
-                <div class="card-header bg-primary text-white text-center">
-                    <h4 class="mb-0">Paiement de votre souscription</h4>
-                </div>
-                <div class="card-body">
-                    <p class="mb-4 text-center fs-5">
-                        Montant à payer : <strong>{{ montant }} XOF</strong>
-                    </p>
+<div class="container py-5">
+  <div class="row justify-content-center">
+    <div class="col-12 col-sm-10 col-md-8 col-lg-6">
 
-                    <form method="POST">
-                        <div class="mb-3">
-                            <label for="phone" class="form-label">Numéro de téléphone</label>
-                            <input
-                              type="tel"
-                              name="phone"
-                              id="phone"
-                              class="form-control"
-                              placeholder="Ex: +22890000000"
-                              required
-                              pattern="\+228\d{8}"
-                              title="Entrez un numéro au format +228XXXXXXXX"
-                            />
-
-                        </div>
-
-                        <div class="d-grid mt-4">
-                            <button type="submit" class="btn btn-success btn-lg shadow-sm w-100">
-                                Payer
-                            </button>
-                        </div>
-                    </form>
-
-                    {% with messages = get_flashed_messages(with_categories=true) %}
-                        {% if messages %}
-                            <div class="mt-4">
-                                {% for category, message in messages %}
-                                    <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
-                                        {{ message }}
-                                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                                    </div>
-                                {% endfor %}
-                            </div>
-                        {% endif %}
-                    {% endwith %}
-                </div>
-            </div>
+      <div class="card shadow-lg border-0 rounded-4">
+        <div class="card-header bg-dark text-white text-center rounded-top-4">
+          <h4 class="mb-0 py-2">Paiement de votre souscription</h4>
         </div>
+
+        <div class="card-body p-4">
+
+          <div class="text-center mb-4">
+            <p class="fs-5 mb-1">Montant à régler :</p>
+            <span class="fw-bold fs-4 text-success">{{ montant }} XOF</span>
+          </div>
+
+          <form method="POST" novalidate>
+            <div class="mb-3">
+              <label for="phone" class="form-label">Numéro de téléphone <span class="text-danger">*</span></label>
+              <input
+                type="tel"
+                name="phone"
+                id="phone"
+                class="form-control"
+                placeholder="+22890000000"
+                pattern="\+228\d{8}"
+                required
+                title="Entrez un numéro au format +228XXXXXXXX"
+              >
+            </div>
+
+            <div class="d-grid">
+              <button type="submit" class="btn btn-primary btn-lg">
+                Procéder au paiement
+              </button>
+            </div>
+          </form>
+
+          {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+              <div class="mt-4">
+                {% for category, message in messages %}
+                  <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
+                    {{ message }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Fermer"></button>
+                  </div>
+                {% endfor %}
+              </div>
+            {% endif %}
+          {% endwith %}
+          
+        </div>
+      </div>
+
     </div>
+  </div>
 </div>
 {% endblock %}
