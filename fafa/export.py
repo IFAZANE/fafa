@@ -7,12 +7,22 @@ from io import BytesIO
 
 
 # Export CSV
-def export_csv():
-    questionnaires = QuestionnaireFafa.query.all()
-    si = StringIO()
-    cw = csv.writer(si)
+from flask import Response, session, redirect, url_for
+from models import QuestionnaireFafa
+import csv
+from io import StringIO
 
-    cw.writerow([
+def export_csv():
+    if not session.get('admin'):
+        return redirect(url_for('admin.login'))
+
+    questionnaires = QuestionnaireFafa.query.all()
+
+    si = StringIO(newline='')
+    writer = csv.writer(si)
+
+    # Écrire les en-têtes
+    writer.writerow([
         'ID',
         'Souscripteur - Nom', 'Souscripteur - Prénoms', 'Souscripteur - Tel', 'Souscripteur - Naissance', 'Souscripteur - Adresse',
         'Assuré - Nom', 'Assuré - Prénoms', 'Assuré - Tel', 'Assuré - Naissance', 'Assuré - Adresse',
@@ -21,7 +31,7 @@ def export_csv():
     ])
 
     for q in questionnaires:
-        cw.writerow([
+        writer.writerow([
             q.id,
             q.souscripteur_nom, q.souscripteur_prenoms, q.souscripteur_tel, q.souscripteur_date_naissance, q.souscripteur_adresse,
             q.assure_nom, q.assure_prenoms, q.assure_tel, q.assure_date_naissance, q.assure_adresse,
@@ -33,7 +43,7 @@ def export_csv():
             q.type_contrat
         ])
 
-    output = si.getvalue()
+    output = si.getvalue().encode('utf-8')  # UTF-8 pour compatibilité avec Excel
     return Response(
         output,
         mimetype="text/csv",
@@ -41,13 +51,21 @@ def export_csv():
     )
 
 
-# Export Excel
+from flask import send_file, session, redirect, url_for
+from models import QuestionnaireFafa
+from openpyxl import Workbook
+from io import BytesIO
+
 def export_excel():
+    if not session.get('admin'):
+        return redirect(url_for('admin.login'))
+
     questionnaires = QuestionnaireFafa.query.all()
     wb = Workbook()
     ws = wb.active
     ws.title = "Questionnaires"
 
+    # Entêtes
     ws.append([
         'ID',
         'Souscripteur - Nom', 'Souscripteur - Prénoms', 'Souscripteur - Tel', 'Souscripteur - Naissance', 'Souscripteur - Adresse',
@@ -69,12 +87,14 @@ def export_excel():
             q.type_contrat
         ])
 
-    bio = BytesIO()
-    wb.save(bio)
-    bio.seek(0)
+    output = BytesIO()
+    wb.save(output)
+    output.seek(0)
 
-    return Response(
-        bio.getvalue(),
-        mimetype="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-        headers={"Content-Disposition": "attachment; filename=questionnaires.xlsx"}
+    return send_file(
+        output,
+        as_attachment=True,
+        download_name='questionnaires.xlsx',
+        mimetype='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
     )
+
