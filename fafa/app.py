@@ -16,6 +16,10 @@ from weasyprint import HTML
 import json
 import re
 
+from admin import admin_bp
+app.register_blueprint(admin_bp)
+
+
 # -----------------------------
 # 1️⃣ Création de l'application
 # -----------------------------
@@ -434,5 +438,6 @@ def conditions():
 # -----------------------------
 if __name__ == '__main__':
     app.run(debug=True)
+
 
 
