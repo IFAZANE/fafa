@@ -150,76 +150,48 @@ def questionnaire_step1():
 @app.route('/step2', methods=['GET', 'POST'])
 def questionnaire_step2():
     form = Etape2Form()
+
     if form.validate_on_submit():
-        # On stocke uniquement les champs bénéficiaire et souscripteur
-        for field_name in [
-            "beneficiaire_nom", "beneficiaire_prenoms", "beneficiaire_tel",
-            "beneficiaire_profession", "beneficiaire_adresse",
-            "souscripteur_nom", "souscripteur_prenoms", "souscripteur_tel",
-            "souscripteur_date_naissance", "souscripteur_adresse", "type_contrat"  
-        ]:
-            session[field_name] = getattr(form, field_name).data
-        flash("Étape 2 enregistrée !", "success")
+        session['profession'] = form.profession.data
+        session['est_droitier'] = form.est_droitier.data
+        session['est_gaucher'] = form.est_gaucher.data
+
+        session['beneficiaire'] = {
+            'nom': form.beneficiaire_nom.data,
+            'prenoms': form.beneficiaire_prenoms.data,
+            'tel': form.beneficiaire_tel.data,
+            'mail': form.beneficiaire_mail.data,
+            'adresse': form.beneficiaire_adresse.data
+        }
+
+        session['conditions_acceptees'] = form.conditions_acceptees.data
+        session['type_contrat'] = form.choix_fafa.data  # '15000' ou '20000'
+
+        flash("Étape 2 enregistrée avec succès !", "success")
         return redirect(url_for('questionnaire_step3'))
 
     # Préremplissage si retour sur la page
-    for field_name in form._fields.keys():
-        if field_name in session:
-            value = session[field_name]
-            if 'date' in field_name:
-                value = parse_date(value)
-            form._fields[field_name].data = value
+    if 'profession' in session:
+        form.profession.data = session.get('profession')
+        form.est_droitier.data = session.get('est_droitier', False)
+        form.est_gaucher.data = session.get('est_gaucher', False)
+
+    if 'beneficiaire' in session:
+        b = session['beneficiaire']
+        form.beneficiaire_nom.data = b.get('nom')
+        form.beneficiaire_prenoms.data = b.get('prenoms')
+        form.beneficiaire_tel.data = b.get('tel')
+        form.beneficiaire_mail.data = b.get('mail')
+        form.beneficiaire_adresse.data = b.get('adresse')
+
+    if 'conditions_acceptees' in session:
+        form.conditions_acceptees.data = session['conditions_acceptees']
+
+    if 'type_contrat' in session:
+        form.choix_fafa.data = session['type_contrat']
 
     return render_template('step2.html', form=form)
 
-
-@app.route('/step3', methods=['GET', 'POST'])
-def questionnaire_step3():
-    form = Etape3Form()
-    if form.validate_on_submit():
-        session['ack_conditions'] = form.ack_conditions.data
-        session['lieu_signature'] = form.lieu_signature.data
-        session['date_signature'] = (
-            form.date_signature.data.strftime('%Y-%m-%d')
-            if form.date_signature.data
-            else datetime.utcnow().strftime('%Y-%m-%d')
-        )
-
-        # Création en base
-        questionnaire = QuestionnaireFafa(
-            #duree_contrat=session.get('duree_contrat'),
-            #periode_debut=parse_date(session.get('periode_debut')),
-            #periode_fin=parse_date(session.get('periode_fin')),
-            #periodicite=session.get('periodicite'),
-            type_contrat=session.get('type_contrat'),
-            beneficiaire_nom=session.get('beneficiaire_nom'),
-            beneficiaire_prenoms=session.get('beneficiaire_prenoms'),
-            beneficiaire_tel=session.get('beneficiaire_tel'),
-            beneficiaire_profession=session.get('beneficiaire_profession'),
-            beneficiaire_adresse=session.get('beneficiaire_adresse'),
-            souscripteur_nom=session.get('souscripteur_nom'),
-            souscripteur_prenoms=session.get('souscripteur_prenoms'),
-            souscripteur_tel=session.get('souscripteur_tel'),
-            souscripteur_date_naissance=parse_date(session.get('souscripteur_date_naissance')),
-            souscripteur_adresse=session.get('souscripteur_adresse'),
-            ack_conditions=session.get('ack_conditions'),
-            lieu_signature=session.get('lieu_signature'),
-            date_signature=parse_date(session.get('date_signature'))
-        )
-        db.session.add(questionnaire)
-        db.session.commit()
-        session['questionnaire_id'] = questionnaire.id
-
-        flash("Étape 3 enregistrée ! Vous allez être redirigé vers le paiement.", "success")
-        return redirect(url_for('paiement'))
-
-    # Préremplissage
-    if session.get('lieu_signature'):
-        form.ack_conditions.data = session.get('ack_conditions', False)
-        form.lieu_signature.data = session.get('lieu_signature')
-        form.date_signature.data = parse_date(session.get('date_signature'))
-
-    return render_template('step3.html', form=form)
 # -----------------------------
 # 7️⃣ Route paiement et insertion
 # -----------------------------
@@ -422,6 +394,7 @@ def conditions():
 # -----------------------------
 if __name__ == '__main__':
     app.run(debug=True)
+
 
 
 
