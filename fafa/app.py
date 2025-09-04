@@ -16,8 +16,7 @@ from weasyprint import HTML
 import json
 import re
 
-from admin import admin_bp
-app.register_blueprint(admin_bp)
+
 
 
 # -----------------------------
@@ -392,6 +391,7 @@ def confirmation_paiement(transaction_id):
     
 
 
+#app.register_blueprint(admin_bp)
 
 
 # -----------------------------
@@ -438,6 +438,7 @@ def conditions():
 # -----------------------------
 if __name__ == '__main__':
     app.run(debug=True)
+
 
 
 
