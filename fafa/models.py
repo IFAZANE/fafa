@@ -23,12 +23,8 @@ db = SQLAlchemy()
 
 class QuestionnaireFafa(db.Model):
     __tablename__ = 'questionnaire_fafa'
-    
+
     id = db.Column(db.Integer, primary_key=True)
-    #duree_contrat = db.Column(db.String(50))
-    #periode_debut = db.Column(db.Date)
-    #periode_fin = db.Column(db.Date)
-    #periodicite = db.Column(db.String(50))
     type_contrat = db.Column(db.Integer, nullable=False)  # 15000 ou 20000
     assure_nom = db.Column(db.String(100))
     assure_prenoms = db.Column(db.String(100))
@@ -44,25 +40,15 @@ class QuestionnaireFafa(db.Model):
     lieu_signature = db.Column(db.String(100))
     date_signature = db.Column(db.Date)
     
-    profession = StringField('Profession', validators=[DataRequired()])
-    est_droitier = BooleanField('Droitier')
-    est_gaucher = BooleanField('Gaucher')
+    profession = db.Column(db.String(100), nullable=False)
+    est_droitier = db.Column(db.Boolean)
+    est_gaucher = db.Column(db.Boolean)
 
-    beneficiaire_nom = StringField('Nom', validators=[DataRequired()])
-    beneficiaire_prenoms = StringField('Prénoms', validators=[DataRequired()])
-    beneficiaire_tel = StringField('Téléphone', validators=[
-        DataRequired(),
-        Regexp(r'^\+?\d{8,15}$', message="Numéro de téléphone invalide")
-    ])
-    beneficiaire_mail = EmailField('Mail', validators=[DataRequired(), Email()])
-    beneficiaire_adresse = StringField('Adresse', validators=[DataRequired()])
-
-    conditions_acceptees = BooleanField("J'accepte les conditions", validators=[DataRequired()])
-    choix_fafa = RadioField('Option FAFA', choices=[
-        ('15000', 'FAFA 1 (15 000 FCFA)'),
-        ('20000', 'FAFA 2 (20 000 FCFA)')
-    ], validators=[DataRequired()])
-
+    beneficiaire_nom = db.Column(db.String(100), nullable=False)
+    beneficiaire_prenoms = db.Column(db.String(100), nullable=False)
+    beneficiaire_tel = db.Column(db.String(20), nullable=False)
+    beneficiaire_mail = db.Column(db.String(120), nullable=False)
+    beneficiaire_adresse = db.Column(db.String(200), nullable=False)
 
 
 
@@ -161,6 +147,7 @@ class Subscription(db.Model):
     telephone = db.Column(db.String(15), unique=True)
     ville = db.Column(db.String(50))
     produit = db.Column(db.String(50), nullable=False)
+
 
 
 
