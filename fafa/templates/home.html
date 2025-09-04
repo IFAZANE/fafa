@@ -300,6 +300,103 @@
         margin: 20px auto 0;
       }
     }
+
+
+    .guarantees-section {
+  background-color: #f5f5f5;
+  padding: 60px 5%;
+  text-align: center;
+  font-family: 'Poppins', sans-serif;
+}
+
+.guarantees-section h2 {
+  font-size: 2.2rem;
+  font-weight: bold;
+  margin-bottom: 20px;
+}
+
+.guarantees-description {
+  max-width: 800px;
+  margin: 0 auto 50px auto;
+  font-size: 1rem;
+  line-height: 1.6;
+  color: #333;
+}
+
+.guarantee-cards {
+  display: flex;
+  justify-content: center;
+  gap: 30px;
+  flex-wrap: wrap;
+  margin-bottom: 40px;
+}
+
+.guarantee-card {
+  background-color: white;
+  border-radius: 16px;
+  padding: 30px 20px;
+  width: 260px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+  transition: transform 0.3s ease;
+}
+
+.guarantee-card:hover {
+  transform: translateY(-5px);
+}
+
+.guarantee-card img {
+  height: 100px;
+  margin-bottom: 20px;
+}
+
+.guarantee-card h3 {
+  font-size: 1rem;
+  font-weight: bold;
+  margin-bottom: 10px;
+  color: #000;
+}
+
+.chevron {
+  font-size: 1.5rem;
+  color: #000;
+}
+
+.guarantees-button {
+  text-align: center;
+}
+
+.btn-red {
+  background-color: #c8102e;
+  color: white;
+  padding: 14px 36px;
+  font-weight: bold;
+  text-decoration: none;
+  border-radius: 6px;
+  font-size: 1rem;
+  transition: background-color 0.3s ease;
+}
+
+.btn-red:hover {
+  background-color: #a10d24;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .guarantees-description {
+    font-size: 0.95rem;
+    padding: 0 10px;
+  }
+
+  .guarantee-card {
+    width: 90%;
+  }
+
+  .guarantee-cards {
+    flex-direction: column;
+    align-items: center;
+  }
+}
+
   </style>
 </head>
 
@@ -357,6 +454,44 @@
       </div>
     </div>
   </section>
+
+  <section class="guarantees-section">
+  <div class="guarantees-container">
+    <h2>Quelles sont les garanties ?</h2>
+    <p class="guarantees-description">
+      Les garanties proposées dans notre offre incluent une couverture complète pour divers besoins. « L’individuelle accident » offre une protection en cas d’accidents imprévus, assurant que vous receviez les soins nécessaires sans souci financier. « L’hospitalisation » prend en charge les frais liés aux séjours hospitaliers, vous permettant de vous concentrer sur votre rétablissement. Enfin, « Le décès toutes causes » garantit un soutien pour vos proches en cas de disparition, couvrant les dépenses funéraires et apportant une aide précieuse en ces moments difficiles.<br>
+      Nos options vous assurent une tranquillité d’esprit face aux aléas de la vie.
+    </p>
+
+    <div class="guarantee-cards">
+      <!-- Individuelle Accident -->
+      <div class="guarantee-card">
+        <img src="{{ url_for('static', filename='accident.png') }}" alt="Individuelle accident">
+        <h3>L’INDIVIDUELLE ACCIDENT</h3>
+        <span class="chevron">&#x25BC;</span>
+      </div>
+
+      <!-- Hospitalisation -->
+      <div class="guarantee-card">
+        <img src="{{ url_for('static', filename='hospitalisation.png') }}" alt="Hospitalisation">
+        <h3>L’HOSPITALISATION</h3>
+        <span class="chevron">&#x25BC;</span>
+      </div>
+
+      <!-- Décès toutes causes -->
+      <div class="guarantee-card">
+        <img src="{{ url_for('static', filename='deces.png') }}" alt="Décès toutes causes">
+        <h3>LE DÉCÈS TOUTES CAUSES</h3>
+        <span class="chevron">&#x25BC;</span>
+      </div>
+    </div>
+
+    <div class="guarantees-button">
+      <a href="#" class="btn-red">VOIR PLUS</a>
+    </div>
+  </div>
+</section>
+
 
   <!-- Footer -->
   <footer>
