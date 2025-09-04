@@ -18,7 +18,7 @@
     .form-group { display: flex; gap: 10px; margin-bottom: 15px; }
     .form-group.full-width { flex-direction: column; }
     label { font-size: 14px; margin-bottom: 5px; }
-    input[type="text"], input[type="email"] {
+    input[type="text"], input[type="email"], select {
       padding: 10px;
       font-size: 14px;
       border: 1px solid #ccc;
@@ -79,14 +79,14 @@
 <div class="container">
   <!-- Section gauche -->
   <div class="left-section">
-    <form method="POST">
+    <form method="POST" action="{{ url_for('questionnaire_step2') }}">
       {{ form.hidden_tag() }}
 
       <h2>Étape 2 — Déclarations</h2>
 
       <div class="form-group full-width">
-        <label>{{ form.profession.label }}</label>
-        {{ form.profession() }}
+        <label for="{{ form.profession.id }}">{{ form.profession.label.text }}</label>
+        {{ form.profession(class="form-control") }}
       </div>
 
       <div class="checkbox-group">
@@ -98,29 +98,29 @@
 
       <div class="form-group">
         <div style="flex:1;">
-          <label>{{ form.beneficiaire_nom.label }}</label>
-          {{ form.beneficiaire_nom() }}
+          <label for="{{ form.beneficiaire_nom.id }}">{{ form.beneficiaire_nom.label.text }}</label>
+          {{ form.beneficiaire_nom(class="form-control") }}
         </div>
         <div style="flex:1;">
-          <label>{{ form.beneficiaire_prenoms.label }}</label>
-          {{ form.beneficiaire_prenoms() }}
+          <label for="{{ form.beneficiaire_prenoms.id }}">{{ form.beneficiaire_prenoms.label.text }}</label>
+          {{ form.beneficiaire_prenoms(class="form-control") }}
         </div>
       </div>
 
       <div class="form-group">
         <div style="flex:1;">
-          <label>{{ form.beneficiaire_tel.label }}</label>
-          {{ form.beneficiaire_tel(placeholder="+228") }}
+          <label for="{{ form.beneficiaire_tel.id }}">{{ form.beneficiaire_tel.label.text }}</label>
+          {{ form.beneficiaire_tel(class="form-control", placeholder="+228") }}
         </div>
         <div style="flex:1;">
-          <label>{{ form.beneficiaire_mail.label }}</label>
-          {{ form.beneficiaire_mail() }}
+          <label for="{{ form.beneficiaire_mail.id }}">{{ form.beneficiaire_mail.label.text }}</label>
+          {{ form.beneficiaire_mail(class="form-control") }}
         </div>
       </div>
 
       <div class="form-group full-width">
-        <label>{{ form.beneficiaire_adresse.label }}</label>
-        {{ form.beneficiaire_adresse() }}
+        <label for="{{ form.beneficiaire_adresse.id }}">{{ form.beneficiaire_adresse.label.text }}</label>
+        {{ form.beneficiaire_adresse(class="form-control") }}
       </div>
 
       <div class="checkbox-group">
