@@ -38,10 +38,9 @@ db.init_app(app)
 with app.app_context():
     db.create_all()
 
-# -----------------------------
-# 3️⃣ Blueprints
-# -----------------------------
-#app.register_blueprint(admin_bp)
+
+
+app.register_blueprint(admin_bp)
 
 # -----------------------------
 # 4️⃣ Fonctions utilitaires
@@ -438,6 +437,7 @@ def conditions():
 # -----------------------------
 if __name__ == '__main__':
     app.run(debug=True)
+
 
 
 
