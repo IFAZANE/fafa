@@ -1,217 +1,72 @@
-<!DOCTYPE html>
-<html lang="fr">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Guide de l’assuré - FAFA</title>
-  <link rel="stylesheet" href="style.css" />
-  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
-    
-   <style>
-       /* Import de la police */
-body {
-  font-family: 'Montserrat', sans-serif;
-  margin: 0;
-  padding: 0;
-  color: #1e1e1e;
-  background-color: #f9f9f9;
-}
+{% extends "base.html" %}
 
-header {
-  background-color: #fff;
-  padding: 20px 40px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  border-bottom: 3px solid #e5e5e5;
-}
+{% block title %}Guide de l’assuré - FAFA{% endblock %}
 
-.logo {
-  font-size: 24px;
-  font-weight: bold;
-  color: #174EA6;
-}
+{% block content %}
+<section class="py-5 text-center bg-light">
+  <div class="container">
+    <h1 class="mb-3 text-primary">GUIDE DE L’ASSURÉ</h1>
+    <p class="lead">Bienvenue dans le guide de l’assuré du projet FAFA, votre référence pour comprendre vos droits et obligations en tant qu'assuré.</p>
 
-nav a {
-  margin-left: 20px;
-  text-decoration: none;
-  color: #333;
-  font-weight: 500;
-}
-
-nav .btn {
-  background-color: #e63946;
-  color: #fff;
-  padding: 6px 12px;
-  border-radius: 4px;
-}
-
-.hero {
-  text-align: center;
-  padding: 50px 20px;
-  background-color: #e1ecf7;
-}
-
-.hero h1 {
-  font-size: 36px;
-  color: #003366;
-  margin-bottom: 10px;
-}
-
-.hero p {
-  max-width: 700px;
-  margin: 0 auto 30px;
-  font-size: 16px;
-}
-
-.info-box {
-  background-color: #fff;
-  padding: 30px;
-  margin: 0 auto;
-  max-width: 700px;
-  border-radius: 10px;
-  box-shadow: 0 0 10px rgba(0,0,0,0.05);
-  text-align: left;
-}
-
-.engagement {
-  display: flex;
-  flex-wrap: wrap;
-  background-color: #fff;
-  padding: 60px 40px;
-  align-items: center;
-  justify-content: space-between;
-}
-
-.engagement-text {
-  flex: 1;
-  min-width: 300px;
-  padding-right: 20px;
-}
-
-.engagement-text h2 {
-  color: #003366;
-  margin-bottom: 15px;
-}
-
-.engagement-image img {
-  max-width: 100%;
-  height: auto;
-  border-radius: 10px;
-  flex: 1;
-  min-width: 300px;
-}
-
-.procedures {
-  background-color: #f1f1f1;
-  padding: 60px 20px;
-  text-align: center;
-}
-
-.procedures h2 {
-  font-size: 28px;
-  color: #003366;
-  margin-bottom: 40px;
-}
-
-.steps {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: space-around;
-  gap: 40px;
-}
-
-.step {
-  background-color: #fff;
-  padding: 25px;
-  border-radius: 10px;
-  max-width: 300px;
-  box-shadow: 0 0 10px rgba(0,0,0,0.05);
-  text-align: left;
-}
-
-.step h3 {
-  color: #e58e26;
-  margin-bottom: 15px;
-}
-
-.step ol {
-  padding-left: 20px;
-}
-
-.step ol li {
-  margin-bottom: 10px;
-}
-
-   </style>
-
-    
-</head>
-<body>
-  <header>
-    <div class="logo">FAFA</div>
-    <nav>
-      <a href="#">Inscription</a>
-      <a href="#">Guideline</a>
-      <a href="#">Online</a>
-      <a href="#" class="btn">Connexion</a>
-    </nav>
-  </header>
-
-  <section class="hero">
-    <h1>GUIDE DE L’ASSURE</h1>
-    <p>Bienvenue dans le guide de l’assuré du projet FAFA, votre référence pour comprendre vos droits et obligations en tant qu'assuré.</p>
-
-    <div class="info-box">
-      <h3>Admissibilité et Inscription</h3>
+    <div class="bg-white shadow p-4 rounded mt-4 text-start">
+      <h4>Admissibilité et Inscription</h4>
       <p>Les individus doivent satisfaire aux critères définis par le programme FAFA. L'inscription est obligatoire via les canaux officiels.</p>
 
-      <h3>Service Client et Assistance</h3>
+      <h4>Service Client et Assistance</h4>
       <p>Un service client est à disposition pour toute question ou assistance, disponible par téléphone ou via notre site web.</p>
     </div>
-  </section>
+  </div>
+</section>
 
-  <section class="engagement">
-    <div class="engagement-text">
-      <h2>Engagement et Responsabilité</h2>
-      <p>
-        En tant que bénéficiaire du FAFA, vous acceptez de respecter les règles et de fournir des informations exactes. Vous devez également informer immédiatement toute modification de votre statut.
-      </p>
-      <p>
-        La fraude, l'omission d'information ou l'utilisation abusive du système peut entraîner la suspension ou l'annulation de votre couverture. 
-      </p>
+<section class="py-5">
+  <div class="container">
+    <div class="row align-items-center gy-4">
+      <div class="col-lg-6">
+        <h2 class="text-primary mb-3">Engagement et Responsabilité</h2>
+        <p>En tant que bénéficiaire du FAFA, vous acceptez de respecter les règles et de fournir des informations exactes. Vous devez également informer immédiatement toute modification de votre statut.</p>
+        <p>La fraude, l'omission d'information ou l'utilisation abusive du système peut entraîner la suspension ou l'annulation de votre couverture.</p>
+      </div>
+      <div class="col-lg-6 text-center">
+        <img src="https://img.freepik.com/photos-gratuite/agent-livrant-des-documents-patient-se-trouvant-pret-ambulance_23-2151107551.jpg?w=826&t=st=1693811518~exp=1693812118~hmac=475f1610f2a4f8785581b377c6eaa30ec1ed1455826cf6db59fcb730c1db9e84"
+             alt="Agent remettant un document"
+             class="img-fluid rounded shadow-sm" />
+      </div>
     </div>
-    <div class="engagement-image">
-      <img src="https://img.freepik.com/photos-gratuite/agent-livrant-des-documents-patient-se-trouvant-pret-ambulance_23-2151107551.jpg?w=826&t=st=1693811518~exp=1693812118~hmac=475f1610f2a4f8785581b377c6eaa30ec1ed1455826cf6db59fcb730c1db9e84" alt="Agent remettant un document">
-    </div>
-  </section>
+  </div>
+</section>
 
-  <section class="procedures">
-    <h2>QUE FAIRE EN CAS DE SINISTRES ?</h2>
-    
-    <div class="steps">
-      <div class="step">
-        <h3>1 - En cas d'accident</h3>
-        <ol>
-          <li>Informer l’assureur sous 48h</li>
-          <li>Remplir le formulaire de déclaration</li>
-          <li>Fournir les pièces justificatives</li>
-        </ol>
+<section class="py-5 bg-light">
+  <div class="container text-center">
+    <h2 class="mb-4 text-primary">QUE FAIRE EN CAS DE SINISTRES ?</h2>
+    <div class="row gy-4 justify-content-center">
+      <div class="col-md-4">
+        <div class="bg-white p-4 rounded shadow h-100 text-start">
+          <h5 class="text-warning mb-3">1 - En cas d'accident</h5>
+          <ol>
+            <li>Informer l’assureur sous 48h</li>
+            <li>Remplir le formulaire de déclaration</li>
+            <li>Fournir les pièces justificatives</li>
+          </ol>
+        </div>
       </div>
-      <div class="step">
-        <h3>2 - En cas d’hospitalisation</h3>
-        <ol>
-          <li>Contacter le centre d’appel</li>
-          <li>Obtenir une autorisation préalable</li>
-        </ol>
+      <div class="col-md-4">
+        <div class="bg-white p-4 rounded shadow h-100 text-start">
+          <h5 class="text-warning mb-3">2 - En cas d’hospitalisation</h5>
+          <ol>
+            <li>Contacter le centre d’appel</li>
+            <li>Obtenir une autorisation préalable</li>
+          </ol>
+        </div>
       </div>
-      <div class="step">
-        <h3>3 - En cas de décès</h3>
-        <ol>
-          <li>Transmettre l’acte de décès</li>
-        </ol>
+      <div class="col-md-4">
+        <div class="bg-white p-4 rounded shadow h-100 text-start">
+          <h5 class="text-warning mb-3">3 - En cas de décès</h5>
+          <ol>
+            <li>Transmettre l’acte de décès</li>
+          </ol>
+        </div>
       </div>
     </div>
-  </section>
-</body>
-</html>
+  </div>
+</section>
+{% endblock %}
