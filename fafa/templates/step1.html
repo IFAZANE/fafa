@@ -118,6 +118,35 @@
       content: '➔';
       margin-left: 10px;
     }
+
+       /* Nouveau style pour les boutons "Précédent" et "Suivant" */
+    .form-buttons {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 25px;
+    }
+    .btn-prev, .btn-next {
+      background-color: black;
+      color: white;
+      padding: 10px 20px;
+      border-radius: 20px;
+      border: none;
+      cursor: pointer;
+      font-weight: bold;
+      display: flex;
+      align-items: center;
+      width: fit-content;
+    }
+    .btn-prev::before {
+      content: '←';
+      margin-right: 10px;
+      font-weight: bold;
+    }
+    .btn-next::after {
+      content: '➔';
+      margin-left: 10px;
+      font-weight: bold;
+    }
   </style>
 </head>
 <body>
