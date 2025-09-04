@@ -6,6 +6,59 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+  <style>
+    .navbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 10px 20px;
+      background-color: white;
+      border-bottom: 2px solid #f1f1f1;
+    }
+
+    .navbar-left {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+    }
+
+    .navbar-left .logo {
+      height: 40px;
+    }
+
+    .navbar-left h1 {
+      font-size: 20px;
+      margin: 0;
+      color: #003366;
+    }
+
+    .navbar-right a {
+      text-decoration: none;
+      color: white;
+      background-color: #003366;
+      padding: 8px 16px;
+      border-radius: 5px;
+      font-weight: bold;
+      transition: background-color 0.3s ease;
+    }
+
+    .navbar-right a:hover {
+      background-color: #0055a5;
+    }
+
+    .flash-messages {
+      margin: 10px;
+    }
+
+    .flash {
+      padding: 10px;
+      margin-bottom: 10px;
+      border-radius: 4px;
+    }
+
+    .flash.success { background-color: #d4edda; color: #155724; }
+    .flash.error { background-color: #f8d7da; color: #721c24; }
+  </style>
 </head>
 <body>
 
@@ -19,9 +72,15 @@
     {% endif %}
   {% endwith %}
 
-  <header class="site-header">
-    <img src="{{ url_for('static', filename='logo_FAFA.png') }}" alt="FAFA Logo" class="logo">
-    <h1>Souscris à FAFA !</h1>
+  <!-- Barre de navigation -->
+  <header class="navbar">
+    <div class="navbar-left">
+      <img src="{{ url_for('static', filename='logo_FAFA.png') }}" alt="FAFA Logo" class="logo">
+      <h1>Souscris à FAFA !</h1>
+    </div>
+    <div class="navbar-right">
+      <a href="{{ url_for('accueil') }}">Accueil</a>
+    </div>
   </header>
 
   <main>
