@@ -110,7 +110,7 @@ def export_csv():
 @admin_bp.route('/export/excel')
 def export_excel():
     if not session.get('admin'):
-        return redirect(url_for('login'))
+        return redirect(url_for('admin.login'))
 
     data = QuestionnaireFafa.query.all()
     rows = []
@@ -154,6 +154,7 @@ def export_excel():
         download_name='souscriptions.xlsx',
         as_attachment=True
     )
+
 
 
 
