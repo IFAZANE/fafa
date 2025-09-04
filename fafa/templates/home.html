@@ -663,21 +663,39 @@
   </section>
 
   <!-- Section Pourquoi FAFA -->
-  <section class="why-fafa">
-    <div class="why-fafa-container">
-      <div class="why-fafa-image">
-        <img src="{{ url_for('static', filename='femme-souriante3.png') }}" alt="Illustration famille FAFA">
-      </div>
-      <div class="why-fafa-text">
-        <h2>Pourquoi FAFA ?</h2>
-        <p>Le projet FAFA, fruit d'une collaboration entre la Banque Ouest Africaine de Développement (BOAD) et NSIA Assurances Togo, est une initiative de Responsabilité Sociale des Entreprises (RSE) axée sur l’innovation et les relations durables.</p>
-        <p>Conçu comme une micro-assurance solidaire, FAFA vise à protéger les plus vulnérables et à renforcer l’inclusion financière dans notre sous-région.</p>
-        <p>Dans un contexte où de nombreuses personnes à faibles revenus n'ont pas accès aux assurances traditionnelles, FAFA offre une solution accessible et responsable. Ce projet, dont le nom signifie « paix, sérénité », reflète notre engagement à combler le fossé en matière de protection sociale, renforçant ainsi la résilience économique et sociale des communautés.</p>
-        <p>En promouvant l’inclusion financière, FAFA contribue à améliorer les conditions de vie et à réduire la pauvreté, tout en renforçant la cohésion sociale et économique. Cette initiative s’inscrit parfaitement dans la politique RSE de la BOAD et de NSIA, témoignant d’une innovation continue et d’un engagement envers des relations durables avec nos parties prenantes.</p>
-        <a href="#" class="btn-black">EN SAVOIR PLUS</a>
-      </div>
+ <section style="padding: 40px 20px; background-color: #f9f9f9;">
+  <div style="display: flex; flex-wrap: wrap; align-items: flex-start; gap: 30px; max-width: 1200px; margin: 0 auto;">
+    
+    <!-- Image -->
+    <div style="flex: 1 1 350px; max-width: 450px;">
+      <img src="{{ url_for('static', filename='femme-souriante3.png') }}"
+           alt="Illustration famille FAFA"
+           style="width: 100%; height: auto; border-radius: 10px; display: block; object-fit: cover;">
     </div>
-  </section>
+
+    <!-- Texte -->
+    <div style="flex: 2 1 500px; text-align: justify;">
+      <h2 style="font-size: 28px; color: #00205B; margin-bottom: 20px;">Pourquoi FAFA ?</h2>
+
+      <p style="margin-bottom: 15px;">
+        Le projet FAFA, fruit d'une collaboration entre la Banque Ouest Africaine de Développement (BOAD) et NSIA Assurances Togo, est une initiative de Responsabilité Sociale des Entreprises (RSE) axée sur l’innovation et les relations durables.
+      </p>
+      <p style="margin-bottom: 15px;">
+        Conçu comme une micro-assurance solidaire, FAFA vise à protéger les plus vulnérables et à renforcer l’inclusion financière dans notre sous-région.
+      </p>
+      <p style="margin-bottom: 15px;">
+        Dans un contexte où de nombreuses personnes à faibles revenus n'ont pas accès aux assurances traditionnelles, FAFA offre une solution accessible et responsable. Ce projet, dont le nom signifie « paix, sérénité », reflète notre engagement à combler le fossé en matière de protection sociale, renforçant ainsi la résilience économique et sociale des communautés.
+      </p>
+      <p style="margin-bottom: 20px;">
+        En promouvant l’inclusion financière, FAFA contribue à améliorer les conditions de vie et à réduire la pauvreté, tout en renforçant la cohésion sociale et économique. Cette initiative s’inscrit parfaitement dans la politique RSE de la BOAD et de NSIA, témoignant d’une innovation continue et d’un engagement envers des relations durables avec nos parties prenantes.
+      </p>
+
+     
+    </div>
+
+  </div>
+</section>
+
 
   <section class="guarantees-section">
   <div class="guarantees-container">
@@ -692,27 +710,25 @@
       <div class="guarantee-card">
         <img src="{{ url_for('static', filename='accident.png') }}" alt="Individuelle accident">
         <h3>L’INDIVIDUELLE ACCIDENT</h3>
-        <span class="chevron">&#x25BC;</span>
+        
       </div>
 
       <!-- Hospitalisation -->
       <div class="guarantee-card">
         <img src="{{ url_for('static', filename='hospitalisation.png') }}" alt="Hospitalisation">
         <h3>L’HOSPITALISATION</h3>
-        <span class="chevron">&#x25BC;</span>
+        
       </div>
 
       <!-- Décès toutes causes -->
       <div class="guarantee-card">
         <img src="{{ url_for('static', filename='deces.png') }}" alt="Décès toutes causes">
         <h3>LE DÉCÈS TOUTES CAUSES</h3>
-        <span class="chevron">&#x25BC;</span>
+        
       </div>
     </div>
 
-    <div class="guarantees-button">
-      <a href="#" class="btn-red">VOIR PLUS</a>
-    </div>
+   
   </div>
 </section>
 
