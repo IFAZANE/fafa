@@ -1,491 +1,201 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="fr">
 <head>
-    <meta charset="utf-8">
-    <title>FAFA Souscription — Étape 1</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8">
+  <title>Je suis FAFA !</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap" rel="stylesheet">
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Inter', sans-serif;
+    }
 
-    <!-- CSS principal -->
-    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
-
-    <!-- Bootstrap pour les composants -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-
-    <!-- Google Fonts + FontAwesome -->
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;600&display=swap" rel="stylesheet">
-    <script src="https://kit.fontawesome.com/yourkitid.js" crossorigin="anonymous"></script>
-
-    <style>
-       body {
-    margin: 0;
-    font-family: 'Poppins', sans-serif;
-    background: linear-gradient(to right, #f7f9fc, #e2ecf9);
-    color: #333;
-}
-
-.main-header {
-    background-color: #ffffff;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-}
-
-.navbar {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 1rem 2rem;
-}
-
-.logo {
-    display: flex;
-    align-items: center;
-}
-
-.logo img {
-    height: 40px;
-    margin-right: 10px;
-}
-
-.logo span {
-    font-weight: 600;
-    font-size: 1.2rem;
-    color: #0056b3;
-}
-
-.nav-links a {
-    margin: 0 15px;
-    text-decoration: none;
-    color: #333;
-}
-
-.nav-links a:hover {
-    color: #0056b3;
-}
-
-.hero {
-    background: url('/static/hero-background.jpg') no-repeat center center/cover;
-    color: white;
-    text-align: center;
-    padding: 100px 20px;
-}
-
-.hero-content h1 {
-    font-size: 2.5rem;
-}
-
-.hero-content p {
-    font-size: 1.2rem;
-}
-
-.btn-primary {
-    margin-top: 20px;
-    padding: 10px 20px;
-    background-color: #0056b3;
-    color: white;
-    border: none;
-    border-radius: 5px;
-    text-decoration: none;
-}
-
-.btn-primary:hover {
-    background-color: #003f88;
-}
-
-.services {
-    padding: 50px 20px;
-    text-align: center;
-}
-
-.card-container {
-    display: flex;
-    justify-content: space-around;
-    flex-wrap: wrap;
-    margin-top: 30px;
-}
-
-.card {
-    background: white;
-    padding: 20px;
-    width: 300px;
-    margin: 10px;
-    border-radius: 8px;
-    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-}
-
-.card i {
-    font-size: 2rem;
-    margin-bottom: 10px;
-    color: #0056b3;
-}
-
-.card h3 {
-    margin-top: 0;
-}
-
-.about, .testimonials, .cta {
-    padding: 50px 20px;
-    text-align: center;
-}
-
-.about p {
-    max-width: 700px;
-    margin: 20px auto;
-    font-size: 1.1rem;
-}
-
-.testimonials .card-container {
-    justify-content: center;
-}
-
-.testimonials .card p {
-    font-style: italic;
-}
-
-.testimonials .card strong {
-    display: block;
-    margin-top: 10px;
-    font-style: normal;
-    color: #0056b3;
-}
-
-footer {
-    background-color: #f1f1f1;
-    padding: 20px;
-    text-align: center;
-}
-
-.footer-content .socials a {
-    margin: 0 10px;
-    color: #555;
-    font-size: 1.2rem;
-}
-
-.footer-content .socials a:hover {
-    color: #0056b3;
-}
-
-/* Flash messages (facultatif) */
-.flash-messages {
-    text-align: center;
-    margin-top: 10px;
-}
-
-.flash.success {
-    background-color: #d4edda;
-    color: #155724;
-    padding: 10px;
-    margin: 10px auto;
-    max-width: 600px;
-    border-radius: 5px;
-}
-
-.flash.error {
-    background-color: #f8d7da;
-    color: #721c24;
-    padding: 10px;
-    margin: 10px auto;
-    max-width: 600px;
-    border-radius: 5px;
-}
-
-.nav-links a.nav-button {
-    display: inline-block;
-    padding: 10px 20px;
-    margin: 0 8px;
-    background-color: #0056b3; /* bleu FAFA */
-    color: white;
-    border-radius: 5px;
-    font-weight: 600;
-    text-decoration: none;
-    transition: background-color 0.3s ease, box-shadow 0.3s ease;
-    box-shadow: 0 2px 6px rgba(0, 86, 179, 0.4);
-}
-
-.nav-links a.nav-button:hover,
-.nav-links a.nav-button:focus {
-    background-color: #003f88; /* bleu plus foncé au hover */
-    box-shadow: 0 4px 10px rgba(0, 63, 136, 0.6);
-    outline: none;
-}
-
-/* --- Carrousel container --- */
-.carousel-container {
-        position: fixed;  /* fixé par rapport à la fenêtre */
-    top: 0;
-    left: 0;
-    width: 100vw;     /* pleine largeur */
-    height: 100vh;    /* pleine hauteur */
-    background: white;
-    overflow: hidden;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 0;       /* plus de padding sinon ça crée de l’espace */
-    z-index: 9999;    /* au-dessus du reste */
-}
-
-.carousel {
-    display: flex;
-    width: 100%;
-    height: 100%;          /* remplit la hauteur du container */
-    position: relative;
-    overflow: hidden;
-}
-
-.slide {
-    display: none;
-    flex-shrink: 0;
-    width: 100%;
-    height: 100%;
-    opacity: 0;
-    transition: opacity 0.8s ease;
-    padding: 20px;
-    box-sizing: border-box;
-    display: flex;
-    align-items: center;
-    gap: 30px;
-}
-
-.slide.active {
-    display: flex;
-    opacity: 1;
-}
-
-.slide-text {
-    flex: 1;
-    color: #003f88;
-    overflow-y: auto; /* permet scroll si contenu trop grand */
-}
-
-.slide-text h2 {
-    margin-top: 0;
-    font-size: 2.2rem;
-    font-weight: 700;
-    margin-bottom: 15px;
-}
-
-.slide-text p, .slide-text ul, .slide-text ol {
-    font-size: 1.2rem;
-    line-height: 1.5;
-    margin-bottom: 15px;
-}
-
-.slide-text ul, .slide-text ol {
-    padding-left: 20px;
-}
-
-.slide-image {
-    flex: 1;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
-
-.slide-image img {
-    max-height: 100%;
-    height: 100%;
-    width: auto;
-    border-radius: 12px;
-    object-fit: contain;
-    box-shadow: 0 5px 15px rgba(0,0,0,0.2);
-    max-width: 100%;
-}
-
-/* Navigation buttons */
-.carousel-btn {
-    position: absolute;
-    top: 50%;
-    transform: translateY(-50%);
-    background: rgba(0, 86, 179, 0.7);
-    border: none;
-    color: white;
-    font-size: 2.5rem;
-    padding: 5px 12px;
-    cursor: pointer;
-    border-radius: 50%;
-    user-select: none;
-    transition: background 0.3s ease;
-    z-index: 10;
-}
-
-.carousel-btn:hover {
-    background: #003f88;
-}
-
-.carousel-btn.prev {
-    left: 10px;
-}
-
-.carousel-btn.next {
-    right: 10px;
-}
-
-/* Responsive */
-@media (max-width: 576px) {
     body {
-        font-size: 15px;
-        padding: 0;
+      background-color: #f8f9fa;
+      display: flex;
+      min-height: 100vh;
     }
 
-    .navbar {
-        flex-direction: column;
-        padding: 1rem;
-        gap: 10px;
+    .container {
+      display: flex;
+      width: 100%;
+      padding: 40px;
+      justify-content: space-between;
+      background-color: white;
     }
 
-    .nav-links {
-        display: flex;
-        flex-direction: column;
-        align-items: stretch;
-        width: 100%;
+    .left-section {
+      width: 50%;
     }
 
-    .nav-links a.nav-button {
-        width: 100%;
-        margin: 5px 0;
-        text-align: center;
+    .right-section {
+      width: 45%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
     }
 
-    .main-header .logo img {
-        height: 30px;
+    .right-section img {
+      width: 100%;
+      max-height: 100%;
+      object-fit: cover;
+      border-radius: 10px;
+    }
+
+    h1 {
+      font-size: 40px;
+      color: #00205B;
+      font-weight: 700;
+      margin-bottom: 30px;
     }
 
     h2 {
-        font-size: 1.5rem;
-        padding: 0 10px;
+      font-size: 18px;
+      font-weight: 600;
+      margin-bottom: 20px;
     }
 
-    .card {
-        margin: 10px 0;
-        padding: 15px;
+    form {
+      display: flex;
+      flex-direction: column;
     }
 
-    .card-header {
-        font-size: 1.1rem;
-        padding: 10px 15px;
+    .form-group {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 15px;
     }
 
-    .form-label {
-        font-size: 0.95rem;
+    .form-group.full-width {
+      flex-direction: column;
     }
 
-    .form-control, .form-select {
-        font-size: 0.95rem;
+    label {
+      font-size: 14px;
+      margin-bottom: 5px;
     }
 
-    .btn-primary {
-        width: 100%;
-        padding: 12px;
-        font-size: 1rem;
+    input {
+      padding: 10px;
+      font-size: 14px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      flex: 1;
     }
 
-    .text-end {
-        text-align: center !important;
-        margin-top: 20px;
+    .subsection-title {
+      margin-top: 30px;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      font-size: 15px;
     }
 
-    footer {
-        font-size: 0.9rem;
+    .subsection-title::after {
+      content: ' ⓘ';
+      font-size: 14px;
+      margin-left: 5px;
     }
 
-    .footer-content .socials a {
-        font-size: 1.1rem;
-        margin: 0 5px;
+    button {
+      margin-top: 25px;
+      background-color: black;
+      color: white;
+      padding: 10px 20px;
+      border-radius: 20px;
+      border: none;
+      cursor: pointer;
+      width: fit-content;
+      align-self: flex-end;
+      display: flex;
+      align-items: center;
+      font-weight: bold;
     }
-}
 
-
-    </style>
+    button::after {
+      content: '➔';
+      margin-left: 10px;
+    }
+  </style>
 </head>
-
 <body>
 
-    <!-- Flash messages -->
-    {% with messages = get_flashed_messages(with_categories=true) %}
-        {% if messages %}
-            <div class="flash-messages">
-                {% for category, message in messages %}
-                    <div class="flash {{ category }}">{{ message }}</div>
-                {% endfor %}
-            </div>
-        {% endif %}
-    {% endwith %}
-
-    <!-- Header commun FAFA -->
-    <header class="main-header">
-        <div class="navbar">
-            <div class="logo">
-                <img src="{{ url_for('static', filename='logo_FAFA.png') }}" alt="FAFA Logo">
-                
-            </div>
-            <nav class="nav-links">
-                <a href="{{ url_for('accueil') }}" class="nav-button">Accueil</a>
-                <a href="{{ url_for('manuel') }}" class="nav-button">Aide</a>
-                <a href="https://www.boad.org" target="_blank" class="nav-button">BOAD</a>
-                <a href="https://nsiadirect.tg/" target="_blank" class="nav-button">NSIA Assurance</a>
-                
-            </nav>
+  <div class="container">
+    <!-- Section gauche -->
+    <div class="left-section">
+      <h1>Je suis FAFA !</h1>
+      <h2>Étape 1 — Identification</h2>
+      <form>
+        <!-- Souscripteur -->
+        <div class="form-group">
+          <div style="flex:1;">
+            <label>Nom* :</label>
+            <input type="text" required>
+          </div>
+          <div style="flex:1;">
+            <label>Prénoms* :</label>
+            <input type="text" required>
+          </div>
         </div>
-    </header>
 
-    <!-- Contenu principal -->
-    <main class="container my-5">
-        <h2 class="mb-4 text-center">Étape 1 — Contrat et Garanties</h2>
-
-        <form method="POST">
-            {{ form.hidden_tag() }}
-
-            <!-- Durée du contrat -->
-            <div class="card mb-4 shadow-sm">
-                <div class="card-header">Durée (par an)</div>
-                <div class="card-body">
-                    {{ form.duree_contrat.label(class="form-label") }}
-                    {{ form.duree_contrat(class="form-control") }}
-                </div>
-            </div>
-
-            <!-- Période -->
-            <div class="card mb-4 shadow-sm">
-                <div class="card-header">Périodes de début et fin</div>
-                <div class="card-body">
-                    {{ form.periode_debut.label(class="form-label") }}
-                    {{ form.periode_debut(class="form-control") }}
-
-                    {{ form.periode_fin.label(class="form-label mt-3") }}
-                    {{ form.periode_fin(class="form-control") }}
-
-                    {{ form.periodicite.label(class="form-label mt-3") }}
-                    {{ form.periodicite(class="form-select") }}
-                </div>
-            </div>
-
-            <!-- Prime -->
-            <div class="card mb-4 shadow-sm">
-                <div class="card-header">Choix du montant</div>
-                <div class="card-body">
-                     {{ form.type_contrat.label(class="form-label") }}
-                    {{ form.type_contrat(class="form-select") }}
-                </div>
-            </div>
-
-
-            <!-- Bouton -->
-            <div class="text-end">
-                <button type="submit" class="btn btn-primary">Suivant</button>
-            </div>
-        </form>
-    </main>
-
-    <!-- Footer facultatif -->
-    <footer>
-        <div class="footer-content">
-            <p>© 2025 FAFA Assurance — Tous droits réservés.</p>
-            <div class="socials">
-                <a href="#"><i class="fab fa-facebook-f"></i></a>
-                <a href="#"><i class="fab fa-twitter"></i></a>
-                <a href="#"><i class="fab fa-linkedin-in"></i></a>
-            </div>
+        <div class="form-group">
+          <div style="flex:1;">
+            <label>Date de naissance* :</label>
+            <input type="date" required>
+          </div>
+          <div style="flex:1;">
+            <label>Téléphone* :</label>
+            <input type="tel" placeholder="+228" required>
+          </div>
         </div>
-    </footer>
+
+        <div class="form-group full-width">
+          <label>Adresse* :</label>
+          <input type="text" required>
+        </div>
+
+        <!-- Assuré -->
+        <div class="subsection-title">Assuré (si différent du souscripteur) :</div>
+
+        <div class="form-group">
+          <div style="flex:1;">
+            <label>Nom :</label>
+            <input type="text">
+          </div>
+          <div style="flex:1;">
+            <label>Prénoms :</label>
+            <input type="text">
+          </div>
+        </div>
+
+        <div class="form-group">
+          <div style="flex:1;">
+            <label>Date de naissance :</label>
+            <input type="date">
+          </div>
+          <div style="flex:1;">
+            <label>Téléphone :</label>
+            <input type="tel" placeholder="+228">
+          </div>
+        </div>
+
+        <div class="form-group full-width">
+          <label>Adresse :</label>
+          <input type="text">
+        </div>
+
+        <!-- Bouton -->
+        <button type="submit">Suivant</button>
+      </form>
+    </div>
+
+    <!-- Section droite -->
+    <div class="right-section">
+      <img src="b8a27a6e-e29b-413e-a3da-be14e45fa664.png" alt="Homme confiant dans une usine">
+    </div>
+  </div>
 
 </body>
 </html>
