@@ -3,6 +3,7 @@
 {% block title %}Guide de l’assuré - FAFA{% endblock %}
 
 {% block content %}
+<!-- En-tête -->
 <section class="py-5 text-center bg-light">
   <div class="container">
     <h1 class="mb-3 text-primary">GUIDE DE L’ASSURÉ</h1>
@@ -18,6 +19,7 @@
   </div>
 </section>
 
+<!-- Engagement et image -->
 <section class="py-5">
   <div class="container">
     <div class="row align-items-center gy-4">
@@ -27,12 +29,14 @@
         <p>La fraude, l'omission d'information ou l'utilisation abusive du système peut entraîner la suspension ou l'annulation de votre couverture.</p>
       </div>
       <div class="col-lg-6 text-center">
-        <img src="{{ url_for('static', filename='img3.png') }}"
+        <img src="{{ url_for('static', filename='img3.png') }}" alt="Engagement FAFA"
+             class="img-fluid rounded shadow" style="max-width: 100%; height: auto;">
       </div>
     </div>
   </div>
 </section>
 
+<!-- Que faire en cas de sinistres -->
 <section class="py-5 bg-light">
   <div class="container text-center">
     <h2 class="mb-4 text-primary">QUE FAIRE EN CAS DE SINISTRES ?</h2>
