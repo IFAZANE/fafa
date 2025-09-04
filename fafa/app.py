@@ -4,7 +4,7 @@ from flask import (
 )
 from config import Config
 from models import db, QuestionnaireFafa, Paiement
-from forms import Etape2Form, Etape3Form
+from forms import Etape1Form, Etape2Form, Etape3Form
 from admin import admin_bp
 from export import export_csv, export_excel
 import requests
@@ -152,7 +152,7 @@ def questionnaire_step2():
     form = Etape2Form()
 
     if form.validate_on_submit():
-        session['profession'] = form.profession.data
+        session['beneficiaire_profession'] = form.profession.data
         session['est_droitier'] = form.est_droitier.data
         session['est_gaucher'] = form.est_gaucher.data
 
@@ -172,7 +172,7 @@ def questionnaire_step2():
 
     # Préremplissage si retour sur la page
     if 'profession' in session:
-        form.profession.data = session.get('profession')
+        form.profession.data = session.get('beneficiaire_profession')
         form.est_droitier.data = session.get('est_droitier', False)
         form.est_gaucher.data = session.get('est_gaucher', False)
 
@@ -394,6 +394,7 @@ def conditions():
 # -----------------------------
 if __name__ == '__main__':
     app.run(debug=True)
+
 
 
 
