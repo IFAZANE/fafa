@@ -26,6 +26,7 @@ class Etape1Form(FlaskForm):
     assure_tel = StringField('Téléphone', validators=[DataRequired(), Regexp(r'^\+?\d{8,15}$', message="Numéro de téléphone invalide")])
     assure_date_naissance = DateField('Date de naissance', format='%Y-%m-%d', validators=[DataRequired()])
     assure_adresse = StringField('Adresse', validators=[DataRequired(), Length(max=200)])
+    submit = SubmitField('Suivant')
 
     # Durée du contrat
 #    duree_contrat = StringField('Durée du contrat', validators=[DataRequired()])
@@ -187,6 +188,7 @@ class SouscriptionForm(FlaskForm):
 )
 
     recaptcha = RecaptchaField()
+
 
 
 
