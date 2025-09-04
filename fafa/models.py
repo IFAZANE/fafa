@@ -7,6 +7,8 @@ from flask_wtf import FlaskForm
 from wtforms import StringField, SelectField, DateField, validators, BooleanField
 
 from wtforms.validators import DataRequired
+from wtforms.validators import DataRequired, Regexp
+
 
 
 db = SQLAlchemy()
@@ -159,6 +161,7 @@ class Subscription(db.Model):
     telephone = db.Column(db.String(15), unique=True)
     ville = db.Column(db.String(50))
     produit = db.Column(db.String(50), nullable=False)
+
 
 
 
