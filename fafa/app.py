@@ -194,7 +194,7 @@ def questionnaire_step2():
             profession=form.profession.data,
             est_droitier=form.est_droitier.data,
             est_gaucher=form.est_gaucher.data,
-            conditions_acceptees=form.conditions_acceptees.data,
+            #conditions_acceptees=form.conditions_acceptees.data,
             type_contrat=form.choix_fafa.data
         )
 
@@ -433,6 +433,7 @@ def conditions():
 # -----------------------------
 if __name__ == '__main__':
     app.run(debug=True)
+
 
 
 
