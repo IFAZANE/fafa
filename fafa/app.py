@@ -429,83 +429,10 @@ def conditions():
 
 
 
-@admin_bp.route('admin_dashboard/')
-def admin_dashboard():
-    data = QuestionnaireFafa.query.order_by(QuestionnaireFafa.created_at.desc()).all()
-
-    # Total
-    total = len(data)
-
-    # Répartition par contrat
-    contrat_stats = (
-        db.session.query(QuestionnaireFafa.type_contrat, func.count())
-        .group_by(QuestionnaireFafa.type_contrat)
-        .all()
-    )
-    product_labels = [str(c[0]) for c in contrat_stats]
-    product_counts = [c[1] for c in contrat_stats]
-
-    # Répartition par ville = adresse souscripteur
-    city_stats = (
-        db.session.query(QuestionnaireFafa.souscripteur_adresse, func.count())
-        .group_by(QuestionnaireFafa.souscripteur_adresse)
-        .all()
-    )
-    city_labels = [c[0] or "Inconnu" for c in city_stats]
-    city_counts = [c[1] for c in city_stats]
-
-    return render_template(
-        'admin_dashboard.html',
-        total=total,
-        product_labels=product_labels,
-        product_counts=product_counts,
-        city_labels=city_labels,
-        city_counts=city_counts,
-        data=data
-    )
 # -----------------------------
 # Exécution
 # -----------------------------
 if __name__ == '__main__':
     app.run(debug=True)
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
