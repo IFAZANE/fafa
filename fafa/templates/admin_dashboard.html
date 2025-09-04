@@ -3,27 +3,80 @@
 {% block content %}
 <div class="admin-dashboard" style="padding:20px; max-width:1200px; margin:auto;">
 
+    <!-- Résumé + Export -->
     <div class="export-buttons" style="margin-bottom: 30px;">
         <p class="compteur">Total souscriptions : {{ total or 0 }}</p>
         <a href="{{ url_for('admin.export_csv') }}" class="btn-export">Exporter en CSV</a>
         <a href="{{ url_for('admin.export_excel') }}" class="btn-export">Exporter en Excel</a>
     </div>
 
+    <!-- Graphiques -->
     <div class="charts" style="display:flex; flex-wrap:wrap; gap:30px; justify-content:space-around;">
         <div style="flex:1; min-width:300px;">
-            <h3>Répartition par produit</h3>
+            <h3>Répartition par type de contrat</h3>
             <canvas id="productChart"></canvas>
         </div>
 
         <div style="flex:1; min-width:300px;">
-            <h3>Répartition par ville</h3>
+            <h3>Répartition par ville (adresse souscripteur)</h3>
             <canvas id="cityChart"></canvas>
         </div>
     </div>
 
+    <!-- Tableau des souscriptions -->
+    {% if data %}
+    <div class="data-table" style="margin-top: 40px;">
+        <h3>Données détaillées</h3>
+        <table border="1" cellpadding="8" cellspacing="0" style="width:100%; border-collapse: collapse;">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Souscripteur</th>
+                    <th>Assuré</th>
+                    <th>Bénéficiaire</th>
+                    <th>Profession</th>
+                    <th>Droitier</th>
+                    <th>Gaucher</th>
+                    <th>Contrat</th>
+                    <th>Date</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for entry in data %}
+                <tr>
+                    <td>{{ entry.id }}</td>
+                    <td>
+                        {{ entry.souscripteur_nom }} {{ entry.souscripteur_prenoms }}<br>
+                        {{ entry.souscripteur_tel }}<br>
+                        {{ entry.souscripteur_adresse }}
+                    </td>
+                    <td>
+                        {{ entry.assure_nom }} {{ entry.assure_prenoms }}<br>
+                        {{ entry.assure_tel }}<br>
+                        {{ entry.assure_adresse }}
+                    </td>
+                    <td>
+                        {{ entry.beneficiaire_nom }} {{ entry.beneficiaire_prenoms }}<br>
+                        {{ entry.beneficiaire_tel }}<br>
+                        {{ entry.beneficiaire_mail }}
+                    </td>
+                    <td>{{ entry.profession }}</td>
+                    <td>{{ 'Oui' if entry.est_droitier else 'Non' }}</td>
+                    <td>{{ 'Oui' if entry.est_gaucher else 'Non' }}</td>
+                    <td>{{ entry.type_contrat }}</td>
+                    <td>{{ entry.created_at.strftime('%d/%m/%Y %H:%M') if entry.created_at else '' }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% endif %}
+
+    <!-- Déconnexion -->
     <a href="{{ url_for('accueil') }}" class="btn-logout" style="display:block; margin-top:40px;">Se déconnecter</a>
 </div>
 
+<!-- Chart.js -->
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
     const productLabels = {{ product_labels|default([])|tojson }};
@@ -31,9 +84,9 @@
     const cityLabels = {{ city_labels|default([])|tojson }};
     const cityCounts = {{ city_counts|default([])|tojson }};
 
-    // Graphique des produits : en barres
+    // Type de contrat : bar chart
     const productCtx = document.getElementById('productChart').getContext('2d');
-    const productChart = new Chart(productCtx, {
+    new Chart(productCtx, {
         type: 'bar',
         data: {
             labels: productLabels,
@@ -51,9 +104,9 @@
         }
     });
 
-    // Graphique des villes : en camembert (pie chart)
+    // Ville : pie chart
     const cityCtx = document.getElementById('cityChart').getContext('2d');
-    const cityChart = new Chart(cityCtx, {
+    new Chart(cityCtx, {
         type: 'pie',
         data: {
             labels: cityLabels,
@@ -75,4 +128,3 @@
     });
 </script>
 {% endblock %}
-
