@@ -36,32 +36,31 @@ def aggregate_city_data(rows):
     return list(data.keys()), list(data.values())
 
 
+from flask import Blueprint, render_template
+from models import QuestionnaireFafa
+from sqlalchemy import func
+
+admin_bp = Blueprint('admin', __name__, url_prefix='/admin')
+
 @admin_bp.route('/')
 def dashboard():
-    if not session.get('admin'):
-        return redirect(url_for('admin.login'))
+    contrats = QuestionnaireFafa.query.with_entities(QuestionnaireFafa.type_contrat, func.count()).group_by(QuestionnaireFafa.type_contrat).all()
+    villes = QuestionnaireFafa.query.with_entities(QuestionnaireFafa.souscripteur_adresse, func.count()).group_by(QuestionnaireFafa.souscripteur_adresse).all()
 
-    subs = Subscription.query.all()
-    total = len(subs)
+    product_labels = [c[0] for c in contrats]
+    product_counts = [c[1] for c in contrats]
 
-    # Répartition par produit
-    product_counts_raw = Counter([s.produit for s in subs if s.produit])
-    product_labels = list(product_counts_raw.keys())
-    product_counts = list(product_counts_raw.values())
+    city_labels = [v[0] if v[0] else "Inconnu" for v in villes]
+    city_counts = [v[1] for v in villes]
 
-    # Répartition par ville
-    city_counts_raw = Counter([s.ville for s in subs if s.ville])
-    city_labels = list(city_counts_raw.keys())
-    city_counts = list(city_counts_raw.values())
-
-    return render_template(
-        'admin_dashboard.html',
-        total=total,
+    return render_template("admin_dashboard.html",
+        total=sum(product_counts),
         product_labels=product_labels,
         product_counts=product_counts,
         city_labels=city_labels,
         city_counts=city_counts
     )
+
 
 @admin_bp.route('/export/csv')
 def export_csv():
@@ -106,4 +105,5 @@ def export_excel():
         download_name='souscriptions.xlsx',
         as_attachment=True
     )
+
 
