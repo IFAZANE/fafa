@@ -1,110 +1,8 @@
-<!DOCTYPE html>
-<html lang="fr">
-<head>
-  <meta charset="UTF-8">
-  <title>Étape 2 - FAFA</title>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap" rel="stylesheet">
-  <style>
-    * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Inter', sans-serif; }
-    body { background-color: #f8f9fa; display: flex; min-height: 100vh; }
-    .container { display: flex; width: 100%; padding: 40px; justify-content: space-between; background-color: white; }
-    .left-section { width: 50%; }
-    .right-section { width: 45%; display: flex; justify-content: center; align-items: center; }
-    .right-section img { width: 100%; max-height: 100%; object-fit: cover; border-radius: 10px; }
-    h2 { font-size: 18px; font-weight: 600; margin-bottom: 20px; margin-top: 20px; }
+{% extends "base.html" %}
 
-    form { display: flex; flex-direction: column; }
+{% block title %}Étape 2 — Déclarations{% endblock %}
 
-    .form-group { display: flex; gap: 10px; margin-bottom: 15px; }
-    .form-group.full-width { flex-direction: column; }
-    label { font-size: 14px; margin-bottom: 5px; }
-    input[type="text"], input[type="email"], select {
-      padding: 10px;
-      font-size: 14px;
-      border: 1px solid #ccc;
-      border-radius: 5px;
-      flex: 1;
-    }
-
-    .checkbox-group {
-      display: flex;
-      align-items: center;
-      gap: 20px;
-      margin-bottom: 15px;
-    }
-
-    .subsection-title {
-      font-weight: 600;
-      display: flex;
-      align-items: center;
-      font-size: 15px;
-      margin: 10px 0;
-    }
-
-    .subsection-title::after {
-      content: ' ⓘ';
-      font-size: 14px;
-      margin-left: 5px;
-    }
-
-    .radio-options {
-      display: flex;
-      gap: 30px;
-      margin-top: 10px;
-    }
-
-    .submit-button {
-      margin-top: 25px;
-      background-color: black;
-      color: white;
-      padding: 10px 20px;
-      border-radius: 20px;
-      border: none;
-      cursor: pointer;
-      width: fit-content;
-      align-self: flex-end;
-      display: flex;
-      align-items: center;
-      font-weight: bold;
-    }
-
-    .submit-button::after {
-      content: '➔';
-      margin-left: 10px;
-    }
-
-     /* Nouveau style pour les boutons "Précédent" et "Suivant" */
-    .form-buttons {
-      display: flex;
-      justify-content: space-between;
-      margin-top: 25px;
-    }
-    .btn-prev, .btn-next {
-      background-color: black;
-      color: white;
-      padding: 10px 20px;
-      border-radius: 20px;
-      border: none;
-      cursor: pointer;
-      font-weight: bold;
-      display: flex;
-      align-items: center;
-      width: fit-content;
-    }
-    .btn-prev::before {
-      content: '←';
-      margin-right: 10px;
-      font-weight: bold;
-    }
-    .btn-next::after {
-      content: '➔';
-      margin-left: 10px;
-      font-weight: bold;
-    }
-  </style>
-</head>
-<body>
-
+{% block content %}
 <div class="container">
   <!-- Section gauche -->
   <div class="left-section">
@@ -153,20 +51,24 @@
       </div>
 
       <div class="checkbox-group">
-        <label>{{ form.conditions_acceptees() }} En cochant cette case, je déclare avoir pris connaissance des  <a href="{{ url_for('conditions') }}" target="_blank">conditions générales</a> et les accepter</label>
+        <label>
+          {{ form.conditions_acceptees() }}
+          En cochant cette case, je déclare avoir pris connaissance des
+          <a href="{{ url_for('conditions') }}" target="_blank">conditions générales</a>
+          et les accepter.
+        </label>
       </div>
 
       <h2>Étape 3 — Choix de l’option FAFA</h2>
       <div class="radio-options">
-        <label>{{ form.choix_fafa(value="15000") }} </label>
-        <label>{{ form.choix_fafa(value="20000") }} </label>
+        <label>{{ form.choix_fafa(value="15000") }}</label>
+        <label>{{ form.choix_fafa(value="20000") }}</label>
       </div>
 
-      
       <div class="form-buttons">
-          <button type="button" class="btn-prev" onclick="window.history.back();">Précédent</button>
-          <button type="submit" class="btn-next">Suivant</button>
-        </div>
+        <button type="button" class="btn-prev" onclick="window.history.back();">Précédent</button>
+        <button type="submit" class="btn-next">Suivant</button>
+      </div>
     </form>
   </div>
 
@@ -175,6 +77,4 @@
     <img src="{{ url_for('static', filename='femme-souriante.png') }}" alt="Photo femmes souriantes">
   </div>
 </div>
-
-</body>
-</html>
+{% endblock %}
