@@ -78,10 +78,10 @@ class Etape2Form(FlaskForm):
     conditions_acceptees = BooleanField("J'accepte les conditions", validators=[DataRequired(message="Vous devez accepter les conditions")])
 
     # Étape 3 — Choix de l'option FAFA
-    #choix_fafa = RadioField('Option FAFA', choices=[
-    #    ('15000', 'FAFA 1 (15 000 FCFA)'),
-    #    ('20000', 'FAFA 2 (20 000 FCFA)')
-    #], validators=[DataRequired()])
+    choix_fafa = RadioField('Option FAFA', choices=[
+        ('15000', 'FAFA 1 (15 000 FCFA)'),
+        ('20000', 'FAFA 2 (20 000 FCFA)')
+    ], validators=[DataRequired()])
 
 
 
@@ -110,10 +110,10 @@ from wtforms.fields import EmailField
 from wtforms.validators import DataRequired, Regexp, Email
 
 class QuestionnaireFafaForm(FlaskForm):
-    type_contrat = RadioField('Option FAFA', choices=[
-        ('15000', 'FAFA 1 (15 000 FCFA)'),
-        ('20000', 'FAFA 2 (20 000 FCFA)')
-    ], validators=[DataRequired()])
+    #type_contrat = RadioField('Option FAFA', choices=[
+     #   ('15000', 'FAFA 1 (15 000 FCFA)'),
+     #   ('20000', 'FAFA 2 (20 000 FCFA)')
+    #], validators=[DataRequired()])
     
     assure_nom = StringField('Nom de l\'assuré', validators=[DataRequired()])
     assure_prenoms = StringField('Prénoms de l\'assuré', validators=[DataRequired()])
@@ -188,6 +188,7 @@ class SouscriptionForm(FlaskForm):
 )
 
     recaptcha = RecaptchaField()
+
 
 
 
