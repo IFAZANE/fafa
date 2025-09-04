@@ -1,4 +1,25 @@
 /* RESET & GLOBAL */
+
+
+.card {
+  border-radius: 20px;
+}
+
+.btn-lg {
+  padding: 12px 20px;
+  font-size: 1.1rem;
+  font-weight: 600;
+}
+
+input[type="tel"]::placeholder {
+  color: #999;
+  font-style: italic;
+}
+
+
+
+
+
 * {
   box-sizing: border-box;
   margin: 0;
@@ -285,4 +306,5 @@ input, select {
   content: '➔';
   margin-left: 10px;
 }
+
 
