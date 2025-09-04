@@ -107,7 +107,7 @@ OAUTH2_CREDENTIALS = {
  #   return render_template('step1.html', form=form)
 
 @app.route('/step1', methods=['GET', 'POST'])
-def etape1():
+def questionnaire_step1():
     form = Etape1Form()
 
     if form.validate_on_submit():
@@ -422,6 +422,7 @@ def conditions():
 # -----------------------------
 if __name__ == '__main__':
     app.run(debug=True)
+
 
 
 
