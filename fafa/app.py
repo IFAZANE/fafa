@@ -152,6 +152,7 @@ def questionnaire_step2():
     form = Etape2Form()
 
     if form.validate_on_submit():
+        # Stockage dans la session des données issues du formulaire
         session['beneficiaire_profession'] = form.profession.data
         session['est_droitier'] = form.est_droitier.data
         session['est_gaucher'] = form.est_gaucher.data
@@ -167,11 +168,47 @@ def questionnaire_step2():
         session['conditions_acceptees'] = form.conditions_acceptees.data
         session['type_contrat'] = form.choix_fafa.data  # '15000' ou '20000'
 
+        # --- Création de l'objet QuestionnaireFafa ---
+        # Ici on récupère les données nécessaires dans la session pour créer le questionnaire.
+        # Adapte les noms des champs selon ton modèle QuestionnaireFafa
+
+        q = QuestionnaireFafa(
+            souscripteur_nom=session['souscripteur']['nom'],
+            souscripteur_prenoms=session['souscripteur']['prenoms'],
+            souscripteur_tel=session['souscripteur']['tel'],
+            souscripteur_date_naissance=parse_date(session['souscripteur']['date_naissance']),
+            souscripteur_adresse=session['souscripteur']['adresse'],
+
+            assure_nom=session['assure']['nom'],
+            assure_prenoms=session['assure']['prenoms'],
+            assure_tel=session['assure']['tel'],
+            assure_date_naissance=parse_date(session['assure']['date_naissance']),
+            assure_adresse=session['assure']['adresse'],
+
+            beneficiaire_nom=form.beneficiaire_nom.data,
+            beneficiaire_prenoms=form.beneficiaire_prenoms.data,
+            beneficiaire_tel=form.beneficiaire_tel.data,
+            beneficiaire_mail=form.beneficiaire_mail.data,
+            beneficiaire_adresse=form.beneficiaire_adresse.data,
+
+            profession=form.profession.data,
+            est_droitier=form.est_droitier.data,
+            est_gaucher=form.est_gaucher.data,
+            conditions_acceptees=form.conditions_acceptees.data,
+            type_contrat=form.choix_fafa.data
+        )
+
+        db.session.add(q)
+        db.session.commit()
+
+        # On stocke l'id en session pour la suite
+        session['questionnaire_id'] = q.id
+
         flash("Étape 2 enregistrée avec succès !", "success")
         return redirect(url_for('paiement'))
 
     # Préremplissage si retour sur la page
-    if 'profession' in session:
+    if 'beneficiaire_profession' in session:
         form.profession.data = session.get('beneficiaire_profession')
         form.est_droitier.data = session.get('est_droitier', False)
         form.est_gaucher.data = session.get('est_gaucher', False)
@@ -191,6 +228,7 @@ def questionnaire_step2():
         form.choix_fafa.data = session['type_contrat']
 
     return render_template('step2.html', form=form)
+
 
 # -----------------------------
 # 7️⃣ Route paiement et insertion
@@ -395,6 +433,7 @@ def conditions():
 # -----------------------------
 if __name__ == '__main__':
     app.run(debug=True)
+
 
 
 
