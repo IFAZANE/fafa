@@ -1,238 +1,85 @@
-<!DOCTYPE html>
-<html lang="fr">
-<head>
-  <meta charset="UTF-8">
-  <title>Je suis FAFA !</title>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap" rel="stylesheet">
-  <style>
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-      font-family: 'Inter', sans-serif;
-    }
+{% extends "layout.html" %}
 
-    body {
-      background-color: #f8f9fa;
-      display: flex;
-      min-height: 100vh;
-    }
+{% block title %}Étape 1 — Identification{% endblock %}
 
-    .container {
-      display: flex;
-      width: 100%;
-      padding: 40px;
-      justify-content: space-between;
-      background-color: white;
-    }
+{% block content %}
+<div class="container">
+  <!-- Section gauche -->
+  <div class="left-section">
+    <h2>Étape 1 — Identification</h2>
 
-    .left-section {
-      width: 50%;
-    }
+    <form method="POST" action="{{ url_for('questionnaire_step1') }}">
+      {{ form.hidden_tag() }}
 
-    .right-section {
-      width: 45%;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-    }
-
-    .right-section img {
-      width: 100%;
-      max-height: 100%;
-      object-fit: cover;
-      border-radius: 10px;
-    }
-
-    h1 {
-      font-size: 40px;
-      color: #00205B;
-      font-weight: 700;
-      margin-bottom: 30px;
-    }
-
-    h2 {
-      font-size: 18px;
-      font-weight: 600;
-      margin-bottom: 20px;
-    }
-
-    form {
-      display: flex;
-      flex-direction: column;
-    }
-
-    .form-group {
-      display: flex;
-      gap: 10px;
-      margin-bottom: 15px;
-    }
-
-    .form-group.full-width {
-      flex-direction: column;
-    }
-
-    label {
-      font-size: 14px;
-      margin-bottom: 5px;
-    }
-
-    input {
-      padding: 10px;
-      font-size: 14px;
-      border: 1px solid #ccc;
-      border-radius: 5px;
-      flex: 1;
-    }
-
-    .subsection-title {
-      margin-top: 30px;
-      font-weight: 600;
-      display: flex;
-      align-items: center;
-      font-size: 15px;
-    }
-
-    .subsection-title::after {
-      content: ' ⓘ';
-      font-size: 14px;
-      margin-left: 5px;
-    }
-
-    button {
-      margin-top: 25px;
-      background-color: black;
-      color: white;
-      padding: 10px 20px;
-      border-radius: 20px;
-      border: none;
-      cursor: pointer;
-      width: fit-content;
-      align-self: flex-end;
-      display: flex;
-      align-items: center;
-      font-weight: bold;
-    }
-
-    button::after {
-      content: '➔';
-      margin-left: 10px;
-    }
-
-       /* Nouveau style pour les boutons "Précédent" et "Suivant" */
-    .form-buttons {
-      display: flex;
-      justify-content: space-between;
-      margin-top: 25px;
-    }
-    .btn-prev, .btn-next {
-      background-color: black;
-      color: white;
-      padding: 10px 20px;
-      border-radius: 20px;
-      border: none;
-      cursor: pointer;
-      font-weight: bold;
-      display: flex;
-      align-items: center;
-      width: fit-content;
-    }
-    .btn-prev::before {
-      content: '←';
-      margin-right: 10px;
-      font-weight: bold;
-    }
-    .btn-next::after {
-      content: '➔';
-      margin-left: 10px;
-      font-weight: bold;
-    }
-  </style>
-</head>
-<body>
-
-  <div class="container">
-    <!-- Section gauche -->
-    <div class="left-section">
-      <h1>Je suis FAFA !</h1>
-      <h2>Étape 1 — Identification</h2>
-
-      <form method="POST" action="{{ url_for('questionnaire_step1') }}">
-        {{ form.hidden_tag() }}
-
-        <!-- Souscripteur -->
-        <div class="form-group">
-          <div style="flex:1;">
-            <label>Nom* :</label>
-            {{ form.souscripteur_nom(class="form-control", required=True) }}
-          </div>
-          <div style="flex:1;">
-            <label>Prénoms* :</label>
-            {{ form.souscripteur_prenoms(class="form-control", required=True) }}
-          </div>
+      <!-- Souscripteur -->
+      <div class="form-group">
+        <div>
+          <label>Nom* :</label>
+          {{ form.souscripteur_nom(class="form-control", required=True) }}
         </div>
-
-        <div class="form-group">
-          <div style="flex:1;">
-            <label>Date de naissance* :</label>
-            {{ form.souscripteur_date_naissance(class="form-control", type="date", required=True) }}
-          </div>
-          <div style="flex:1;">
-            <label>Téléphone* :</label>
-            {{ form.souscripteur_tel(class="form-control", required=True, placeholder="+228") }}
-          </div>
+        <div>
+          <label>Prénoms* :</label>
+          {{ form.souscripteur_prenoms(class="form-control", required=True) }}
         </div>
+      </div>
 
-        <div class="form-group full-width">
-          <label>Adresse* :</label>
-          {{ form.souscripteur_adresse(class="form-control", required=True) }}
+      <div class="form-group">
+        <div>
+          <label>Date de naissance* :</label>
+          {{ form.souscripteur_date_naissance(class="form-control", type="date", required=True) }}
         </div>
-
-        <!-- Assuré -->
-        <div class="subsection-title">Assuré (si différent du souscripteur) :</div>
-
-        <div class="form-group">
-          <div style="flex:1;">
-            <label>Nom :</label>
-            {{ form.assure_nom(class="form-control") }}
-          </div>
-          <div style="flex:1;">
-            <label>Prénoms :</label>
-            {{ form.assure_prenoms(class="form-control") }}
-          </div>
+        <div>
+          <label>Téléphone* :</label>
+          {{ form.souscripteur_tel(class="form-control", required=True, placeholder="+228") }}
         </div>
+      </div>
 
-        <div class="form-group">
-          <div style="flex:1;">
-            <label>Date de naissance :</label>
-            {{ form.assure_date_naissance(class="form-control", type="date") }}
-          </div>
-          <div style="flex:1;">
-            <label>Téléphone :</label>
-            {{ form.assure_tel(class="form-control", placeholder="+228") }}
-          </div>
+      <div class="form-group full-width">
+        <label>Adresse* :</label>
+        {{ form.souscripteur_adresse(class="form-control", required=True) }}
+      </div>
+
+      <!-- Assuré -->
+      <div class="subsection-title">Assuré (si différent du souscripteur) :</div>
+
+      <div class="form-group">
+        <div>
+          <label>Nom :</label>
+          {{ form.assure_nom(class="form-control") }}
         </div>
-
-        <div class="form-group full-width">
-          <label>Adresse :</label>
-          {{ form.assure_adresse(class="form-control") }}
+        <div>
+          <label>Prénoms :</label>
+          {{ form.assure_prenoms(class="form-control") }}
         </div>
+      </div>
 
-        <!-- Bouton -->
-       
-
-         <div class="form-buttons">
-          <button type="button" class="btn-prev" onclick="window.history.back();">Précédent</button>
-          <button type="submit" class="btn-next">Suivant</button>
+      <div class="form-group">
+        <div>
+          <label>Date de naissance :</label>
+          {{ form.assure_date_naissance(class="form-control", type="date") }}
         </div>
-      </form>
-    </div>
+        <div>
+          <label>Téléphone :</label>
+          {{ form.assure_tel(class="form-control", placeholder="+228") }}
+        </div>
+      </div>
 
-    <!-- Section droite -->
-    <div class="right-section">
-      <img src="{{ url_for('static', filename='femme-souriante.png') }}" alt="Photo femmes souriantes">
-    </div>
+      <div class="form-group full-width">
+        <label>Adresse :</label>
+        {{ form.assure_adresse(class="form-control") }}
+      </div>
+
+      <!-- Boutons -->
+      <div class="form-buttons">
+        <button type="button" class="btn-prev" onclick="window.history.back();">Précédent</button>
+        <button type="submit" class="btn-next">Suivant</button>
+      </div>
+    </form>
   </div>
 
-</body>
-</html>
+  <!-- Section droite -->
+  <div class="right-section">
+    <img src="{{ url_for('static', filename='femme-souriante.png') }}" alt="Photo femmes souriantes">
+  </div>
+</div>
+{% endblock %}
