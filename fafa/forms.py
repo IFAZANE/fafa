@@ -53,58 +53,45 @@ class Etape1Form(FlaskForm):
 
 
 from flask_wtf import FlaskForm
-from wtforms import StringField, DateField, SubmitField
-from wtforms.validators import DataRequired, Length, Regexp
+from wtforms import StringField, BooleanField, RadioField, EmailField
+from wtforms.validators import DataRequired, Length, Regexp, Email
 
 class Etape2Form(FlaskForm):
-    # Assuré
-    #assure_nom = StringField('Nom', validators=[DataRequired(), Length(max=100)])
-    #assure_prenoms = StringField('Prénoms', validators=[DataRequired(), Length(max=100)])
-    #assure_tel = StringField('Téléphone', validators=[DataRequired(), Regexp(r'^\+?\d{8,15}$', message="Numéro de téléphone invalide")])
-    #assure_date_naissance = DateField('Date de naissance', format='%Y-%m-%d', validators=[DataRequired()])
-    #assure_adresse = StringField('Adresse', validators=[DataRequired(), Length(max=200)])
-
-     # Souscripteur
-    souscripteur_nom = StringField('Nom', validators=[DataRequired(), Length(max=100)])
-    souscripteur_prenoms = StringField('Prénoms', validators=[DataRequired(), Length(max=100)])
-    souscripteur_tel = StringField('Téléphone', validators=[DataRequired(), Regexp(r'^\+?\d{8,15}$', message="Numéro de téléphone invalide")])
-    souscripteur_date_naissance = DateField('Date de naissance', format='%Y-%m-%d', validators=[DataRequired()])
-    souscripteur_adresse = StringField('Adresse', validators=[DataRequired(), Length(max=200)])
+    # Étape 2 — Déclarations
+    profession = StringField('Profession', validators=[DataRequired(), Length(max=100)])
+    est_droitier = BooleanField('Droitier')
+    est_gaucher = BooleanField('Gaucher')
 
     # Bénéficiaire
     beneficiaire_nom = StringField('Nom', validators=[DataRequired(), Length(max=100)])
     beneficiaire_prenoms = StringField('Prénoms', validators=[DataRequired(), Length(max=100)])
-    beneficiaire_tel = StringField('Téléphone', validators=[DataRequired(), Regexp(r'^\+?\d{8,15}$', message="Numéro de téléphone invalide")])
-    beneficiaire_profession = StringField('Profession', validators=[DataRequired(), Length(max=100)])
+    beneficiaire_tel = StringField('Téléphone', validators=[DataRequired(), Regexp(r'^\+?\d{8,15}$')])
+    beneficiaire_mail = EmailField('Mail', validators=[DataRequired(), Email()])
     beneficiaire_adresse = StringField('Adresse', validators=[DataRequired(), Length(max=200)])
 
+    conditions_acceptees = BooleanField("J'accepte les conditions", validators=[DataRequired(message="Vous devez accepter les conditions")])
 
-     # Prime
-    type_contrat = SelectField(
-    "Type de contrat",
-    choices=[
-        ("15000", "15 000 FCFA / an"),
-        ("20000", "20 000 FCFA / an")
-    ],
-    validators=[DataRequired()]
-)
-
-    submit = SubmitField('Suivant')
+    # Étape 3 — Choix de l'option FAFA
+    choix_fafa = RadioField('Option FAFA', choices=[
+        ('15000', 'FAFA 1 (15 000 FCFA)'),
+        ('20000', 'FAFA 2 (20 000 FCFA)')
+    ], validators=[DataRequired()])
 
 
-from flask_wtf import FlaskForm
-from wtforms import StringField, DateField, BooleanField, SubmitField
-from wtforms.validators import DataRequired, Length
 
-class Etape3Form(FlaskForm):
-    # Conditions Générales
-    ack_conditions = BooleanField('J\'ai lu et j\'accepte les conditions générales', validators=[DataRequired()])
+#from flask_wtf import FlaskForm
+#from wtforms import StringField, DateField, BooleanField, SubmitField
+#from wtforms.validators import DataRequired, Length
 
-    # Signature
-    lieu_signature = StringField('Lieu de signature', validators=[DataRequired(), Length(max=100)])
-    date_signature = DateField('Date de signature', format='%Y-%m-%d', validators=[DataRequired()])
+#class Etape3Form(FlaskForm):
+#    # Conditions Générales
+#    ack_conditions = BooleanField('J\'ai lu et j\'accepte les conditions générales', validators=[DataRequired()])
 
-    submit = SubmitField('Valider')
+#    # Signature
+#    lieu_signature = StringField('Lieu de signature', validators=[DataRequired(), Length(max=100)])
+#    date_signature = DateField('Date de signature', format='%Y-%m-%d', validators=[DataRequired()])
+
+#    submit = SubmitField('Valider')
 
 
 
@@ -196,6 +183,7 @@ class SouscriptionForm(FlaskForm):
 )
 
     recaptcha = RecaptchaField()
+
 
 
 
