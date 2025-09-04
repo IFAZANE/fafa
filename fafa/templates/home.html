@@ -555,6 +555,70 @@
   min-width: 180px;
 }
 
+    /* Section Devenir partenaire */
+.partner-section {
+  background-color: #b5121b;
+  color: white;
+  padding: 60px 20px 40px 20px;
+  text-align: center;
+}
+
+.partner-header h2 {
+  font-size: 2.5rem;
+  font-weight: bold;
+  margin-bottom: 20px;
+}
+
+.partner-header p {
+  font-size: 1rem;
+  max-width: 800px;
+  margin: 0 auto;
+  line-height: 1.6;
+}
+
+.partner-logos {
+  background-color: white;
+  padding: 40px 20px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 60px;
+  flex-wrap: wrap;
+}
+
+.partner-logos img {
+  max-width: 160px;
+  height: auto;
+  object-fit: contain;
+  transition: transform 0.3s ease;
+}
+
+.partner-logos img:hover {
+  transform: scale(1.05);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .partner-header h2 {
+    font-size: 2rem;
+  }
+
+  .partner-header p {
+    font-size: 0.95rem;
+    padding: 0 10px;
+  }
+
+  .partner-logos {
+    gap: 30px;
+    flex-direction: column;
+  }
+
+  .partner-logos img {
+    max-width: 140px;
+  }
+}
+
+
 
   </style>
 </head>
@@ -656,26 +720,22 @@
   <button class="join-btn">REJOIGNEZ NOUS</button>
 </section>
 
-<section class="contact-section">
-  <div class="left-image">
-    <img src="https://cdn.pixabay.com/photo/2021/10/18/13/44/family-6718725_1280.png" alt="Famille sous protection">
+<!-- SECTION : Devenir Partenaire -->
+<section class="partner-section">
+  <div class="partner-header">
+    <h2>Devenir partenaire</h2>
+    <p>
+      Vous êtes acteur désireux de vous engager dans cette mission ?<br>
+      Rejoignez-nous en tant que partenaires et prenez part à cette aventure transformative.
+      Ensemble, nous pouvons développer des solutions novatrices et durables, touchant davantage de vies
+      et créant un impact positif significatif.<br>
+      Engageons-nous pour un avenir meilleur et plus équitable.
+    </p>
   </div>
 
-  <div class="contact-form">
-    <h2>CONTACTEZ NOUS</h2>
-    <form>
-      <input type="text" placeholder="Nom" required>
-      <input type="text" placeholder="Prénoms" required>
-      <input type="text" placeholder="Activités">
-      <input type="text" placeholder="Tel / Mail" required>
-      <input type="text" placeholder="Objet">
-      <textarea placeholder="Message" rows="4"></textarea>
-      <button type="submit">Envoyer</button>
-    </form>
-    <div class="contact-footer">
-      <span>📩 contact@infofafa.org</span>
-      <a href="#">Guide de l’assuré</a>
-    </div>
+  <div class="partner-logos">
+    <img src="https://upload.wikimedia.org/wikipedia/fr/8/8d/Logo_BOAD.png" alt="Logo BOAD">
+    <img src="https://www.nsiassurances.ci/img/logo.png" alt="Logo NSIA">
   </div>
 </section>
 
