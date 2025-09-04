@@ -28,12 +28,6 @@ class QuestionnaireFafa(db.Model):
     assure_tel = db.Column(db.String(20))
     assure_date_naissance = db.Column(db.Date)
     assure_adresse = db.Column(db.String(200))
-    beneficiaire_nom = db.Column(db.String(100))
-    beneficiaire_prenoms = db.Column(db.String(100))
-    beneficiaire_tel = db.Column(db.String(20))
-    beneficiaire_adresse = db.Column(db.String(200))
-    beneficiaire_profession = db.Column(db.String(100))
-    beneficiaire_lateralite = db.Column(db.String(50))
     souscripteur_nom = db.Column(db.String(100))
     souscripteur_prenoms = db.Column(db.String(100))
     souscripteur_tel = db.Column(db.String(20))
@@ -42,6 +36,26 @@ class QuestionnaireFafa(db.Model):
     ack_conditions = db.Column(db.Boolean)
     lieu_signature = db.Column(db.String(100))
     date_signature = db.Column(db.Date)
+    
+    profession = StringField('Profession', validators=[DataRequired()])
+    est_droitier = BooleanField('Droitier')
+    est_gaucher = BooleanField('Gaucher')
+
+    beneficiaire_nom = StringField('Nom', validators=[DataRequired()])
+    beneficiaire_prenoms = StringField('Prénoms', validators=[DataRequired()])
+    beneficiaire_tel = StringField('Téléphone', validators=[
+        DataRequired(),
+        Regexp(r'^\+?\d{8,15}$', message="Numéro de téléphone invalide")
+    ])
+    beneficiaire_mail = EmailField('Mail', validators=[DataRequired(), Email()])
+    beneficiaire_adresse = StringField('Adresse', validators=[DataRequired()])
+
+    conditions_acceptees = BooleanField("J'accepte les conditions", validators=[DataRequired()])
+    choix_fafa = RadioField('Option FAFA', choices=[
+        ('15000', 'FAFA 1 (15 000 FCFA)'),
+        ('20000', 'FAFA 2 (20 000 FCFA)')
+    ], validators=[DataRequired()])
+
 
 
 
@@ -140,6 +154,7 @@ class Subscription(db.Model):
     telephone = db.Column(db.String(15), unique=True)
     ville = db.Column(db.String(50))
     produit = db.Column(db.String(50), nullable=False)
+
 
 
 
