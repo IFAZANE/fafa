@@ -128,7 +128,7 @@ def questionnaire_step1():
         }
 
         flash("Étape 1 enregistrée avec succès !", "success")
-        return redirect(url_for('etape2'))  # Redirige vers la prochaine étape
+        return redirect(url_for('questionnaire_step2'))  # Redirige vers la prochaine étape
 
     # Préremplissage depuis la session si données existantes
     if 'souscripteur' in session:
@@ -422,6 +422,7 @@ def conditions():
 # -----------------------------
 if __name__ == '__main__':
     app.run(debug=True)
+
 
 
 
