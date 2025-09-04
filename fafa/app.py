@@ -106,6 +106,46 @@ OAUTH2_CREDENTIALS = {
 
  #   return render_template('step1.html', form=form)
 
+@app.route('/step1', methods=['GET', 'POST'])
+def etape1():
+    form = Etape1Form()
+
+    if form.validate_on_submit():
+        # Sauvegarde dans la session
+        session['souscripteur'] = {
+            'nom': form.souscripteur_nom.data,
+            'prenoms': form.souscripteur_prenoms.data,
+            'tel': form.souscripteur_tel.data,
+            'date_naissance': form.souscripteur_date_naissance.data.strftime('%Y-%m-%d'),
+            'adresse': form.souscripteur_adresse.data
+        }
+        session['assure'] = {
+            'nom': form.assure_nom.data,
+            'prenoms': form.assure_prenoms.data,
+            'tel': form.assure_tel.data,
+            'date_naissance': form.assure_date_naissance.data.strftime('%Y-%m-%d'),
+            'adresse': form.assure_adresse.data
+        }
+
+        flash("Étape 1 enregistrée avec succès !", "success")
+        return redirect(url_for('etape2'))  # Redirige vers la prochaine étape
+
+    # Préremplissage depuis la session si données existantes
+    if 'souscripteur' in session:
+        form.souscripteur_nom.data = session['souscripteur'].get('nom')
+        form.souscripteur_prenoms.data = session['souscripteur'].get('prenoms')
+        form.souscripteur_tel.data = session['souscripteur'].get('tel')
+        form.souscripteur_date_naissance.data = parse_date(session['souscripteur'].get('date_naissance'))
+        form.souscripteur_adresse.data = session['souscripteur'].get('adresse')
+
+    if 'assure' in session:
+        form.assure_nom.data = session['assure'].get('nom')
+        form.assure_prenoms.data = session['assure'].get('prenoms')
+        form.assure_tel.data = session['assure'].get('tel')
+        form.assure_date_naissance.data = parse_date(session['assure'].get('date_naissance'))
+        form.assure_adresse.data = session['assure'].get('adresse')
+
+    return render_template('step1.html', form=form)
 
 @app.route('/step2', methods=['GET', 'POST'])
 def questionnaire_step2():
@@ -382,6 +422,7 @@ def conditions():
 # -----------------------------
 if __name__ == '__main__':
     app.run(debug=True)
+
 
 
 
