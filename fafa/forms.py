@@ -85,7 +85,7 @@ from wtforms.validators import DataRequired, Length
 
 class Etape3Form(FlaskForm):
     # Conditions Générales
-    ack_conditions = BooleanField('J\'accepte les conditions générales', validators=[DataRequired()])
+    ack_conditions = BooleanField('J\'ai lu et j\'accepte les conditions générales', validators=[DataRequired()])
 
     # Signature
     lieu_signature = StringField('Lieu de signature', validators=[DataRequired(), Length(max=100)])
@@ -183,6 +183,7 @@ class SouscriptionForm(FlaskForm):
 )
 
     recaptcha = RecaptchaField()
+
 
 
 
