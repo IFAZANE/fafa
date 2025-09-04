@@ -40,7 +40,7 @@ from flask import Blueprint, render_template
 from models import QuestionnaireFafa
 from sqlalchemy import func
 
-admin_bp = Blueprint('admin', __name__, url_prefix='/admin')
+#admin_bp = Blueprint('admin', __name__, url_prefix='/admin')
 
 @admin_bp.route('/')
 def dashboard():
@@ -154,6 +154,7 @@ def export_excel():
         download_name='souscriptions.xlsx',
         as_attachment=True
     )
+
 
 
 
