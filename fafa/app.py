@@ -333,7 +333,8 @@ def confirmation_paiement(transaction_id):
         flash(f"Transaction {transaction_id} confirmée !", "success")
     else:
         flash(f"Transaction {transaction_id} était déjà confirmée.", "info")
-
+        
+    questionnaire = QuestionnaireFafa.query.get(paiement.questionnaire_fafa_id)
     html = render_template('questionnaire_pdf.html', questionnaire=questionnaire)
     buffer = BytesIO()
     HTML(string=html).write_pdf(buffer)
@@ -394,6 +395,7 @@ def conditions():
 # -----------------------------
 if __name__ == '__main__':
     app.run(debug=True)
+
 
 
 
