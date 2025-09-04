@@ -2,6 +2,10 @@ from flask_wtf import FlaskForm, RecaptchaField
 from wtforms import StringField, SelectField
 from wtforms.validators import DataRequired, Length, Regexp
 
+from flask_wtf import FlaskForm
+from wtforms import StringField, SelectField, DateField, BooleanField, RadioField, SubmitField
+from wtforms.fields import EmailField
+from wtforms.validators import DataRequired, Regexp, Email
 
 
 
@@ -183,6 +187,7 @@ class SouscriptionForm(FlaskForm):
 )
 
     recaptcha = RecaptchaField()
+
 
 
 
