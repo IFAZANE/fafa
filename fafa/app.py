@@ -168,7 +168,7 @@ def questionnaire_step2():
         session['type_contrat'] = form.choix_fafa.data  # '15000' ou '20000'
 
         flash("Étape 2 enregistrée avec succès !", "success")
-        return redirect(url_for('questionnaire_step3'))
+        return redirect(url_for('paiement'))
 
     # Préremplissage si retour sur la page
     if 'profession' in session:
@@ -395,6 +395,7 @@ def conditions():
 # -----------------------------
 if __name__ == '__main__':
     app.run(debug=True)
+
 
 
 
