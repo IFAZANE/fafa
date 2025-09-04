@@ -100,52 +100,51 @@ class Etape2Form(FlaskForm):
 
 
 from flask_wtf import FlaskForm
-from wtforms import StringField, DateField, FloatField, BooleanField, SubmitField, SelectField
-from wtforms.validators import DataRequired, Optional
+from wtforms import StringField, SelectField, DateField, BooleanField, RadioField
+from wtforms.fields import EmailField
+from wtforms.validators import DataRequired, Regexp, Email
 
-class QuestionnaireForm(FlaskForm):
-    periode_debut = DateField("Pour la période du", validators=[DataRequired()])
-    periode_fin = DateField("au", validators=[DataRequired()])
-    periodicite = SelectField("Périodicité", choices=[('Mensuelle','Mensuelle'),('Annuel','Annuel')], validators=[DataRequired()])
+class QuestionnaireFafaForm(FlaskForm):
+    type_contrat = RadioField('Option FAFA', choices=[
+        ('15000', 'FAFA 1 (15 000 FCFA)'),
+        ('20000', 'FAFA 2 (20 000 FCFA)')
+    ], validators=[DataRequired()])
     
-    type_contrat = SelectField(
-    "Type de contrat",
-    choices=[
-        ("15000", "15 000 FCFA / an"),
-        ("20000", "20 000 FCFA / an")
-    ],
-    validators=[DataRequired()]
-)
+    assure_nom = StringField('Nom de l\'assuré', validators=[DataRequired()])
+    assure_prenoms = StringField('Prénoms de l\'assuré', validators=[DataRequired()])
+    assure_tel = StringField('Téléphone de l\'assuré', validators=[
+        DataRequired(),
+        Regexp(r'^\+?\d{8,15}$', message="Numéro de téléphone invalide")
+    ])
+    assure_date_naissance = DateField('Date de naissance', validators=[DataRequired()])
+    assure_adresse = StringField('Adresse', validators=[DataRequired()])
     
-    #deces_accident = FloatField("Décès accident", validators=[Optional()])
-    #deces_toutes_causes = FloatField("Décès toutes causes", validators=[Optional()])
-    #invalidite = FloatField("Invalidité", validators=[Optional()])
-    #hospitalisation = FloatField("Hospitalisation", validators=[Optional()])
-    #traitement_medical = FloatField("Traitement médical", validators=[Optional()])
-    #indemnite_journaliere = FloatField("Indemnité journalière", validators=[Optional()])
+    souscripteur_nom = StringField('Nom du souscripteur', validators=[DataRequired()])
+    souscripteur_prenoms = StringField('Prénoms du souscripteur', validators=[DataRequired()])
+    souscripteur_tel = StringField('Téléphone du souscripteur', validators=[
+        DataRequired(),
+        Regexp(r'^\+?\d{8,15}$', message="Numéro de téléphone invalide")
+    ])
+    souscripteur_date_naissance = DateField('Date de naissance du souscripteur', validators=[DataRequired()])
+    souscripteur_adresse = StringField('Adresse du souscripteur', validators=[DataRequired()])
     
-    #assure_nom = StringField("Nom", validators=[Optional()])
-    #assure_prenoms = StringField("Prénoms", validators=[Optional()])
-    #assure_tel = StringField("Téléphone", validators=[Optional()])
-    #assure_date_naissance = DateField("Date de naissance", validators=[Optional()])
-    #assure_adresse = StringField("Adresse", validators=[Optional()])
-    
-    beneficiaire_nom = StringField("Nom bénéficiaire", validators=[Optional()])
-    beneficiaire_prenoms = StringField("Prénoms bénéficiaire", validators=[Optional()])
-    beneficiaire_tel = StringField("Téléphone bénéficiaire", validators=[Optional()])
-    beneficiaire_profession = StringField("Profession bénéficiaire", validators=[Optional()])
-    beneficiaire_adresse = StringField("Adresse bénéficiaire", validators=[Optional()])
-    #beneficiaire_lateralite = SelectField("Latéralité", choices=[('Droit','Droit'),('Gauche','Gauche')], validators=[Optional()])
-    
-    souscripteur_nom = StringField("Nom souscripteur", validators=[DataRequired()])
-    souscripteur_prenoms = StringField("Prénoms souscripteur", validators=[DataRequired()])
-    souscripteur_tel = StringField("Téléphone souscripteur", validators=[DataRequired()])
-    souscripteur_date_naissance = DateField("Date de naissance souscripteur", validators=[DataRequired()])
-    souscripteur_adresse = StringField("Adresse souscripteur", validators=[Optional()])
-    
-    ack_conditions = BooleanField("J'accepte les conditions générales", validators=[DataRequired()])
-    lieu_signature = StringField("Lieu de signature", validators=[Optional()])
-    date_signature = DateField("Date de signature", validators=[Optional()])
+    profession = StringField('Profession', validators=[DataRequired()])
+    est_droitier = BooleanField('Droitier')
+    est_gaucher = BooleanField('Gaucher')
+
+    beneficiaire_nom = StringField('Nom du bénéficiaire', validators=[DataRequired()])
+    beneficiaire_prenoms = StringField('Prénoms du bénéficiaire', validators=[DataRequired()])
+    beneficiaire_tel = StringField('Téléphone du bénéficiaire', validators=[
+        DataRequired(),
+        Regexp(r'^\+?\d{8,15}$', message="Numéro de téléphone invalide")
+    ])
+    beneficiaire_mail = EmailField('Email du bénéficiaire', validators=[DataRequired(), Email()])
+    beneficiaire_adresse = StringField('Adresse du bénéficiaire', validators=[DataRequired()])
+
+    ack_conditions = BooleanField("J'accepte les conditions", validators=[DataRequired()])
+    lieu_signature = StringField('Lieu de signature', validators=[DataRequired()])
+    date_signature = DateField('Date de signature', validators=[DataRequired()])
+
     
     submit = SubmitField("Soumettre")
 
@@ -184,6 +183,7 @@ class SouscriptionForm(FlaskForm):
 )
 
     recaptcha = RecaptchaField()
+
 
 
 
