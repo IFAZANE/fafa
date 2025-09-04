@@ -1,36 +1,32 @@
 <!doctype html>
 <html lang="fr">
 <head>
-    <meta charset="utf-8">
-    <title>FAFA Souscription</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+  <meta charset="utf-8">
+  <title>{% block title %}FAFA Souscription{% endblock %}</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
 <body>
-    {% with messages = get_flashed_messages(with_categories=true) %}
-  {% if messages %}
-    <div class="flash-messages">
-      {% for category, message in messages %}
-        <div class="flash {{ category }}">
-          {{ message }}
-        </div>
-      {% endfor %}
-    </div>
-  {% endif %}
-{% endwith %}
 
-    <header>
-        <img src="{{ url_for('static', filename='logo_FAFA.png') }}" alt="FAFA Logo">
-        <h1>Souscris à FAFA !</h1>
-        
-    </header>
-    <main>
-        {% block content %}{% endblock %}
-    </main>
+  {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+      <div class="flash-messages">
+        {% for category, message in messages %}
+          <div class="flash {{ category }}">{{ message }}</div>
+        {% endfor %}
+      </div>
+    {% endif %}
+  {% endwith %}
+
+  <header class="site-header">
+    <img src="{{ url_for('static', filename='logo_FAFA.png') }}" alt="FAFA Logo" class="logo">
+    <h1>Souscris à FAFA !</h1>
+  </header>
+
+  <main>
+    {% block content %}{% endblock %}
+  </main>
+
 </body>
 </html>
-
-
-
-
-
-
