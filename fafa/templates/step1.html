@@ -127,33 +127,36 @@
     <div class="left-section">
       <h1>Je suis FAFA !</h1>
       <h2>Étape 1 — Identification</h2>
-      <form>
+
+      <form method="POST" action="{{ url_for('questionnaire_step1') }}">
+        {{ form.hidden_tag() }}
+
         <!-- Souscripteur -->
         <div class="form-group">
           <div style="flex:1;">
             <label>Nom* :</label>
-            <input type="text" required>
+            {{ form.souscripteur_nom(class="form-control", required=True) }}
           </div>
           <div style="flex:1;">
             <label>Prénoms* :</label>
-            <input type="text" required>
+            {{ form.souscripteur_prenoms(class="form-control", required=True) }}
           </div>
         </div>
 
         <div class="form-group">
           <div style="flex:1;">
             <label>Date de naissance* :</label>
-            <input type="date" required>
+            {{ form.souscripteur_date_naissance(class="form-control", type="date", required=True) }}
           </div>
           <div style="flex:1;">
             <label>Téléphone* :</label>
-            <input type="tel" placeholder="+228" required>
+            {{ form.souscripteur_tel(class="form-control", required=True, placeholder="+228") }}
           </div>
         </div>
 
         <div class="form-group full-width">
           <label>Adresse* :</label>
-          <input type="text" required>
+          {{ form.souscripteur_adresse(class="form-control", required=True) }}
         </div>
 
         <!-- Assuré -->
@@ -162,32 +165,32 @@
         <div class="form-group">
           <div style="flex:1;">
             <label>Nom :</label>
-            <input type="text">
+            {{ form.assure_nom(class="form-control") }}
           </div>
           <div style="flex:1;">
             <label>Prénoms :</label>
-            <input type="text">
+            {{ form.assure_prenoms(class="form-control") }}
           </div>
         </div>
 
         <div class="form-group">
           <div style="flex:1;">
             <label>Date de naissance :</label>
-            <input type="date">
+            {{ form.assure_date_naissance(class="form-control", type="date") }}
           </div>
           <div style="flex:1;">
             <label>Téléphone :</label>
-            <input type="tel" placeholder="+228">
+            {{ form.assure_tel(class="form-control", placeholder="+228") }}
           </div>
         </div>
 
         <div class="form-group full-width">
           <label>Adresse :</label>
-          <input type="text">
+          {{ form.assure_adresse(class="form-control") }}
         </div>
 
         <!-- Bouton -->
-        <button type="submit">Suivant</button>
+        {{ form.submit(class="btn btn-primary") }}
       </form>
     </div>
 
