@@ -67,31 +67,80 @@ def export_csv():
     if not session.get('admin'):
         return redirect(url_for('admin.login'))
 
-    subs = Subscription.query.all()
+    data = QuestionnaireFafa.query.all()
     si = StringIO()
     writer = csv.writer(si)
-    writer.writerow(['UUID', 'Nom', 'Prénom', 'Téléphone', 'Ville', 'Produit'])
-    for s in subs:
-        writer.writerow([s.uuid, s.nom, s.prenom, s.telephone, s.ville, s.produit])
+
+    writer.writerow([
+        'ID', 'Souscripteur Nom', 'Souscripteur Prénoms', 'Souscripteur Tel', 'Souscripteur Adresse', 'Souscripteur Date Naissance',
+        'Assuré Nom', 'Assuré Prénoms', 'Assuré Tel', 'Assuré Adresse', 'Assuré Date Naissance',
+        'Bénéficiaire Nom', 'Bénéficiaire Prénoms', 'Bénéficiaire Tel', 'Bénéficiaire Mail', 'Bénéficiaire Adresse',
+        'Profession', 'Est Droitier', 'Est Gaucher', 'Type Contrat', 'Conditions Acceptées'
+    ])
+
+    for q in data:
+        writer.writerow([
+            q.id,
+            q.souscripteur_nom,
+            q.souscripteur_prenoms,
+            q.souscripteur_tel,
+            q.souscripteur_adresse,
+            q.souscripteur_date_naissance,
+            q.assure_nom,
+            q.assure_prenoms,
+            q.assure_tel,
+            q.assure_adresse,
+            q.assure_date_naissance,
+            q.beneficiaire_nom,
+            q.beneficiaire_prenoms,
+            q.beneficiaire_tel,
+            q.beneficiaire_mail,
+            q.beneficiaire_adresse,
+            q.profession,
+            q.est_droitier,
+            q.est_gaucher,
+            q.type_contrat,
+            q.ack_conditions
+        ])
+
     output = si.getvalue()
-    return Response(output, mimetype="text/csv", headers={"Content-Disposition": "attachment;filename=subscriptions.csv"})
+    return Response(output, mimetype="text/csv", headers={"Content-Disposition": "attachment;filename=souscriptions.csv"})
+
 
 @admin_bp.route('/export/excel')
 def export_excel():
     if not session.get('admin'):
         return redirect(url_for('admin.login'))
 
-    subs = Subscription.query.all()
-    data = [{
-        "UUID": s.uuid,
-        "Nom": s.nom,
-        "Prénom": s.prenom,
-        "Téléphone": s.telephone,
-        "Ville": s.ville,
-        "Produit": s.produit
-    } for s in subs]
+    data = QuestionnaireFafa.query.all()
+    rows = []
 
-    df = pd.DataFrame(data)
+    for q in data:
+        rows.append({
+            "ID": q.id,
+            "Souscripteur Nom": q.souscripteur_nom,
+            "Souscripteur Prénoms": q.souscripteur_prenoms,
+            "Souscripteur Tel": q.souscripteur_tel,
+            "Souscripteur Adresse": q.souscripteur_adresse,
+            "Souscripteur Date Naissance": q.souscripteur_date_naissance,
+            "Assuré Nom": q.assure_nom,
+            "Assuré Prénoms": q.assure_prenoms,
+            "Assuré Tel": q.assure_tel,
+            "Assuré Adresse": q.assure_adresse,
+            "Assuré Date Naissance": q.assure_date_naissance,
+            "Bénéficiaire Nom": q.beneficiaire_nom,
+            "Bénéficiaire Prénoms": q.beneficiaire_prenoms,
+            "Bénéficiaire Tel": q.beneficiaire_tel,
+            "Bénéficiaire Mail": q.beneficiaire_mail,
+            "Bénéficiaire Adresse": q.beneficiaire_adresse,
+            "Profession": q.profession,
+            "Est Droitier": q.est_droitier,
+            "Est Gaucher": q.est_gaucher,
+            "Type Contrat": q.type_contrat,
+            "Conditions Acceptées": q.ack_conditions
+        })
+
+    df = pd.DataFrame(rows)
 
     output = BytesIO()
     with pd.ExcelWriter(output, engine='openpyxl') as writer:
@@ -105,5 +154,6 @@ def export_excel():
         download_name='souscriptions.xlsx',
         as_attachment=True
     )
+
 
 
