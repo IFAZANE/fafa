@@ -5,7 +5,7 @@ from collections import Counter
 import csv
 import pandas as pd
 
-#admin_bp = Blueprint('admin', __name__, url_prefix='/admin')
+admin_bp = Blueprint('admin', __name__, url_prefix='/admin')
 
 ADMIN_USERNAME = 'admin'
 ADMIN_PASSWORD = 'admin123'
@@ -154,6 +154,7 @@ def export_excel():
         download_name='souscriptions.xlsx',
         as_attachment=True
     )
+
 
 
 
