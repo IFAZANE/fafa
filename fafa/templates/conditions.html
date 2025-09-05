@@ -1,12 +1,19 @@
 {% extends "base.html" %}
 
 {% block content %}
-<div class="container py-5">
+<div class="container py-5" style="max-width: 900px; line-height: 1.8; font-size: 1.05rem;">
+
   <!-- Titre principal -->
-  <h1 class="mb-5 text-center fw-bold">Conditions Générales</h1>
+  <h1 class="mb-3 text-center fw-bold" style="color: #222;">Conditions Générales</h1>
   <h4 class="text-center text-muted mb-5">Individuelle Accidents et Santé</h4>
 
-  <!-- Article -->
+  <!-- Illustration (facultative) -->
+  <div class="text-center mb-5">
+    <img src="{{ url_for('static', filename='images/conditions.jpg') }}" alt="Conditions générales"
+         style="max-width: 100%; height: auto; border-radius: 8px; box-shadow: 0 4px 20px rgba(0,0,0,0.1);">
+  </div>
+
+  <!-- Article 1 -->
   <section class="mb-5">
     <h3 class="fw-bold">Article 1 — Objet du contrat</h3>
     <p>
@@ -18,35 +25,38 @@
     </p>
   </section>
 
+  <!-- Article 2 -->
   <section class="mb-5">
     <h3 class="fw-bold">Article 2 — Risques exclus</h3>
     <p>Les garanties ne couvrent pas notamment :</p>
-    <ul class="list-unstyled ms-4">
-      <li>• Accidents intentionnels causés par l’assuré</li>
-      <li>• Guerre, émeute, terrorisme ou sabotage</li>
-      <li>• Événements nucléaires, radiations ionisantes</li>
-      <li>• Maladies, insolation, apoplexie, effets de température/pression (hors accident garanti)</li>
-      <li>• Intoxication alimentaire</li>
-      <li>• Lumbago, rupture de muscles, hernie</li>
-      <li>• Accidents dus à des traitements médicaux (sauf s’ils résultent d’un accident garanti)</li>
-      <li>• Utilisation de cycles à moteur sportif ou > 50 cm³</li>
-      <li>• Sports à risques : ski hors piste, alpinisme, spéléologie, etc.</li>
-      <li>• Participation à des compétitions sportives</li>
-      <li>• Travaux manuels professionnels</li>
-      <li>• Transport aérien hors rôle de passager d’une compagnie agréée</li>
-      <li>• Toute personne ayant provoqué intentionnellement le sinistre</li>
+    <ul style="margin-left: 1rem;">
+      <li>Accidents intentionnels causés par l’assuré</li>
+      <li>Guerre, émeute, terrorisme ou sabotage</li>
+      <li>Événements nucléaires, radiations ionisantes</li>
+      <li>Maladies, insolation, apoplexie, effets de température/pression (hors accident garanti)</li>
+      <li>Intoxication alimentaire</li>
+      <li>Lumbago, rupture de muscles, hernie</li>
+      <li>Accidents dus à des traitements médicaux (sauf s’ils résultent d’un accident garanti)</li>
+      <li>Utilisation de cycles à moteur sportif ou &gt; 50 cm³</li>
+      <li>Sports à risques : ski hors piste, alpinisme, spéléologie, etc.</li>
+      <li>Participation à des compétitions sportives</li>
+      <li>Travaux manuels professionnels</li>
+      <li>Transport aérien hors rôle de passager d’une compagnie agréée</li>
+      <li>Toute personne ayant provoqué intentionnellement le sinistre</li>
     </ul>
   </section>
 
+  <!-- Article 3 -->
   <section class="mb-5">
     <h3 class="fw-bold">Article 3 — Indemnités garanties</h3>
-    <ul>
+    <ul style="margin-left: 1rem;">
       <li><strong>Décès :</strong> Capital versé au bénéficiaire ou aux ayants droit (dans les 12 mois)</li>
       <li><strong>Infirmité permanente :</strong> Totale ou partielle selon barème (article 4)</li>
       <li><strong>Frais médicaux :</strong> Selon conditions particulières</li>
     </ul>
   </section>
 
+  <!-- Article 4 -->
   <section class="mb-5">
     <h3 class="fw-bold">Article 4 — Infirmité permanente</h3>
     <p><strong>a) Totale :</strong> Droit à la somme maximale assurée (ex. : perte des deux yeux, deux bras...)</p>
@@ -82,6 +92,7 @@
     </div>
   </section>
 
+  <!-- Articles suivants -->
   <section class="mb-5">
     <h3 class="fw-bold">Article 5 — Aggravation</h3>
     <p>
@@ -105,7 +116,7 @@
 
   <section class="mb-5">
     <h3 class="fw-bold">Article 8 — Règlement des indemnités</h3>
-    <ul>
+    <ul style="margin-left: 1rem;">
       <li><strong>Décès :</strong> paiement dans les 30 jours suivant la réception des pièces justificatives</li>
       <li><strong>Infirmité :</strong> indemnité selon article 5</li>
     </ul>
@@ -117,5 +128,6 @@
       Toute action découlant du présent contrat est prescrite après 2 ans (selon article 28 du code CIMA).
     </p>
   </section>
+
 </div>
 {% endblock %}
