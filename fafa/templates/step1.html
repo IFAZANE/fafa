@@ -96,7 +96,13 @@
       
       <div class="form-group">
     {{ form.recaptcha }}
-</div>
+    </div>
+      {% if form.recaptcha.errors %}
+  <div class="error">
+    {{ form.recaptcha.errors[0] }}
+  </div>
+{% endif %}
+
 
       <!-- Boutons -->
       <div class="form-buttons">
