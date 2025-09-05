@@ -4,8 +4,33 @@
 
 {% block content %}
 <div class="container">
+
+  <!-- Fenêtre modale de consentement -->
+  <div id="consent-modal" style="
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: rgba(0,0,0,0.6);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+  ">
+    <div style="
+      background: white;
+      padding: 30px;
+      max-width: 500px;
+      text-align: center;
+      border-radius: 8px;
+      box-shadow: 0 0 15px rgba(0,0,0,0.3);
+    ">
+      <h3>Consentement requis</h3>
+      <p>Nous collectons certaines données personnelles pour ce formulaire. En cliquant sur "J'accepte", vous consentez à leur traitement selon notre politique de confidentialité.</p>
+      <button id="accept-consent" style="margin-top: 20px; padding: 10px 20px; background-color: #28a745; color: white; border: none; border-radius: 4px;">J'accepte</button>
+    </div>
+  </div>
+
   <!-- Section gauche -->
-  <div class="left-section">
+  <div class="left-section" id="form-container" style="display: none;">
     <h2>Étape 1 — Identification</h2>
 
     <form method="POST" action="{{ url_for('questionnaire_step1') }}">
@@ -82,4 +107,29 @@
     <img src="{{ url_for('static', filename='femme-souriante.png') }}" alt="Photo femmes souriantes">
   </div>
 </div>
+
+<!-- Script pour gérer le consentement -->
+<script>
+  document.addEventListener("DOMContentLoaded", function() {
+    const modal = document.getElementById('consent-modal');
+    const formContainer = document.getElementById('form-container');
+    const acceptButton = document.getElementById('accept-consent');
+
+    // Vérifie si l'utilisateur a déjà consenti
+    const hasConsented = localStorage.getItem('hasConsented');
+
+    if (!hasConsented) {
+      modal.style.display = 'flex';
+    } else {
+      modal.style.display = 'none';
+      formContainer.style.display = 'block';
+    }
+
+    acceptButton.addEventListener('click', function() {
+      localStorage.setItem('hasConsented', 'true');
+      modal.style.display = 'none';
+      formContainer.style.display = 'block';
+    });
+  });
+</script>
 {% endblock %}
