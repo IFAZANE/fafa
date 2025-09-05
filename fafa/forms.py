@@ -73,7 +73,7 @@ class Etape2Form(FlaskForm):
     beneficiaire_nom = StringField('Nom*', validators=[DataRequired(), Length(max=100)])
     beneficiaire_prenoms = StringField('Prénoms*', validators=[DataRequired(), Length(max=100)])
     beneficiaire_tel = StringField('Téléphone*', validators=[DataRequired(), Regexp(r'^\+?\d{8,15}$')])
-    beneficiaire_mail = EmailField('EMail*', validators=[DataRequired(), Email()])
+    beneficiaire_mail = EmailField('EMail')
     beneficiaire_adresse = StringField('Adresse*', validators=[DataRequired(), Length(max=200)])
 
     conditions_acceptees = BooleanField("J'accepte les conditions", validators=[DataRequired(message="Vous devez accepter les conditions")])
@@ -189,6 +189,7 @@ class SouscriptionForm(FlaskForm):
 )
 
     recaptcha = RecaptchaField()
+
 
 
 
