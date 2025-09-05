@@ -72,28 +72,28 @@
 
       <div class="form-group">
         <div>
-          <label>Nom :</label>
+          <label>Nom* :</label>
           {{ form.assure_nom(class="form-control") }}
         </div>
         <div>
-          <label>Prénoms :</label>
+          <label>Prénoms* :</label>
           {{ form.assure_prenoms(class="form-control") }}
         </div>
       </div>
 
       <div class="form-group">
         <div>
-          <label>Date de naissance :</label>
+          <label>Date de naissance* :</label>
           {{ form.assure_date_naissance(class="form-control", type="date") }}
         </div>
         <div>
-          <label>Téléphone :</label>
+          <label>Téléphone* :</label>
           {{ form.assure_tel(class="form-control", placeholder="+228") }}
         </div>
       </div>
 
       <div class="form-group full-width">
-        <label>Adresse :</label>
+        <label>Adresse* :</label>
         {{ form.assure_adresse(class="form-control") }}
       </div>
 
