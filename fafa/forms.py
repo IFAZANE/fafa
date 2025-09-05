@@ -70,16 +70,16 @@ class Etape2Form(FlaskForm):
     est_gaucher = BooleanField('Gaucher')
 
     # Bénéficiaire
-    beneficiaire_nom = StringField('Nom', validators=[DataRequired(), Length(max=100)])
-    beneficiaire_prenoms = StringField('Prénoms', validators=[DataRequired(), Length(max=100)])
-    beneficiaire_tel = StringField('Téléphone', validators=[DataRequired(), Regexp(r'^\+?\d{8,15}$')])
-    beneficiaire_mail = EmailField('Mail', validators=[DataRequired(), Email()])
-    beneficiaire_adresse = StringField('Adresse', validators=[DataRequired(), Length(max=200)])
+    beneficiaire_nom = StringField('Nom*', validators=[DataRequired(), Length(max=100)])
+    beneficiaire_prenoms = StringField('Prénoms*', validators=[DataRequired(), Length(max=100)])
+    beneficiaire_tel = StringField('Téléphone*', validators=[DataRequired(), Regexp(r'^\+?\d{8,15}$')])
+    beneficiaire_mail = EmailField('EMail*', validators=[DataRequired(), Email()])
+    beneficiaire_adresse = StringField('Adresse*', validators=[DataRequired(), Length(max=200)])
 
     conditions_acceptees = BooleanField("J'accepte les conditions", validators=[DataRequired(message="Vous devez accepter les conditions")])
 
     # Étape 3 — Choix de l'option FAFA
-    choix_fafa = RadioField('Option FAFA', choices=[
+    choix_fafa = RadioField('Option FAFA*', choices=[
         ('15000', 'FAFA 1 (15 000 FCFA)'),
         ('20000', 'FAFA 2 (20 000 FCFA)')
     ], validators=[DataRequired()])
@@ -189,6 +189,7 @@ class SouscriptionForm(FlaskForm):
 )
 
     recaptcha = RecaptchaField()
+
 
 
 
