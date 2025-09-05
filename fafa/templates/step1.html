@@ -93,6 +93,10 @@
         <label>Adresse :</label>
         {{ form.assure_adresse(class="form-control") }}
       </div>
+      
+      <div class="form-group">
+    {{ form.recaptcha }}
+</div>
 
       <!-- Boutons -->
       <div class="form-buttons">
@@ -131,5 +135,7 @@
       formContainer.style.display = 'block';
     });
   });
+  <script src="https://www.google.com/recaptcha/api.js" async defer></script>
+
 </script>
 {% endblock %}
