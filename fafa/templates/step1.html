@@ -38,10 +38,9 @@
 
     <form method="POST" action="{{ url_for('questionnaire_step1') }}">
       {{ form.hidden_tag() }}
-
+    <div class="subsection-title">Souscripteur :</div>
       <!-- Souscripteur -->
       <div class="form-group">
-         <div class="subsection-title">Souscripteur :</div>
         <div>
           <label>Nom* :</label>
           {{ form.souscripteur_nom(class="form-control", required=True) }}
