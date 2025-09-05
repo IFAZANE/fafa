@@ -97,16 +97,7 @@
         {{ form.assure_adresse(class="form-control") }}
       </div>
 
-      <!-- reCAPTCHA -->
-      <div class="form-group">
-        {{ form.recaptcha }}
-      </div>
-
-      {% if form.recaptcha.errors %}
-        <div class="error">
-          {{ form.recaptcha.errors[0] }}
-        </div>
-      {% endif %}
+     
 
       <!-- Boutons -->
       <div class="form-buttons">
@@ -146,6 +137,4 @@
   });
 </script>
 
-<!-- reCAPTCHA script -->
-<script src="https://www.google.com/recaptcha/api.js" async defer></script>
 {% endblock %}
