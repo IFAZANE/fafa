@@ -1,70 +1,72 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<div class="admin-dashboard" style="padding:20px; max-width:1200px; margin:auto;">
+<div class="admin-dashboard" style="padding:20px; max-width:1200px; margin:auto; font-family:Arial, sans-serif; color:#333;">
 
     <!-- Résumé + Export -->
-    <div class="export-buttons" style="margin-bottom: 30px;">
-        <p class="compteur">Total souscriptions : {{ total or 0 }}</p>
-        <a href="{{ url_for('admin.export_csv') }}" class="btn-export">Exporter en CSV</a>
-        <a href="{{ url_for('admin.export_excel') }}" class="btn-export">Exporter en Excel</a>
+    <div class="export-buttons" style="margin-bottom: 30px; display:flex; flex-wrap: wrap; justify-content: space-between; align-items: center;">
+        <p class="compteur" style="font-size: 18px; font-weight: bold;">Total souscriptions : {{ total or 0 }}</p>
+        <div style="display: flex; gap: 10px;">
+            <a href="{{ url_for('admin.export_csv') }}" style="padding:10px 20px; background-color:#007BFF; color:white; text-decoration:none; border-radius:5px; font-weight:bold; transition: background-color 0.3s;">Exporter en CSV</a>
+            <a href="{{ url_for('admin.export_excel') }}" style="padding:10px 20px; background-color:#28A745; color:white; text-decoration:none; border-radius:5px; font-weight:bold; transition: background-color 0.3s;">Exporter en Excel</a>
+        </div>
     </div>
 
     <!-- Graphiques -->
     <div class="charts" style="display:flex; flex-wrap:wrap; gap:30px; justify-content:space-around;">
         <div style="flex:1; min-width:300px;">
-            <h3>Répartition par type de contrat</h3>
+            <h3 style="margin-bottom: 10px;">Répartition par type de contrat</h3>
             <canvas id="productChart"></canvas>
         </div>
 
         <div style="flex:1; min-width:300px;">
-            <h3>Répartition par ville (adresse souscripteur)</h3>
+            <h3 style="margin-bottom: 10px;">Répartition par ville (adresse souscripteur)</h3>
             <canvas id="cityChart"></canvas>
         </div>
     </div>
 
     <!-- Tableau des souscriptions -->
     {% if data %}
-    <div class="data-table" style="margin-top: 40px;">
-        <h3>Données détaillées</h3>
-        <table border="1" cellpadding="8" cellspacing="0" style="width:100%; border-collapse: collapse;">
+    <div class="data-table" style="margin-top: 40px; overflow-x: auto;">
+        <h3 style="margin-bottom: 15px;">Données détaillées</h3>
+        <table style="width:100%; border-collapse: collapse; font-size: 14px;">
             <thead>
-                <tr>
-                    <th>ID</th>
-                    <th>Souscripteur</th>
-                    <th>Assuré</th>
-                    <th>Bénéficiaire</th>
-                    <th>Profession</th>
-                    <th>Droitier</th>
-                    <th>Gaucher</th>
-                    <th>Contrat</th>
-                    <th>Date</th>
+                <tr style="background-color: #f8f9fa; text-align: left;">
+                    <th style="padding:10px; border:1px solid #ddd;">ID</th>
+                    <th style="padding:10px; border:1px solid #ddd;">Souscripteur</th>
+                    <th style="padding:10px; border:1px solid #ddd;">Assuré</th>
+                    <th style="padding:10px; border:1px solid #ddd;">Bénéficiaire</th>
+                    <th style="padding:10px; border:1px solid #ddd;">Profession</th>
+                    <th style="padding:10px; border:1px solid #ddd;">Droitier</th>
+                    <th style="padding:10px; border:1px solid #ddd;">Gaucher</th>
+                    <th style="padding:10px; border:1px solid #ddd;">Contrat</th>
+                    <th style="padding:10px; border:1px solid #ddd;">Date</th>
                 </tr>
             </thead>
             <tbody>
                 {% for entry in data %}
-                <tr>
-                    <td>{{ entry.id }}</td>
-                    <td>
+                <tr style="border-bottom: 1px solid #ddd;">
+                    <td style="padding:8px;">{{ entry.id }}</td>
+                    <td style="padding:8px;">
                         {{ entry.souscripteur_nom }} {{ entry.souscripteur_prenoms }}<br>
-                        {{ entry.souscripteur_tel }}<br>
-                        {{ entry.souscripteur_adresse }}
+                        <small>{{ entry.souscripteur_tel }}</small><br>
+                        <small>{{ entry.souscripteur_adresse }}</small>
                     </td>
-                    <td>
+                    <td style="padding:8px;">
                         {{ entry.assure_nom }} {{ entry.assure_prenoms }}<br>
-                        {{ entry.assure_tel }}<br>
-                        {{ entry.assure_adresse }}
+                        <small>{{ entry.assure_tel }}</small><br>
+                        <small>{{ entry.assure_adresse }}</small>
                     </td>
-                    <td>
+                    <td style="padding:8px;">
                         {{ entry.beneficiaire_nom }} {{ entry.beneficiaire_prenoms }}<br>
-                        {{ entry.beneficiaire_tel }}<br>
-                        {{ entry.beneficiaire_mail }}
+                        <small>{{ entry.beneficiaire_tel }}</small><br>
+                        <small>{{ entry.beneficiaire_mail }}</small>
                     </td>
-                    <td>{{ entry.profession }}</td>
-                    <td>{{ 'Oui' if entry.est_droitier else 'Non' }}</td>
-                    <td>{{ 'Oui' if entry.est_gaucher else 'Non' }}</td>
-                    <td>{{ entry.type_contrat }}</td>
-                    <td>{{ entry.created_at.strftime('%d/%m/%Y %H:%M') if entry.created_at else '' }}</td>
+                    <td style="padding:8px;">{{ entry.profession }}</td>
+                    <td style="padding:8px;">{{ 'Oui' if entry.est_droitier else 'Non' }}</td>
+                    <td style="padding:8px;">{{ 'Oui' if entry.est_gaucher else 'Non' }}</td>
+                    <td style="padding:8px;">{{ entry.type_contrat }}</td>
+                    <td style="padding:8px;">{{ entry.created_at.strftime('%d/%m/%Y %H:%M') if entry.created_at else '' }}</td>
                 </tr>
                 {% endfor %}
             </tbody>
@@ -73,7 +75,7 @@
     {% endif %}
 
     <!-- Déconnexion -->
-    <a href="{{ url_for('accueil') }}" class="btn-logout" style="display:block; margin-top:40px;">Se déconnecter</a>
+    <a href="{{ url_for('accueil') }}" style="display:inline-block; margin-top:40px; padding:10px 20px; background-color:#dc3545; color:white; text-decoration:none; border-radius:5px; font-weight:bold;">Se déconnecter</a>
 </div>
 
 <!-- Chart.js -->
