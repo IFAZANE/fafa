@@ -43,7 +43,7 @@ body {
   z-index: 1000;
 }
 .logo {
-  height: 50px;
+  height: 70px;
   width: auto;
 }
 
@@ -306,5 +306,6 @@ input, select {
   content: '➔';
   margin-left: 10px;
 }
+
 
 
