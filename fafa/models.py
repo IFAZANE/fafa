@@ -48,7 +48,7 @@ class QuestionnaireFafa(db.Model):
     beneficiaire_nom = db.Column(db.String(100), nullable=False)
     beneficiaire_prenoms = db.Column(db.String(100), nullable=False)
     beneficiaire_tel = db.Column(db.String(20), nullable=False)
-    beneficiaire_mail = db.Column(db.String(120), nullable=False)
+    beneficiaire_mail = db.Column(db.String(120))
     beneficiaire_adresse = db.Column(db.String(200), nullable=False)
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
 
@@ -149,6 +149,7 @@ class Subscription(db.Model):
     telephone = db.Column(db.String(15), unique=True)
     ville = db.Column(db.String(50))
     produit = db.Column(db.String(50), nullable=False)
+
 
 
 
