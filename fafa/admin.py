@@ -75,7 +75,7 @@ def export_csv():
         'ID', 'Souscripteur Nom', 'Souscripteur Prénoms', 'Souscripteur Tel', 'Souscripteur Adresse', 'Souscripteur Date Naissance',
         'Assuré Nom', 'Assuré Prénoms', 'Assuré Tel', 'Assuré Adresse', 'Assuré Date Naissance',
         'Bénéficiaire Nom', 'Bénéficiaire Prénoms', 'Bénéficiaire Tel', 'Bénéficiaire Mail', 'Bénéficiaire Adresse',
-        'Profession', 'Est Droitier', 'Est Gaucher', 'Type Contrat', 'Conditions Acceptées'
+        'Profession', 'Est Droitier', 'Est Gaucher', 'Type Contrat', 'Conditions Acceptées','Date de souscription'
     ])
 
     for q in data:
@@ -100,7 +100,8 @@ def export_csv():
             q.est_droitier,
             q.est_gaucher,
             q.type_contrat,
-            q.ack_conditions
+            q.ack_conditions,
+            q.created_at.strftime("%Y-%m-%d %H:%M:%S")
         ])
 
     output = si.getvalue()
@@ -137,7 +138,8 @@ def export_excel():
             "Est Droitier": q.est_droitier,
             "Est Gaucher": q.est_gaucher,
             "Type Contrat": q.type_contrat,
-            "Conditions Acceptées": q.ack_conditions
+            "Conditions Acceptées": q.ack_conditions,
+            "Date de souscription": q.created_at.strftime("%Y-%m-%d %H:%M:%S")
         })
 
     df = pd.DataFrame(rows)
@@ -154,6 +156,7 @@ def export_excel():
         download_name='souscriptions.xlsx',
         as_attachment=True
     )
+
 
 
 
