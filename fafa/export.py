@@ -27,7 +27,7 @@ def export_csv():
         'Souscripteur - Nom', 'Souscripteur - Prénoms', 'Souscripteur - Tel', 'Souscripteur - Naissance', 'Souscripteur - Adresse',
         'Assuré - Nom', 'Assuré - Prénoms', 'Assuré - Tel', 'Assuré - Naissance', 'Assuré - Adresse',
         'Bénéficiaire - Nom', 'Bénéficiaire - Prénoms', 'Bénéficiaire - Tel', 'Bénéficiaire - Mail', 'Bénéficiaire - Adresse',
-        'Profession', 'Droitier', 'Gaucher', 'Conditions acceptées', 'Type contrat'
+        'Profession', 'Droitier', 'Gaucher', 'Conditions acceptées', 'Type contrat','Date de souscription'
     ])
 
     for q in questionnaires:
@@ -40,7 +40,8 @@ def export_csv():
             'Oui' if q.est_droitier else 'Non',
             'Oui' if q.est_gaucher else 'Non',
             'Oui' if q.ack_conditions else 'Non',
-            q.type_contrat
+            q.type_contrat,
+            q.created_at.strftime("%Y-%m-%d %H:%M:%S")
         ])
 
     output = si.getvalue().encode('utf-8')  # UTF-8 pour compatibilité avec Excel
@@ -71,7 +72,7 @@ def export_excel():
         'Souscripteur - Nom', 'Souscripteur - Prénoms', 'Souscripteur - Tel', 'Souscripteur - Naissance', 'Souscripteur - Adresse',
         'Assuré - Nom', 'Assuré - Prénoms', 'Assuré - Tel', 'Assuré - Naissance', 'Assuré - Adresse',
         'Bénéficiaire - Nom', 'Bénéficiaire - Prénoms', 'Bénéficiaire - Tel', 'Bénéficiaire - Mail', 'Bénéficiaire - Adresse',
-        'Profession', 'Droitier', 'Gaucher', 'Conditions acceptées', 'Type contrat'
+        'Profession', 'Droitier', 'Gaucher', 'Conditions acceptées', 'Type contrat','Date de souscription'
     ])
 
     for q in questionnaires:
@@ -84,7 +85,8 @@ def export_excel():
             'Oui' if q.est_droitier else 'Non',
             'Oui' if q.est_gaucher else 'Non',
             'Oui' if q.ack_conditions else 'Non',
-            q.type_contrat
+            q.type_contrat,
+            q.created_at.strftime("%Y-%m-%d %H:%M:%S")
         ])
 
     output = BytesIO()
@@ -97,4 +99,5 @@ def export_excel():
         download_name='questionnaires.xlsx',
         mimetype='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
     )
+
 
