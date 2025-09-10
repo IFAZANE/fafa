@@ -260,7 +260,7 @@ def confirmation_paiement(transaction_id):
 
         q = QuestionnaireFafa.query.get(paiement.questionnaire_fafa_id)
         if q:
-            q.statut = "confirmed"
+            q.status = "confirmed"
 
         db.session.commit()
 
@@ -326,4 +326,5 @@ def conditions():
 # -----------------------------
 if __name__ == '__main__':
     app.run(debug=True)
+
 
