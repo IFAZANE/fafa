@@ -19,13 +19,13 @@ class Etape1Form(FlaskForm):
     souscripteur_prenoms = StringField('Prénoms', validators=[DataRequired(), Length(max=100)])
     souscripteur_tel = StringField('Téléphone', validators=[DataRequired(), Regexp(r'^\+?\d{8,15}$', message="Numéro de téléphone invalide")])
     souscripteur_date_naissance = DateField('Date de naissance', format='%Y-%m-%d', validators=[DataRequired()])
-    souscripteur_adresse = StringField('Adresse', validators=[DataRequired(), Length(max=200)])
+    souscripteur_adresse = StringField('Ville/Village', validators=[DataRequired(), Length(max=200)])
     # Assuré
     assure_nom = StringField('Nom', validators=[DataRequired(), Length(max=100)])
     assure_prenoms = StringField('Prénoms', validators=[DataRequired(), Length(max=100)])
     assure_tel = StringField('Téléphone', validators=[DataRequired(), Regexp(r'^\+?\d{8,15}$', message="Numéro de téléphone invalide")])
     assure_date_naissance = DateField('Date de naissance', format='%Y-%m-%d', validators=[DataRequired()])
-    assure_adresse = StringField('Adresse', validators=[DataRequired(), Length(max=200)])
+    assure_adresse = StringField('Ville/Village', validators=[DataRequired(), Length(max=200)])
     #recaptcha = RecaptchaField()
     submit = SubmitField('Suivant')
 
@@ -74,7 +74,7 @@ class Etape2Form(FlaskForm):
     beneficiaire_prenoms = StringField('Prénoms*', validators=[DataRequired(), Length(max=100)])
     beneficiaire_tel = StringField('Téléphone*', validators=[DataRequired(), Regexp(r'^\+?\d{8,15}$')])
     beneficiaire_mail = EmailField('EMail')
-    beneficiaire_adresse = StringField('Adresse*', validators=[DataRequired(), Length(max=200)])
+    beneficiaire_adresse = StringField('Ville/Village*', validators=[DataRequired(), Length(max=200)])
 
     conditions_acceptees = BooleanField("J'accepte les conditions", validators=[DataRequired(message="Vous devez accepter les conditions")])
 
@@ -189,6 +189,7 @@ class SouscriptionForm(FlaskForm):
 )
 
     recaptcha = RecaptchaField()
+
 
 
 
