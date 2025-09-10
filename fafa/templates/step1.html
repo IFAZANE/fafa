@@ -38,33 +38,42 @@
 
     <form method="POST" action="{{ url_for('questionnaire_step1') }}">
       {{ form.hidden_tag() }}
-    <div class="subsection-title">Souscripteur :</div>
+      
+      <div class="subsection-title">Souscripteur :</div>
       <!-- Souscripteur -->
       <div class="form-group">
         <div>
           <label>Nom* :</label>
-          {{ form.souscripteur_nom(class="form-control", required=True) }}
+          {{ form.souscripteur_nom(class="form-control", required=True, id="souscripteur_nom") }}
         </div>
         <div>
           <label>Prénoms* :</label>
-          {{ form.souscripteur_prenoms(class="form-control", required=True) }}
+          {{ form.souscripteur_prenoms(class="form-control", required=True, id="souscripteur_prenoms") }}
         </div>
       </div>
 
       <div class="form-group">
         <div>
           <label>Date de naissance* :</label>
-          {{ form.souscripteur_date_naissance(class="form-control", type="date", required=True) }}
+          {{ form.souscripteur_date_naissance(class="form-control", type="date", required=True, id="souscripteur_date_naissance") }}
         </div>
         <div>
           <label>Téléphone* :</label>
-          {{ form.souscripteur_tel(class="form-control", required=True, placeholder="+228") }}
+          {{ form.souscripteur_tel(class="form-control", required=True, placeholder="+228", id="souscripteur_tel") }}
         </div>
       </div>
 
       <div class="form-group full-width">
         <label>Adresse* (localité):</label>
-        {{ form.souscripteur_adresse(class="form-control", required=True) }}
+        {{ form.souscripteur_adresse(class="form-control", required=True, id="souscripteur_adresse") }}
+      </div>
+
+      <!-- Checkbox -->
+      <div class="form-check my-3">
+        <input type="checkbox" id="sameAsSouscripteur" class="form-check-input">
+        <label for="sameAsSouscripteur" class="form-check-label">
+          L’assuré est le même que le souscripteur
+        </label>
       </div>
 
       <!-- Assuré -->
@@ -73,31 +82,29 @@
       <div class="form-group">
         <div>
           <label>Nom* :</label>
-          {{ form.assure_nom(class="form-control") }}
+          {{ form.assure_nom(class="form-control", id="assure_nom") }}
         </div>
         <div>
           <label>Prénoms* :</label>
-          {{ form.assure_prenoms(class="form-control") }}
+          {{ form.assure_prenoms(class="form-control", id="assure_prenoms") }}
         </div>
       </div>
 
       <div class="form-group">
         <div>
           <label>Date de naissance* :</label>
-          {{ form.assure_date_naissance(class="form-control", type="date") }}
+          {{ form.assure_date_naissance(class="form-control", type="date", id="assure_date_naissance") }}
         </div>
         <div>
           <label>Téléphone* :</label>
-          {{ form.assure_tel(class="form-control", placeholder="+228") }}
+          {{ form.assure_tel(class="form-control", placeholder="+228", id="assure_tel") }}
         </div>
       </div>
 
       <div class="form-group full-width">
         <label>Ville/Village* :</label>
-        {{ form.assure_adresse(class="form-control") }}
+        {{ form.assure_adresse(class="form-control", id="assure_adresse") }}
       </div>
-
-     
 
       <!-- Boutons -->
       <div class="form-buttons">
@@ -133,6 +140,23 @@
       localStorage.setItem('hasConsented', 'true');
       modal.style.display = 'none';
       formContainer.style.display = 'block';
+    });
+
+    // ✅ Auto-complétion Assuré = Souscripteur
+    const checkbox = document.getElementById("sameAsSouscripteur");
+    checkbox.addEventListener("change", function() {
+      const fields = ["nom", "prenoms", "date_naissance", "tel", "adresse"];
+      fields.forEach(f => {
+        const sousField = document.getElementById("souscripteur_" + f);
+        const assureField = document.getElementById("assure_" + f);
+        if (checkbox.checked) {
+          assureField.value = sousField.value;
+          assureField.setAttribute("readonly", true);
+        } else {
+          assureField.value = "";
+          assureField.removeAttribute("readonly");
+        }
+      });
     });
   });
 </script>
