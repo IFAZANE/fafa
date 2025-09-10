@@ -152,7 +152,7 @@ def questionnaire_step2():
             est_gaucher=form.est_gaucher.data,
             ack_conditions=form.conditions_acceptees.data,
             type_contrat=form.choix_fafa.data,
-            statut="pending"
+            status="pending"
         )
         db.session.add(q)
         db.session.commit()
@@ -326,5 +326,6 @@ def conditions():
 # -----------------------------
 if __name__ == '__main__':
     app.run(debug=True)
+
 
 
