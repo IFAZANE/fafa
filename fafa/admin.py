@@ -4,6 +4,8 @@ from io import StringIO, BytesIO
 from collections import Counter
 import csv
 import pandas as pd
+from models import QuestionnaireFafa, Paiement
+
 
 admin_bp = Blueprint('admin', __name__, url_prefix='/admin')
 
@@ -164,6 +166,7 @@ def export_excel():
         download_name='souscriptions.xlsx',
         as_attachment=True
     )
+
 
 
 
