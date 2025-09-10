@@ -79,6 +79,9 @@ def export_csv():
     ])
 
     for q in data:
+        paiement = Paiement.query.filter_by(questionnaire_fafa_id=q.id).order_by(Paiement.id.desc()).first()
+        statut = paiement.status if paiement else "Non payé"
+        
         writer.writerow([
             q.id,
             q.souscripteur_nom,
@@ -102,7 +105,7 @@ def export_csv():
             q.type_contrat,
             q.ack_conditions,
             q.created_at.strftime("%Y-%m-%d %H:%M:%S"),
-            q.status
+            statut
         ])
 
     output = si.getvalue()
@@ -118,6 +121,9 @@ def export_excel():
     rows = []
 
     for q in data:
+        paiement = Paiement.query.filter_by(questionnaire_fafa_id=q.id).order_by(Paiement.id.desc()).first()
+        statut = paiement.status if paiement else "Non payé"
+
         rows.append({
             "ID": q.id,
             "Souscripteur Nom": q.souscripteur_nom,
@@ -141,7 +147,7 @@ def export_excel():
             "Type Contrat": q.type_contrat,
             "Conditions Acceptées": q.ack_conditions,
             "Date de souscription": q.created_at.strftime("%Y-%m-%d %H:%M:%S"),
-            'Statut du paiement':q.status
+            "Statut du paiement": statut
         })
 
     df = pd.DataFrame(rows)
