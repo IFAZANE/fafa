@@ -17,8 +17,6 @@ import json
 import re
 
 
-
-
 # -----------------------------
 # 1️⃣ Création de l'application
 # -----------------------------
@@ -39,7 +37,6 @@ with app.app_context():
     db.create_all()
 
 
-
 app.register_blueprint(admin_bp)
 
 # -----------------------------
@@ -57,6 +54,7 @@ def to_float(x):
         except:
             return 0.0
 
+
 def parse_date(value):
     if not value:
         return None
@@ -69,6 +67,7 @@ def parse_date(value):
             continue
     return None
 
+
 # -----------------------------
 # 5️⃣ Configuration SEMOA OAuth 2.0
 # -----------------------------
@@ -80,34 +79,10 @@ OAUTH2_CREDENTIALS = {
     "client_secret": "tgIeTQpShnfewy33opbigMmhrtNqvTsj"
 }
 
+
 # -----------------------------
 # 6️⃣ Routes questionnaire multi-étapes
 # -----------------------------
-#@app.route('/step1', methods=['GET', 'POST'])
-#def questionnaire_step1():
-#    form = Etape1Form()
-#    if form.validate_on_submit():
-#        session['duree_contrat'] = form.duree_contrat.data
-#        session['periode_debut'] = form.periode_debut.data.strftime('%Y-%m-%d') if form.periode_debut.data else None
-#        session['periode_fin'] = form.periode_fin.data.strftime('%Y-%m-%d') if form.periode_fin.data else None
-#        session['periodicite'] = form.periodicite.data
-#        session['type_contrat'] = int(form.type_contrat.data)  # ex: 15000 ou 20000
-
-    
-
- #       flash("Étape 1 enregistrée !", "success")
- #       return redirect(url_for('questionnaire_step2'))
-
-    # Préremplissage si retour sur la page
- #   if session.get('duree_contrat'):
- #       form.duree_contrat.data = session.get('duree_contrat')
- #       form.periode_debut.data = parse_date(session.get('periode_debut'))
- #       form.periode_fin.data = parse_date(session.get('periode_fin'))
- #       form.periodicite.data = session.get('periodicite')
- #       form.type_contrat.data = str(session.get('type_contrat'))
-
- #   return render_template('step1.html', form=form)
-
 @app.route('/step1', methods=['GET', 'POST'])
 def questionnaire_step1():
     form = Etape1Form()
@@ -149,16 +124,13 @@ def questionnaire_step1():
 
     return render_template('step1.html', form=form)
 
+
 @app.route('/step2', methods=['GET', 'POST'])
 def questionnaire_step2():
     form = Etape2Form()
 
     if form.validate_on_submit():
         # Stockage dans la session des données issues du formulaire
-        session['beneficiaire_profession'] = form.profession.data
-        session['est_droitier'] = form.est_droitier.data
-        session['est_gaucher'] = form.est_gaucher.data
-
         session['beneficiaire'] = {
             'nom': form.beneficiaire_nom.data,
             'prenoms': form.beneficiaire_prenoms.data,
@@ -166,55 +138,28 @@ def questionnaire_step2():
             'mail': form.beneficiaire_mail.data,
             'adresse': form.beneficiaire_adresse.data
         }
-
+        session['profession'] = form.profession.data
+        session['est_droitier'] = form.est_droitier.data
+        session['est_gaucher'] = form.est_gaucher.data
         session['conditions_acceptees'] = form.conditions_acceptees.data
-        session['type_contrat'] = form.choix_fafa.data  # '15000' ou '20000'
+        session['type_contrat'] = form.choix_fafa.data
 
-        # --- Création de l'objet QuestionnaireFafa ---
-        # Ici on récupère les données nécessaires dans la session pour créer le questionnaire.
-        # Adapte les noms des champs selon ton modèle QuestionnaireFafa
-
-        q = QuestionnaireFafa(
-            souscripteur_nom=session['souscripteur']['nom'],
-            souscripteur_prenoms=session['souscripteur']['prenoms'],
-            souscripteur_tel=session['souscripteur']['tel'],
-            souscripteur_date_naissance=parse_date(session['souscripteur']['date_naissance']),
-            souscripteur_adresse=session['souscripteur']['adresse'],
-
-            assure_nom=session['assure']['nom'],
-            assure_prenoms=session['assure']['prenoms'],
-            assure_tel=session['assure']['tel'],
-            assure_date_naissance=parse_date(session['assure']['date_naissance']),
-            assure_adresse=session['assure']['adresse'],
-
-            beneficiaire_nom=form.beneficiaire_nom.data,
-            beneficiaire_prenoms=form.beneficiaire_prenoms.data,
-            beneficiaire_tel=form.beneficiaire_tel.data,
-            beneficiaire_mail=form.beneficiaire_mail.data,
-            beneficiaire_adresse=form.beneficiaire_adresse.data,
-
-            profession=form.profession.data,
-            est_droitier=form.est_droitier.data,
-            est_gaucher=form.est_gaucher.data,
-            ack_conditions=form.conditions_acceptees.data,
-            type_contrat=form.choix_fafa.data
-        )
-
-        db.session.add(q)
-        db.session.commit()
-
-        # On stocke l'id en session pour la suite
-        session['questionnaire_id'] = q.id
+        # Stockage complet du questionnaire en session (pas en DB encore)
+        session['questionnaire'] = {
+            **session['souscripteur'],
+            **{f"assure_{k}": v for k, v in session['assure'].items()},
+            **{f"beneficiaire_{k}": v for k, v in session['beneficiaire'].items()},
+            "profession": form.profession.data,
+            "est_droitier": form.est_droitier.data,
+            "est_gaucher": form.est_gaucher.data,
+            "ack_conditions": form.conditions_acceptees.data,
+            "type_contrat": form.choix_fafa.data
+        }
 
         flash("Étape 2 enregistrée avec succès !", "success")
         return redirect(url_for('paiement'))
 
     # Préremplissage si retour sur la page
-    if 'beneficiaire_profession' in session:
-        form.profession.data = session.get('beneficiaire_profession')
-        form.est_droitier.data = session.get('est_droitier', False)
-        form.est_gaucher.data = session.get('est_gaucher', False)
-
     if 'beneficiaire' in session:
         b = session['beneficiaire']
         form.beneficiaire_nom.data = b.get('nom')
@@ -223,9 +168,14 @@ def questionnaire_step2():
         form.beneficiaire_mail.data = b.get('mail')
         form.beneficiaire_adresse.data = b.get('adresse')
 
+    if 'profession' in session:
+        form.profession.data = session['profession']
+    if 'est_droitier' in session:
+        form.est_droitier.data = session['est_droitier']
+    if 'est_gaucher' in session:
+        form.est_gaucher.data = session['est_gaucher']
     if 'conditions_acceptees' in session:
         form.conditions_acceptees.data = session['conditions_acceptees']
-
     if 'type_contrat' in session:
         form.choix_fafa.data = session['type_contrat']
 
@@ -235,15 +185,11 @@ def questionnaire_step2():
 # -----------------------------
 # 7️⃣ Route paiement et insertion
 # -----------------------------
-# -----------------------------
-# Route paiement
-# -----------------------------
 @app.route('/paiement', methods=['GET', 'POST'])
 def paiement():
     montant = session.get('type_contrat')
-    questionnaire_id = session.get('questionnaire_id')
 
-    if montant is None or questionnaire_id is None:
+    if montant is None:
         flash("Questionnaire ou montant introuvable. Veuillez compléter le questionnaire avant de payer.", "danger")
         return redirect(url_for('questionnaire_step2'))
 
@@ -299,25 +245,17 @@ def paiement():
                 "description": "Souscription FAFA"
             }
 
-            print("=== PAYLOAD SEMOA ENVOYÉ ===")
-            print(json.dumps(payment_data, ensure_ascii=False, indent=2))
-
             order_resp = requests.post(
                 f"{SEMOA_BASE}/orders",
                 json=payment_data,
                 headers=headers,
                 timeout=10
             )
-
-            print("=== RÉPONSE SEMOA ===", order_resp.status_code)
-            print(order_resp.text)
-
             order_resp.raise_for_status()
             order_data = order_resp.json()
 
-            # Enregistrement
+            # Enregistrement du paiement uniquement
             paiement = Paiement(
-                questionnaire_fafa_id=questionnaire_id,
                 transaction_id=transaction_id,
                 amount=montant_int,
                 currency="XOF",
@@ -346,13 +284,7 @@ def paiement():
             flash(f"Erreur serveur : {str(e)}", "danger")
             return redirect(url_for('paiement'))
 
-    # Si GET → afficher la page avec formulaire
     return render_template('paiement.html', montant=montant)
-
-
-
-
-
 
 
 # -----------------------------
@@ -365,32 +297,56 @@ def confirmation_paiement(transaction_id):
         flash(f"Transaction {transaction_id} introuvable.", "warning")
         return redirect(url_for('questionnaire_step2'))
 
-    # Vérifie si déjà confirmé
     if paiement.status != "confirmed":
         paiement.status = "confirmed"
         paiement.updated_at = datetime.utcnow()
+
+        # Création du questionnaire seulement maintenant
+        q_data = session.get('questionnaire')
+        if q_data:
+            q = QuestionnaireFafa(
+                souscripteur_nom=q_data['nom'],
+                souscripteur_prenoms=q_data['prenoms'],
+                souscripteur_tel=q_data['tel'],
+                souscripteur_date_naissance=parse_date(q_data['date_naissance']),
+                souscripteur_adresse=q_data['adresse'],
+                assure_nom=q_data['assure_nom'],
+                assure_prenoms=q_data['assure_prenoms'],
+                assure_tel=q_data['assure_tel'],
+                assure_date_naissance=parse_date(q_data['assure_date_naissance']),
+                assure_adresse=q_data['assure_adresse'],
+                beneficiaire_nom=q_data['beneficiaire_nom'],
+                beneficiaire_prenoms=q_data['beneficiaire_prenoms'],
+                beneficiaire_tel=q_data['beneficiaire_tel'],
+                beneficiaire_mail=q_data['beneficiaire_mail'],
+                beneficiaire_adresse=q_data['beneficiaire_adresse'],
+                profession=q_data['profession'],
+                est_droitier=q_data['est_droitier'],
+                est_gaucher=q_data['est_gaucher'],
+                ack_conditions=q_data['ack_conditions'],
+                type_contrat=q_data['type_contrat']
+            )
+            db.session.add(q)
+            db.session.flush()
+            paiement.questionnaire_fafa_id = q.id
+
         db.session.commit()
         flash(f"Transaction {transaction_id} confirmée !", "success")
     else:
         flash(f"Transaction {transaction_id} était déjà confirmée.", "info")
-        
+
     questionnaire = QuestionnaireFafa.query.get(paiement.questionnaire_fafa_id)
     html = render_template('questionnaire_pdf.html', questionnaire=questionnaire)
     buffer = BytesIO()
     HTML(string=html).write_pdf(buffer)
     buffer.seek(0)
-    
-    # Envoi en téléchargement automatique
+
     return send_file(
         buffer,
         as_attachment=True,
         download_name=f"souscription_{questionnaire.id}.pdf",
         mimetype='application/pdf'
     )
-    
-
-
-#app.register_blueprint(admin_bp)
 
 
 # -----------------------------
@@ -401,9 +357,11 @@ def accueil():
     session.clear()
     return render_template('home.html')
 
+
 @app.route('/questionnaire_pdf')
 def questionnaire_pdf():
     return render_template('questionnaire_pdf.html')
+
 
 @app.route('/export/pdf')
 def export_pdf():
@@ -413,13 +371,16 @@ def export_pdf():
     buffer.seek(0)
     return send_file(buffer, as_attachment=True, download_name="souscription.pdf", mimetype='application/pdf')
 
+
 @app.route('/export/csv')
 def route_export_csv():
     return export_csv()
 
+
 @app.route('/export/excel')
 def route_export_excel():
     return export_excel()
+
 
 @app.route('/manuel')
 def manuel():
@@ -431,15 +392,8 @@ def conditions():
     return render_template("conditions.html")
 
 
-
 # -----------------------------
 # Exécution
 # -----------------------------
 if __name__ == '__main__':
     app.run(debug=True)
-
-
-
-
-
-
